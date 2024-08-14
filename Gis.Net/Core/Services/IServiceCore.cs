@@ -1,6 +1,7 @@
 using Gis.Net.Core.DTO;
 using Gis.Net.Core.Entities;
 using Gis.Net.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gis.Net.Core.Services;
 
@@ -11,11 +12,13 @@ namespace Gis.Net.Core.Services;
 /// <typeparam name="TModel">The type of model that represents the entity.</typeparam>
 /// <typeparam name="TQuery">The type of query parameters used for filtering data.</typeparam>
 /// <typeparam name="TRequest"></typeparam>
-public interface IServiceCore<TDto, TModel, TQuery, in TRequest>
+/// <typeparam name="TContext"></typeparam>
+public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     where TModel : ModelBase
     where TDto : DtoBase
     where TQuery : QueryBase
     where TRequest : RequestBase
+    where TContext : DbContext
 {
     /// <summary>
     /// Retrieves a collection of DTOs based on the specified query parameters.
@@ -65,6 +68,8 @@ public interface IServiceCore<TDto, TModel, TQuery, in TRequest>
     /// </summary>
     /// <returns>A task that represents the asynchronous operation. The task result contains the number of state entries written to the database.</returns>
     Task<int> SaveContext(TModel model, ECrudActions crudAction);
+
+    Task<int> SaveContext();
     
     /// <summary>
     /// Validates the given DTO based on the specified CRUD operation.
@@ -86,7 +91,7 @@ public interface IServiceCore<TDto, TModel, TQuery, in TRequest>
     /// Gets the repository associated with the service.
     /// </summary>
     /// <returns>The repository instance.</returns>
-    IRepositoryCore<TDto, TModel, TQuery> GetRepository();
+    IRepositoryCore<TModel, TDto, TQuery, TContext> GetRepository();
 
     Task ValidateRequest(TRequest request, ECrudActions crudAction);
 }

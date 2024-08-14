@@ -9,6 +9,7 @@ namespace Gis.Net.Core.Mapper;
 /// </summary>
 /// <typeparam name="TDto">The type of the Data Transfer Object.</typeparam>
 /// <typeparam name="TModel">The type of the Model.</typeparam>
+/// <typeparam name="TRequest"></typeparam>
 /// <remarks>
 /// This abstract class extends AutoMapper's Profile class and is intended to be used as a base
 /// for concrete mapping profiles. It automatically sets up bidirectional mapping between the

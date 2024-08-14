@@ -4,20 +4,26 @@ using Gis.Net.Core.Entities;
 using Gis.Net.Core.Exceptions;
 using Gis.Net.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Core.Controllers;
 
-public abstract class RootController<TDto, TModel, TQuery, TRequest> :
-    RootReadOnlyController<TDto, TModel, TQuery, TRequest>
+public abstract class RootController<TModel, TDto, TQuery, TRequest, TContext> :
+    RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext>
     where TModel : ModelBase
     where TDto : DtoBase
-    where TQuery : QueryBase, new()
+    where TQuery : QueryBase
     where TRequest : RequestBase
+    where TContext : DbContext
 {
     /// <inheritdoc />
-    protected RootController(ILogger logger, IConfiguration configuration, IMapper mapper, IServiceCore<TDto, TModel, TQuery, TRequest> service) : 
+    protected RootController(
+        ILogger logger, 
+        IConfiguration configuration, 
+        IMapper mapper, 
+        IServiceCore<TModel, TDto, TQuery, TRequest, TContext> service) : 
         base(logger, configuration, mapper, service)
     {
         
@@ -129,7 +135,6 @@ public abstract class RootController<TDto, TModel, TQuery, TRequest> :
     /// Delete record By Id
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="forceDelete">Forced deletion of the record</param>
     /// <returns></returns>
     /// <exception cref="InvalidParameter"></exception>
     [HttpDelete("{id:long}")]

@@ -9,30 +9,31 @@ using Microsoft.Extensions.Logging;
 namespace Gis.Net.Core.Repositories;
 
 /// <inheritdoc />
-public abstract class RepositoryCore<TDto, TModel, TQuery> :
-    IRepositoryCore<TDto, TModel, TQuery>
+public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
+    IRepositoryCore<TModel, TDto, TQuery, TContext>
     where TDto : DtoBase
-    where TModel : ModelBase, IModel
+    where TModel : ModelBase
     where TQuery : QueryBase
+    where TContext : DbContext
 {
     /// <summary>
     /// The DbContext instance representing the session with the database, allowing for CRUD operations.
     /// </summary>
-    private readonly DbContext _context;
+    private readonly TContext _context;
 
     /// <summary>
     /// The ILogger instance used for logging messages or exceptions that might occur during the data access operations.
     /// </summary>
-    private readonly ILogger _logger;
+    protected readonly ILogger Logger;
 
     /// <summary>
     /// The IMapper instance used to map objects from one type to another, facilitating data transfer between layers.
     /// </summary>
     private readonly IMapper _mapper;
 
-    protected RepositoryCore(ILogger logger, DbContext context, IMapper mapper)
+    protected RepositoryCore(ILogger logger, TContext context, IMapper mapper)
     {
-        _logger = logger;
+        Logger = logger;
         _context = context;
         _mapper = mapper;
     }
@@ -41,8 +42,9 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     /// Returns the database context
     /// </summary>
     /// <returns></returns>
-    public DbContext GetDbContext() => _context;
+    public TContext GetDbContext() => _context;
 
+    /// <inheritdoc />
     public EntityEntry<TModel> Entry(TModel model) => _context.Entry(model);
 
     /// <summary>
@@ -51,10 +53,22 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     /// <returns></returns>
     public async Task<int> SaveChanges() => await _context.SaveChangesAsync();
 
-    protected abstract IQueryable<TModel> ParseQueryParams(IQueryable<TModel> query, TQuery? queryByParams);
+    protected virtual IQueryable<TModel> ParseQueryParams(IQueryable<TModel> query, TQuery? queryByParams)
+    {
+        if (queryByParams?.Id is not null)
+            query = query.Where(x => x.Id == queryByParams.Id);
+        
+        if (queryByParams?.Key is not null)
+            query = query.Where(x => x.Key == queryByParams.Key);
+        
+        if (queryByParams?.Search is not null)
+            query = query.Where(x => x.SearchText != null && x.SearchText.Matches(queryByParams.Search));
+        
+        return query;
+    }
     
     /// <inheritdoc />
-    public async Task<ICollection<TDto>> GetRows(RepositoryGetRowsOptions<TModel, TDto, TQuery> options)
+    public async Task<ICollection<TDto>> GetRows(ListOptions<TModel, TDto, TQuery> options)
     {
         // se la cache non ha valori memorizzati leggo i records dal database
         var q = ApplyIncludes(_context.Set<TModel>()).AsNoTracking();
@@ -87,12 +101,13 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
         // Info: https://learn.microsoft.com/it-it/ef/core/querying/client-eval#explicit-client-evaluation
         if (options.OnAfterQueryParams is not null)
             await options.OnAfterQueryParams.Invoke(rows, options.QueryParams);
+        
         return await GetRows(rows, options);
         
     }
 
     /// <inheritdoc />
-    public async Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, RepositoryGetRowsOptions<TModel, TDto, TQuery>? options = null
+    public async Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, ListOptions<TModel, TDto, TQuery>? options = null
     )
     {
         List<TDto> result = [];
@@ -123,7 +138,7 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    protected async Task<TModel> FindAsync(long id)
+    private async Task<TModel> FindAsync(long id)
     {
         var model = await _context.Set<TModel>().FindAsync(id);
         if (model is null) throw new Exception($"{nameof(TModel)} con Id: {id} non trovato");
@@ -141,7 +156,7 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
         return model;
     }
 
-    private async Task<TModel> FindWithExplicitLoading(long id, RepositoryFindOptions<TModel, TDto>? options)
+    private async Task<TModel> FindWithExplicitLoading(long id, FindOptions<TModel, TDto>? options)
     {
         var model = await FindAsync(id);
 
@@ -151,7 +166,7 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     }
 
     /// <inheritdoc />
-    public virtual async Task<TDto> Find(long id, RepositoryFindOptions<TModel, TDto>? options)
+    public virtual async Task<TDto> Find(long id, FindOptions<TModel, TDto>? options)
     {
         var model = options?.OnExplicitLoading is not null 
             ? await FindWithExplicitLoading(id, options) 
@@ -165,11 +180,11 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     }
 
     /// <inheritdoc />
-    public virtual async Task<TDto?> GetRowByFirst(RepositoryGetRowsOptions<TModel, TDto, TQuery> options) 
+    public virtual async Task<TDto?> GetRowByFirst(ListOptions<TModel, TDto, TQuery> options) 
         => (await GetRows(options)).FirstOrDefault();
 
     /// <inheritdoc />
-    public virtual async Task<TDto?> GetRowByLast(RepositoryGetRowsOptions<TModel, TDto, TQuery> options) 
+    public virtual async Task<TDto?> GetRowByLast(ListOptions<TModel, TDto, TQuery> options) 
         => (await GetRows(options)).LastOrDefault();
 
     /// <summary>
@@ -196,6 +211,9 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
         return newModel;
     }
 
+    /// <summary>
+    /// Esegue azioni prima di aggiornare un record
+    /// </summary>
     protected virtual async Task StartUpdate() => await Task.Run(() => { });
 
     /// <inheritdoc />
@@ -243,7 +261,7 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
         if (options.OnExtraMappingWithParamsAsync is not null && options.QueryParams is not null)
             await options.OnExtraMappingWithParamsAsync.Invoke(model, options.QueryParams);
         
-        _logger.LogInformation(
+        Logger.LogInformation(
             "elimino in modo il record {Id} per la entity {Name}",
             model.Id,
             model.GetType().Name
@@ -278,7 +296,7 @@ public abstract class RepositoryCore<TDto, TModel, TQuery> :
     /// <inheritdoc />
     public void ExecuteSqlCommand(string sql)
     {
-        _logger.LogInformation("Requested direct SQL Command: {Sql}", sql);
+        Logger.LogInformation("Requested direct SQL Command: {Sql}", sql);
         _context.Database.ExecuteSqlRaw(sql);
     }
 }

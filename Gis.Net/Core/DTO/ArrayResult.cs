@@ -4,7 +4,7 @@ namespace Gis.Net.Core.DTO;
 
 public class ArrayResult<T>: ResultBase where T : IDtoBase
 {
-    [JsonPropertyName("data")]
+    [JsonPropertyName("data"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<T>? Data { get; init; }
     
     [JsonPropertyName("count")]

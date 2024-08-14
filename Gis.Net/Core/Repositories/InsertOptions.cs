@@ -1,6 +1,6 @@
+using Gis.Net.Core.Delegate;
 using Gis.Net.Core.DTO;
 using Gis.Net.Core.Entities;
-using Gis.Net.Delegate;
 
 namespace Gis.Net.Core.Repositories;
 

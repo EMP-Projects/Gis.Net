@@ -10,6 +10,6 @@ public abstract class DtoBase : IDtoBase
     [JsonPropertyName("key")]
     public required string Key { get; set; }
     
-    [JsonPropertyName("timestamp")]
+    [JsonPropertyName("timestamp"), JsonIgnore]
     public DateTime TimeStamp { get; set; }
 }

@@ -1,8 +1,5 @@
 ﻿using Gis.Net.Core.DTO;
-using Gis.Net.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Core.Controllers;
 
@@ -10,7 +7,7 @@ public class ControllerUtils : ControllerBase
 {
     protected IActionResult ArrayResult<T>(IEnumerable<T> rows) where T : IDtoBase => Ok(new ArrayResult<T>(rows));
     protected IActionResult ArrayResultError<T>(string error) where T : IDtoBase => BadRequest(new ArrayResult<T>(error));
-    protected IActionResult SingleResult<T>(T result) where T : IDtoBase => Ok(new SingleResult<T>(result));
+    protected IActionResult SingleResult<T>(T result) where T : IDtoBase => Ok(new SingleResult<T?>(result));
     protected IActionResult SingleResultWithError<T>(string error) where T : IDtoBase => Ok(new SingleResult<T>(error));
 
     protected IActionResult GenericResult(string key, object value)

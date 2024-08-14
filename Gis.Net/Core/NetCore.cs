@@ -6,16 +6,6 @@ namespace Gis.Net.Core;
 
 public static class NetCore
 {
-    private static string? GetRawContent(string fileName, string pathDir)
-    {
-        var baseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathDir);
-        var path = Path.Combine(baseDirectory, fileName);
-        if (File.Exists(path) == false) return null;
-        return File.ReadAllText(path);
-    }
-
-    public static string AdjustSingleQuote(string value) => value.Replace("'", "''");
-
     public static T? DeserializeString<T>(string jsonString) where T : class => JsonSerializer.Deserialize<T>(jsonString);
 
     public static string SerializeObject<T>(T dto, JsonSerializerOptions? options = null) where T : class
@@ -50,11 +40,5 @@ public static class NetCore
         var obj = JsonSerializer.Deserialize<T>(json);
         if (obj is null) throw new Exception($"Cannot deserialize JWT token to {typeof(T)}");
         return obj;
-    }
-
-    public static string? MaskSecret(string? input)
-    {
-        if (string.IsNullOrEmpty(input) || input.Length < 3) return input;
-        return input[0] + new string('*', input.Length - 2) + input[^1];
     }
 }

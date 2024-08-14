@@ -4,30 +4,33 @@ using Gis.Net.Core.Entities;
 using Gis.Net.Core.Exceptions;
 using Gis.Net.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TeamSviluppo.Controllers;
 
 namespace Gis.Net.Core.Controllers;
 
-public abstract class RootReadOnlyController<TDto, TModel, TQuery, TRequest> : 
+public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext> : 
     ControllerUtils,
     IReadOnlyController<TQuery>
     where TModel : ModelBase
     where TDto : DtoBase
     where TQuery : QueryBase
     where TRequest : RequestBase
+    where TContext : DbContext
 {
 
     protected readonly ILogger Logger;
     private readonly IConfiguration _configuration;
     protected readonly IMapper Mapper;
+    protected readonly IServiceCore<TModel, TDto, TQuery, TRequest, TContext> ServiceCore;
     
     /// <inheritdoc />
     protected RootReadOnlyController(ILogger logger, 
         IConfiguration configuration, 
         IMapper mapper, 
-        IServiceCore<TDto, TModel, TQuery, TRequest> serviceCore)
+        IServiceCore<TModel, TDto, TQuery, TRequest, TContext> serviceCore)
     {
         ServiceCore = serviceCore;
         Mapper = mapper;
@@ -60,17 +63,6 @@ public abstract class RootReadOnlyController<TDto, TModel, TQuery, TRequest> :
         }
     }
     
-    /// <summary>
-    /// The service that provides operations for data manipulation and retrieval.
-    /// </summary>
-    /// <remarks>
-    /// This field is used to access the service layer operations for DTOs (Data Transfer Objects),
-    /// entities (Models), and query objects. It should be initialized during the controller's
-    /// construction and provides methods to list, find, create, update, and delete entities as well
-    /// as to apply queries to the data store.
-    /// </remarks>
-    protected readonly IServiceCore<TDto, TModel, TQuery, TRequest> ServiceCore;
-
     /// <inheritdoc />
     [HttpGet]
     public virtual async Task<IActionResult> List([FromQuery] TQuery queryParams)

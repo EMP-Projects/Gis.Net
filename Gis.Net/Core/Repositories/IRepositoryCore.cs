@@ -1,6 +1,7 @@
 using Gis.Net.Core.DTO;
 using Gis.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Gis.Net.Core.Repositories;
 
@@ -10,17 +11,19 @@ namespace Gis.Net.Core.Repositories;
 /// <typeparam name="TDto">The Data Transfer Object type.</typeparam>
 /// <typeparam name="TModel">The database model type.</typeparam>
 /// <typeparam name="TQuery">The query parameters type.</typeparam>
-public interface IRepositoryCore<TDto, TModel, TQuery>
+/// <typeparam name="TContext"></typeparam>
+public interface IRepositoryCore<TModel, TDto, TQuery, out TContext>
     where TDto : DtoBase
     where TModel : ModelBase
     where TQuery : QueryBase
+    where TContext : DbContext
 {
     /// <summary>
     /// Retrieves a collection of DTOs based on the provided query options.
     /// </summary>
     /// <param name="options">The options specifying the query parameters and filters.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the collection of DTOs.</returns>
-    Task<ICollection<TDto>> GetRows(RepositoryGetRowsOptions<TModel, TDto, TQuery> options);
+    Task<ICollection<TDto>> GetRows(ListOptions<TModel, TDto, TQuery> options);
     
     /// <summary>
     /// Retrieves a collection of DTOs for the given models using the specified options.
@@ -28,21 +31,21 @@ public interface IRepositoryCore<TDto, TModel, TQuery>
     /// <param name="rows">The collection of models to retrieve DTOs for.</param>
     /// <param name="options">Optional query options to apply.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the collection of DTOs.</returns>
-    Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, RepositoryGetRowsOptions<TModel, TDto, TQuery>? options = null);
+    Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, ListOptions<TModel, TDto, TQuery>? options = null);
     
     /// <summary>
     /// Retrieves the first DTO based on the provided query options.
     /// </summary>
     /// <param name="options">The options specifying the query parameters and filters.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the DTO or null if not found.</returns>
-    Task<TDto?> GetRowByFirst(RepositoryGetRowsOptions<TModel, TDto, TQuery> options);
+    Task<TDto?> GetRowByFirst(ListOptions<TModel, TDto, TQuery> options);
     
     /// <summary>
     /// Retrieves the last DTO based on the provided query options.
     /// </summary>
     /// <param name="options">The options specifying the query parameters and filters.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the DTO or null if not found.</returns>
-    Task<TDto?> GetRowByLast(RepositoryGetRowsOptions<TModel, TDto, TQuery> options);
+    Task<TDto?> GetRowByLast(ListOptions<TModel, TDto, TQuery> options);
 
     /// <summary>
     /// Finds a DTO by its identifier with optional find options.
@@ -50,7 +53,7 @@ public interface IRepositoryCore<TDto, TModel, TQuery>
     /// <param name="id">The unique identifier for the DTO.</param>
     /// <param name="options">Optional find options to apply.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the found DTO.</returns>
-    Task<TDto> Find(long id, RepositoryFindOptions<TModel, TDto>? options);
+    Task<TDto> Find(long id, FindOptions<TModel, TDto>? options);
     
     /// <summary>
     /// Finds a DTO by its identifier.
@@ -126,5 +129,7 @@ public interface IRepositoryCore<TDto, TModel, TQuery>
     /// Allows you to use the EF context for low-level operations
     /// </summary>
     /// <returns></returns>
-    DbContext GetDbContext();
+    TContext GetDbContext();
+
+    EntityEntry<TModel> Entry(TModel model);
 }
