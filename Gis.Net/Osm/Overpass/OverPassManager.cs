@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using Gis.Net.Osm.Overpass;
 
-namespace TeamSviluppo.Gis.Overpass;
+namespace Gis.Net.Osm.Overpass;
 
 public static class OverPassManager
 {

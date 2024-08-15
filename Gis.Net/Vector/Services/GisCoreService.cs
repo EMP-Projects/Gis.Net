@@ -1,15 +1,14 @@
 using Gis.Net.Core.Services;
-using Gis.Net.Vector;
+using Gis.Net.Raster;
 using Gis.Net.Vector.DTO;
 using Gis.Net.Vector.Repositories;
-using Gis.Net.Vector.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO.Esri;
 
-namespace Gis.Net.VectorCore.Services;
+namespace Gis.Net.Vector.Services;
 
 /// <inheritdoc cref="IGisCoreService{TModel,TDto,TQuery,TRequest,TContext}<TDto,TModel,TQuery>" />
 public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>: 

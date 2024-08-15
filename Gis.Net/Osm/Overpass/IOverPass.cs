@@ -1,5 +1,4 @@
 using NetTopologySuite.Features;
-using TeamSviluppo.Gis.Overpass;
 
 namespace Gis.Net.Osm.Overpass;
 

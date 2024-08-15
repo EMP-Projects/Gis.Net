@@ -1,6 +1,6 @@
 using NpgsqlTypes;
 
-namespace TeamSviluppo.Gis.NetCoreFw.Models;
+namespace Gis.Net.Vector.Models;
 
 public interface IGisCoreFullText
 {

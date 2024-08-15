@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 
-namespace Gis.Net.Vector;
+namespace Gis.Net.Raster;
 
 /// <summary>
 /// 

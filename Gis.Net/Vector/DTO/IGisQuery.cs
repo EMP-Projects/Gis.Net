@@ -1,4 +1,4 @@
-namespace TeamSviluppo.Gis.DTO;
+namespace Gis.Net.Vector.DTO;
 
 /// <summary>
 /// Definisce i parametri per una query GIS.

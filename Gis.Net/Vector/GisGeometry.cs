@@ -1,5 +1,4 @@
 using NetTopologySuite.Geometries;
-using TeamSviluppo.Gis;
 
 namespace Gis.Net.Vector;
 

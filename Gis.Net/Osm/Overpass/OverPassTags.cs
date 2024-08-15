@@ -1,9 +1,7 @@
 using Gis.Net.Osm;
 using Gis.Net.Vector;
 using NetTopologySuite.Geometries;
-using TeamSviluppo.Gis;
 using Gis.Net.Osm.Overpass.Dto;
-using TeamSviluppo.Gis.Overpass;
 
 namespace Gis.Net.Osm.Overpass;
 

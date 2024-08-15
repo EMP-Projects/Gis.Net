@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Gis.Net.Core.DTO;
-using Gis.Net.Spatial.DTO;
 
 namespace Gis.Net.Vector.DTO;
 

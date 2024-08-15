@@ -1,5 +1,4 @@
-﻿using System;
-namespace TeamSviluppo
+﻿namespace Gis.Net.Core.Entities
 {
     /// <summary>
     /// Estensione del tipo DateTime necessario per gestire correttamente le date con Postgres

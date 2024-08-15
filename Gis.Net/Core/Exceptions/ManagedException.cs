@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TeamSviluppo.Exceptions
+﻿namespace Gis.Net.Core.Exceptions
 {
     public class ManagedException : Exception
     {

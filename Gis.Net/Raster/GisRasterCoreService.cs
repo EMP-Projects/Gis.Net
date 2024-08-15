@@ -6,7 +6,7 @@ using Gis.Net.Raster.Models;
 using Gis.Net.Vector;
 using Gis.Net.Vector.DTO;
 using Gis.Net.Vector.Models;
-using Gis.Net.VectorCore.Services;
+using Gis.Net.Vector.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;

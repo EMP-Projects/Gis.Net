@@ -1,6 +1,6 @@
 using Gis.Net.Vector;
 
-namespace TeamSviluppo.Gis.Overpass;
+namespace Gis.Net.Osm.Overpass;
 
 public class OverPassDelegate : GisDelegate
 {

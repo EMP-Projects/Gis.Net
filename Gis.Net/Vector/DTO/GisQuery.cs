@@ -1,7 +1,5 @@
 ﻿using Gis.Net.Core.DTO;
-using Gis.Net.Spatial.DTO;
 using Microsoft.AspNetCore.Mvc;
-using TeamSviluppo.Gis.DTO;
 
 namespace Gis.Net.Vector.DTO;
 

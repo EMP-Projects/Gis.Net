@@ -3,7 +3,6 @@ using Gis.Net.Core.Entities;
 using Gis.Net.Vector.DTO;
 using Gis.Net.Vector.Models;
 using Gis.Net.Vector.Repositories;
-using Gis.Net.VectorCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

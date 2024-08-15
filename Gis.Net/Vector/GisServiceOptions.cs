@@ -1,6 +1,4 @@
-using Gis.Net.Vector;
-
-namespace TeamSviluppo.Gis;
+namespace Gis.Net.Vector;
 
 public abstract class GisServiceOptions<T> : GisOptions where T : class
 {

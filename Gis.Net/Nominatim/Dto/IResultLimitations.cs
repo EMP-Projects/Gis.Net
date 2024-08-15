@@ -1,4 +1,4 @@
-namespace Gis.Net.Nominatim;
+namespace Gis.Net.Nominatim.Dto;
 
 /// <summary>
 /// 

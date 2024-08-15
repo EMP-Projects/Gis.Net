@@ -4,8 +4,6 @@ using Gis.Net.Osm.Overpass.Dto;
 using Gis.Net.Vector;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
-using TeamSviluppo.Gis;
-using TeamSviluppo.Gis.Overpass;
 
 namespace Gis.Net.Osm.Overpass;
 

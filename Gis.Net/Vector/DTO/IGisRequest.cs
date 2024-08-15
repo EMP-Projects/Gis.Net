@@ -1,4 +1,4 @@
-namespace Gis.Net.Spatial.DTO;
+namespace Gis.Net.Vector.DTO;
 
 public interface IGisRequest
 {
