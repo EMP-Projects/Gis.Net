@@ -3,7 +3,7 @@ using Gis.Net.Vector.DTO;
 
 namespace Gis.Net.Vector.Mapper;
 
-public abstract class GisProfileBaseMapper<TDto, TModel, TRequest> : Profile
+public abstract class GisProfileBaseMapper<TModel, TDto, TRequest> : Profile
     where TDto : GisVectorDto
     where TModel : Models.VectorModel
     where TRequest : GisVectorRequest

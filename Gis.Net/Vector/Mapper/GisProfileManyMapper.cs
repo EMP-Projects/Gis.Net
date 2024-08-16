@@ -5,7 +5,8 @@ using Gis.Net.Vector.Models;
 
 namespace Gis.Net.Vector.Mapper;
 
-public abstract class GisProfileManyMapper<TDto, TModel, TRequest, TModelProperties, TDtoProperties> : GisProfileBaseMapper<TDto, TModel, TRequest>
+public abstract class GisProfileManyMapper<TModel, TDto, TRequest, TModelProperties, TDtoProperties> : 
+    GisProfileBaseMapper<TModel, TDto, TRequest>
     where TDto : GisVectorManyDto<TDtoProperties>
     where TModel : GisCoreManyModel<TModelProperties>
     where TRequest : GisVectorRequest

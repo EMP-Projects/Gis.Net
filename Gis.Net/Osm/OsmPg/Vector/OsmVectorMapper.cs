@@ -3,7 +3,7 @@ using Gis.Net.Vector.Mapper;
 
 namespace Gis.Net.Osm.OsmPg.Vector;
 
-public class OsmVectorMapper : GisProfileMapper<OsmVectorDto, OsmVectorModel, OsmVectorRequest, OsmPropertiesModel, OsmPropertiesDto>
+public class OsmVectorMapper : GisProfileMapper<OsmVectorModel, OsmVectorDto, OsmVectorRequest, OsmPropertiesModel, OsmPropertiesDto>
 {
     
 }

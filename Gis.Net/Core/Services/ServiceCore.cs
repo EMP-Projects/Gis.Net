@@ -15,12 +15,12 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     where TContext : DbContext
 {
     protected readonly ILogger Logger;
-    private readonly IRepositoryCore<TModel, TDto, TQuery, TContext> _repositoryCore;
+    private readonly IRepositoryCore<TModel, TDto, TQuery, TContext> _levelRepositoryCore;
 
-    protected ServiceCore(ILogger logger, IRepositoryCore<TModel, TDto, TQuery, TContext> repositoryCore)
+    protected ServiceCore(ILogger logger, IRepositoryCore<TModel, TDto, TQuery, TContext> levelRepositoryCore)
     {
         Logger = logger;
-        _repositoryCore = repositoryCore;
+        _levelRepositoryCore = levelRepositoryCore;
     }
 
     protected virtual ListOptions<TModel, TDto, TQuery> GetRowsOptions(TQuery q) => new(q);
@@ -31,13 +31,13 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
         // valido queryParams, che scatena eccezione se c'è qualcosa che non va
         queryParams ??= new TQuery();
         await ValidateQueryParams(queryParams);
-        var result = await _repositoryCore.GetRows(GetRowsOptions(queryParams));
+        var result = await _levelRepositoryCore.GetRows(GetRowsOptions(queryParams));
         return result;
     }
 
     protected virtual FindOptions<TModel, TDto> FindOptions() => new();
 
-    public virtual async Task<TDto> Find(long id) => await _repositoryCore.Find(id, FindOptions());
+    public virtual async Task<TDto> Find(long id) => await _levelRepositoryCore.Find(id, FindOptions());
 
     protected virtual InsertOptions<TModel, TDto, TQuery> InsertOptions() => new();
 
@@ -51,7 +51,7 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
         await Validate(dto, ECrudActions.Insert);
         await OnAfterValidate(dto, ECrudActions.Insert);
         var options = InsertOptions();
-        var model = await _repositoryCore.InsertAsync(dto, options);
+        var model = await _levelRepositoryCore.InsertAsync(dto, options);
         await OnAfterInsert(dto, model);
         return model;
     }
@@ -66,7 +66,7 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
         await Validate(dto, ECrudActions.Update);
         await OnAfterValidate(dto, ECrudActions.Update);
         var options = UpdateOptions();
-        var model = await _repositoryCore.Update(dto, options);
+        var model = await _levelRepositoryCore.Update(dto, options);
         await OnAfterUpdate(dto, model);
         return model;
     }
@@ -81,13 +81,13 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
 
     public virtual async Task<TModel> Delete(long id)
     {
-        var result = await _repositoryCore.Delete(id, DeleteOptions());
+        var result = await _levelRepositoryCore.Delete(id, DeleteOptions());
         await OnAfterDelete(result);
         return result;
     }
 
     /// <inheritdoc />
-    public virtual async Task<string?> FindToken(long id, string secret) => await _repositoryCore.CreateToken(id, secret);
+    public virtual async Task<string?> FindToken(long id, string secret) => await _levelRepositoryCore.CreateToken(id, secret);
 
     protected virtual Task OnAfterSaveContext(TModel model, ECrudActions crudAction) => Task.CompletedTask;
 
@@ -99,7 +99,7 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
         return result;
     }
     
-    public async Task<int> SaveContext() => await _repositoryCore.SaveChanges();
+    public async Task<int> SaveContext() => await _levelRepositoryCore.SaveChanges();
 
     /// <inheritdoc />
     public virtual Task ValidateRequest(TRequest request, ECrudActions crudAction) => Task.CompletedTask;
@@ -111,5 +111,5 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     public virtual Task ValidateQueryParams(TQuery queryParams) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public IRepositoryCore<TModel, TDto, TQuery, TContext> GetRepository() => _repositoryCore;
+    public IRepositoryCore<TModel, TDto, TQuery, TContext> GetRepository() => _levelRepositoryCore;
 }

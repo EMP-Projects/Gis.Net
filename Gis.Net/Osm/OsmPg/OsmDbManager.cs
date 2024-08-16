@@ -1,3 +1,4 @@
+using Gis.Net.Core.Entities;
 using Gis.Net.Osm.OsmPg.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,13 +8,7 @@ public static class OsmDbManager
 {
     public static ModelBuilder OsmDbConfig(this ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasPostgresExtension("pg_catalog", "pg_cron")
-            .HasPostgresExtension("hstore")
-            .HasPostgresExtension("pgrouting")
-            .HasPostgresExtension("postgis")
-            .HasPostgresExtension("postgis_raster")
-            .HasPostgresExtension("topology", "postgis_topology");
+        modelBuilder.AddExtensionPostGis();
 
         modelBuilder.Entity<Osm2PgsqlProperty>(entity => entity.HasKey(e => e.Property).HasName("osm2pgsql_properties_pkey"));
         modelBuilder.Entity<PlanetOsmLine>(entity => entity.HasIndex(e => e.Way, "planet_osm_line_way_idx").HasMethod("gist"));

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Gis.Net.Core.Controllers;
+namespace Gis.Net.Controllers;
 
 public abstract class RootController<TModel, TDto, TQuery, TRequest, TContext> :
     RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext>

@@ -38,13 +38,11 @@ public class NotificationService : BackgroundService
     /// <param name="handler"></param>
     public void AddNotificationHandler(INotificationHandler handler)
     {
-        // aggiungo l'handler alla coda
-        // prima determino il primo istante in cui deve essere eseguito
         var firstRunningTime = DateTime.Now;
         if (handler.DueTime.HasValue) firstRunningTime = firstRunningTime.Add(handler.DueTime.Value);
         _logger.LogInformation(WithPrefix(
             $"aggiungo il NotificationHandler \"{handler.Name}\" alla coda, prima esecuzione prevista {firstRunningTime:g}"));
-        var queueDto = new NotificationQueueDto()
+        var queueDto = new NotificationQueueDto
         {
             NextExecutionTime = firstRunningTime,
             Handler = handler

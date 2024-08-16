@@ -13,8 +13,8 @@ namespace Gis.Net.Vector.Mapper;
 /// <typeparam name="TRequest">The type of the GIS vector data request.</typeparam>
 /// <typeparam name="TModelProperties"></typeparam>
 /// <typeparam name="TDtoProperties"></typeparam>
-public abstract class GisProfileMapper<TDto, TModel, TRequest, TModelProperties, TDtoProperties> : 
-    GisProfileBaseMapper<TDto, TModel, TRequest>
+public abstract class GisProfileMapper<TModel, TDto, TRequest, TModelProperties, TDtoProperties> : 
+    GisProfileBaseMapper<TModel, TDto, TRequest>
     where TDto : GisVectorDto<TDtoProperties>
     where TModel : GisCoreModel<TModelProperties>
     where TRequest : GisVectorRequest

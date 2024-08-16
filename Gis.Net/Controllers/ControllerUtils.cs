@@ -1,7 +1,7 @@
 ﻿using Gis.Net.Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gis.Net.Core.Controllers;
+namespace Gis.Net.Controllers;
 
 public class ControllerUtils : ControllerBase
 {

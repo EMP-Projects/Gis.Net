@@ -9,7 +9,7 @@ namespace Gis.Net.Core.Entities;
 public abstract class ModelBase : IModelBase, IFullTextSearch
 {
     [Column("id"), Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
     
     [Column("key")]
     public required string Key { get; set; }

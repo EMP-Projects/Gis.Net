@@ -5,6 +5,20 @@ namespace Gis.Net.Core.Entities;
 
 public static class ContextDbBuilder
 {
+
+    public static ModelBuilder AddExtensionPostGis(this ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .HasPostgresExtension("pg_catalog", "pg_cron")
+            .HasPostgresExtension("hstore")
+            .HasPostgresExtension("pgrouting")
+            .HasPostgresExtension("postgis")
+            .HasPostgresExtension("postgis_raster")
+            .HasPostgresExtension("topology", "postgis_topology");
+        
+        return modelBuilder;
+    }
+    
     /// <summary>
     /// Configures the model builder for a vector core model.
     /// </summary>

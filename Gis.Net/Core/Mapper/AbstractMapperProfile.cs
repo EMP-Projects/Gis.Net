@@ -15,7 +15,7 @@ namespace Gis.Net.Core.Mapper;
 /// for concrete mapping profiles. It automatically sets up bidirectional mapping between the
 /// specified DTO and Model types.
 /// </remarks>
-public abstract class AbstractMapperProfile<TDto, TModel, TRequest> : Profile
+public abstract class AbstractMapperProfile<TModel, TDto, TRequest> : Profile
     where TDto : class, IDtoBase
     where TModel : class, IModelBase
     where TRequest : class, IRequestBase

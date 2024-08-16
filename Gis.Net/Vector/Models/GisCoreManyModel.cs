@@ -8,5 +8,6 @@ namespace Gis.Net.Vector.Models;
 /// <typeparam name="T"></typeparam>
 public abstract class GisCoreManyModel<T> : VectorModel, IGisCoreManyModels<T> where T : ModelBase
 {
+    /// <inheritdoc />
     public ICollection<T>? PropertiesCollection { get; set; }
 }

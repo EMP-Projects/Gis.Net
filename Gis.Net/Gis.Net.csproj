@@ -19,10 +19,10 @@
 
     <ItemGroup>
       <Folder Include="Core\Repositories\" />
-      <Folder Include="Core\" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
       <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="jose-jwt" Version="5.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.8" />

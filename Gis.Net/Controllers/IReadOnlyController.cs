@@ -1,7 +1,7 @@
 using Gis.Net.Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gis.Net.Core.Controllers;
+namespace Gis.Net.Controllers;
 
 /// <summary>
 /// Represents a read-only controller interface with basic operations for querying and retrieving data.

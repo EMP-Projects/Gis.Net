@@ -3,7 +3,7 @@
     /// <summary>
     /// Estensione del tipo DateTime necessario per gestire correttamente le date con Postgres
     /// </summary>
-    public static class PostgresDateTimeExtensions
+    public static class PgSqlDateTimeExtensions
     {
         /// <summary>
         /// Analogo a <see cref="DateTime.Date"/>, ma tenendo conto del fatto che la timezone corrente potrebbe non essere Utc
