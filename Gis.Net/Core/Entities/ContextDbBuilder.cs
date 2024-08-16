@@ -9,12 +9,19 @@ public static class ContextDbBuilder
     public static ModelBuilder AddExtensionPostGis(this ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresExtension("pg_catalog", "pg_cron")
             .HasPostgresExtension("hstore")
             .HasPostgresExtension("pgrouting")
             .HasPostgresExtension("postgis")
             .HasPostgresExtension("postgis_raster")
             .HasPostgresExtension("topology", "postgis_topology");
+        
+        return modelBuilder;
+    }
+    
+    public static ModelBuilder AddExtensionCron(this ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .HasPostgresExtension("pg_catalog", "pg_cron");
         
         return modelBuilder;
     }
