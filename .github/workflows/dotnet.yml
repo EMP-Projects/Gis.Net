@@ -38,6 +38,6 @@ jobs:
     - name: Push Nuget Packages
       uses: EasyDesk/action-nuget-push@v1.0.0
       with:
-        nuget-api-key: ${{ secrets.GITHUB_TOKEN }}
+        nuget-api-key: ${{ secrets.NUGET_TOKEN }}
         nuget-url: https://nuget.pkg.github.com/EMP-Projects/index.json
         publish-dir: Gis.Net/bin/Release
