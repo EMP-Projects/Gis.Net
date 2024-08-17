@@ -43,4 +43,4 @@ jobs:
       with:
         nuget-api-key: ${{ secrets.NUGET_PWD }}
         nuget-url: https://nuget.pkg.github.com/EMP-Projects/index.json
-        publish-dir: .
+        publish-dir: Gis.Net/bin/Release
