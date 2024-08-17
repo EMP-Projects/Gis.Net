@@ -36,4 +36,4 @@ jobs:
       with:
           proj-path: Gis.Net/Gis.Net.csproj
     - name: Push
-      run: dotnet nuget push "**/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg" --api-key ${{ secrets.NUGET_PWD }} --source https://nuget.pkg.github.com/EMP-Projects/index.json
+      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_PWD }} -s https://nuget.pkg.github.com/EMP-Projects/index.json
