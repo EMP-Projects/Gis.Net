@@ -24,7 +24,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
+      id: build-nuget 
       run: dotnet build --no-restore -c Release
+    - name: Pack
+      run: dotnet pack --no-build --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Get version
@@ -35,4 +38,4 @@ jobs:
     - name: Publish
       run: dotnet nuget add source --username gzileni --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/EMP-Projects/index.json"
     - name: Push
-      run: dotnet nuget push "Gis.net/bin/Release/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg"  --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+      run: dotnet nuget push "**/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
