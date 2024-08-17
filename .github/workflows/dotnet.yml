@@ -1,3 +1,4 @@
+
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
@@ -23,15 +24,20 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      id: build-nuget 
+      run: dotnet build --no-restore -c Release
+    - name: Pack
+      run: dotnet pack --no-build --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Get Version from csproj
-      uses: chenryhabana205/dotnetgetversion@v6
-      id: version_nuget
+    - name: Get version
+      id: package_version
+      uses: kzrnm/get-net-sdk-project-versions-action@v2
       with:
-        VERSION_FILE_PATH: Gis.Net/Gis.Net.csproj
-    - name: Publish
-      run: dotnet nuget add source --username gzileni --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/EMP-Projects/index.json"
-    - name: Push
-      run: dotnet nuget push "bin/Release/Gis.Net.${{ steps.version_nuget.VERSION }}.nupkg"  --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+          proj-path: Gis.Net/Gis.Net.csproj
+    - name: Push Nuget Packages
+      uses: EasyDesk/action-nuget-push@v1.0.0
+      with:
+        nuget-api-key: ${{ secrets.NUGET_TOKEN }}
+        nuget-url: https://nuget.pkg.github.com/EMP-Projects/index.json
+        publish-dir: Gis.Net/bin/Release
