@@ -26,7 +26,12 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Get Version from csproj
+      uses: chenryhabana205/dotnetgetversion@v6
+      id: version_nuget
+      with:
+        VERSION_FILE_PATH: EcoSensorApi/EcoSensorApi.csproj
     - name: Publish
       run: dotnet nuget add source --username gzileni --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/EMP-Projects/index.json"
     - name: Push
-      run: dotnet nuget push "bin/Release/Gis.Net.nupkg"  --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+      run: dotnet nuget push "bin/Release/Gis.Net.${{ steps.version_nuget.VERSION }}.nupkg"  --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
