@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  NUGET_TOKEN: ${{ secrets.NUGET_PWD }}
+
 jobs:
   build:
 
@@ -36,4 +39,4 @@ jobs:
       with:
           proj-path: Gis.Net/Gis.Net.csproj
     - name: Push
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_PWD }} -s https://nuget.pkg.github.com/EMP-Projects/index.json
+      run: dotnet nuget push Gis.Net/bin/Release/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg -k $NUGET_TOKEN -s https://nuget.pkg.github.com/EMP-Projects/index.json
