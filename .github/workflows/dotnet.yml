@@ -35,7 +35,5 @@ jobs:
       uses: kzrnm/get-net-sdk-project-versions-action@v2
       with:
           proj-path: Gis.Net/Gis.Net.csproj
-    - name: Publish
-      run: dotnet nuget add source --username gzileni --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/EMP-Projects/index.json"
     - name: Push
-      run: dotnet nuget push "**/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg" --api-key ${{ secrets.NUGET_PWD }} --source "github"
+      run: dotnet nuget push "**/Gis.Net.${{ steps.package_version.outputs.package-version }}.nupkg" --api-key ${{ secrets.NUGET_PWD }} --source https://nuget.pkg.github.com/EMP-Projects/index.json
