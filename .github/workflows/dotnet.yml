@@ -30,7 +30,7 @@ jobs:
       uses: chenryhabana205/dotnetgetversion@v6
       id: version_nuget
       with:
-        VERSION_FILE_PATH: EcoSensorApi/EcoSensorApi.csproj
+        VERSION_FILE_PATH: Gis.Net/Gis.Net.csproj
     - name: Publish
       run: dotnet nuget add source --username gzileni --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/EMP-Projects/index.json"
     - name: Push
