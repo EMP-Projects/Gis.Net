@@ -137,7 +137,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    private async Task<TModel> FindAsync(long id)
+    protected async Task<TModel> FindAsync(long id)
     {
         var model = await _context.Set<TModel>().FindAsync(id);
         if (model is null) throw new Exception($"{nameof(TModel)} con Id: {id} non trovato");
