@@ -10,11 +10,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Controllers;
 
-/// <inheritdoc />
-public abstract class GisVectorController<TModel, TDto, TQuery, TRequest, TContext, TPropertiesModel, TPropertiesDto> : 
-    GisController<TModel, TDto, TQuery, TRequest, TContext>
-    where TDto : GisVectorDto<TPropertiesDto>
-    where TModel : GisCoreModel<TPropertiesModel>
+public abstract class GisRootVectorManyController<TModel, TDto, TQuery, TRequest, TContext, TPropertiesModel, TPropertiesDto> : 
+    GisRootController<TModel, TDto, TQuery, TRequest, TContext>
+    where TDto : GisVectorManyDto<TPropertiesDto>
+    where TModel : GisCoreManyModel<TPropertiesModel>
     where TQuery : GisVectorQuery
     where TPropertiesDto: DtoBase
     where TPropertiesModel: ModelBase
@@ -23,7 +22,7 @@ public abstract class GisVectorController<TModel, TDto, TQuery, TRequest, TConte
 {
     
     /// <inheritdoc />
-    protected GisVectorController(ILogger logger,
+    protected GisRootVectorManyController(ILogger logger,
         IConfiguration configuration,
         IMapper mapper,
         IGisCoreService<TModel, TDto, TQuery, TRequest, TContext> service) :
@@ -31,4 +30,5 @@ public abstract class GisVectorController<TModel, TDto, TQuery, TRequest, TConte
     {
         
     }
+    
 }

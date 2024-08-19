@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Controllers;
 
-public abstract class GisController<TModel, TDto, TQuery, TRequest, TContext> : 
+public abstract class GisRootController<TModel, TDto, TQuery, TRequest, TContext> : 
     RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext>
     where TDto : GisVectorDto
     where TModel : VectorModel
@@ -19,7 +19,7 @@ public abstract class GisController<TModel, TDto, TQuery, TRequest, TContext> :
 {
     
     /// <inheritdoc />
-    protected GisController(ILogger logger,
+    protected GisRootController(ILogger logger,
         IConfiguration configuration,
         IMapper mapper,
         IGisCoreService<TModel, TDto, TQuery, TRequest, TContext> service) :

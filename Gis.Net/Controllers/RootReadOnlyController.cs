@@ -10,8 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Controllers;
 
+/// <inheritdoc />
 public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext> : 
-    ControllerUtils,
+    RootControllerBase,
     IReadOnlyController<TQuery>
     where TModel : ModelBase
     where TDto : DtoBase
@@ -20,21 +21,15 @@ public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TCo
     where TContext : DbContext
 {
 
-    protected readonly ILogger Logger;
-    private readonly IConfiguration _configuration;
-    protected readonly IMapper Mapper;
     protected readonly IServiceCore<TModel, TDto, TQuery, TRequest, TContext> ServiceCore;
     
     /// <inheritdoc />
     protected RootReadOnlyController(ILogger logger, 
         IConfiguration configuration, 
         IMapper mapper, 
-        IServiceCore<TModel, TDto, TQuery, TRequest, TContext> serviceCore)
+        IServiceCore<TModel, TDto, TQuery, TRequest, TContext> serviceCore) : base(logger, configuration, mapper)
     {
         ServiceCore = serviceCore;
-        Mapper = mapper;
-        _configuration = configuration;
-        Logger = logger;
     }
     
     /// <summary>
@@ -48,8 +43,8 @@ public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TCo
     {
         try
         {
-            var secret = _configuration["Secret"] is not null
-                ? _configuration["Secret"]!
+            var secret = Configuration["Secret"] is not null
+                ? Configuration["Secret"]!
                 : System.Reflection.Assembly.GetExecutingAssembly().GetName().Name!;
             var token = await ServiceCore.FindToken(id, secret);
             Response.ContentType = "text/plain";

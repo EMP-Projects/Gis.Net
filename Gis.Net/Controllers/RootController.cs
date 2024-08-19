@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Controllers;
 
+/// <inheritdoc />
 public abstract class RootController<TModel, TDto, TQuery, TRequest, TContext> :
     RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext>
     where TModel : ModelBase
@@ -145,7 +146,7 @@ public abstract class RootController<TModel, TDto, TQuery, TRequest, TContext> :
             if (id == 0) throw new InvalidParameter(nameof(id));
             var model = await ServiceCore.Delete(id);
             await ServiceCore.SaveContext(model, ECrudActions.Delete);
-            return Ok("Record cancellato con successo");
+            return Ok("Record successfully cleared");
         }
         catch (Exception ex)
         {
