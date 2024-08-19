@@ -3,7 +3,6 @@ using Gis.Net.Core.DTO;
 using Gis.Net.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Core.Repositories;
@@ -29,13 +28,13 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// <summary>
     /// The IMapper instance used to map objects from one type to another, facilitating data transfer between layers.
     /// </summary>
-    private readonly IMapper _mapper;
+    protected readonly IMapper Mapper;
 
     protected RepositoryCore(ILogger logger, TContext context, IMapper mapper)
     {
         Logger = logger;
         _context = context;
-        _mapper = mapper;
+        Mapper = mapper;
     }
 
     /// <summary>
@@ -113,7 +112,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         List<TDto> result = [];
         foreach (var model in rows)
         {
-            var dto = _mapper.Map<TDto>(model);
+            var dto = Mapper.Map<TDto>(model);
             options?.OnExtraMapping?.Invoke(model, dto);
             if (options?.OnExtraMappingAsync is not null)
                 await options.OnExtraMappingAsync.Invoke(model, dto);
@@ -171,7 +170,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         var model = options?.OnExplicitLoading is not null 
             ? await FindWithExplicitLoading(id, options) 
             : await FindWithIncludes(id);
-        var result = _mapper.Map<TDto>(model);
+        var result = Mapper.Map<TDto>(model);
         // invoke delegate function to run other actions
         options?.OnExtraMapping?.Invoke(model, result);
         if (options?.OnExtraMappingAsync is not null)
@@ -197,7 +196,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     public async Task<TModel> InsertAsync(TDto dto, InsertOptions<TModel, TDto, TQuery> options)
     {
         await StartInsert();
-        var newModel = _mapper.Map<TModel>(dto);
+        var newModel = Mapper.Map<TModel>(dto);
 
         options.OnExtraMapping?.Invoke(dto, newModel);
 
@@ -221,7 +220,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     {
         await StartUpdate();
         var model = await FindAsync(dto.Id);
-        var newModel = _mapper.Map(dto, model);
+        var newModel = Mapper.Map(dto, model);
 
         // invoke OnExtraMapping 
         options.OnExtraMapping?.Invoke(dto, newModel);
