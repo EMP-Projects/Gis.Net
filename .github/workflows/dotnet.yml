@@ -42,7 +42,7 @@ jobs:
         nuget-url: https://nuget.pkg.github.com/EMP-Projects/index.json
         publish-dir: Gis.Net/bin/Release
     - name: Git Tag Action
-      uses: hole19/git-tag-action@master
+      uses: cardinalby/git-tag-action@master
       env:
         TAG: ${{ steps.package_version.outputs.package-version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
