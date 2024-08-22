@@ -15,8 +15,8 @@ public class QueryBase : IQueryBase
     /// <summary>
     /// Represents the key property of a query.
     /// </summary>
-    [FromQuery(Name = "key")]
-    public string? Key { get; set; }
+    [FromQuery(Name = "entityKey")]
+    public string? EntityKey { get; set; }
 
     /// <summary>
     /// Represents a property used for searching.

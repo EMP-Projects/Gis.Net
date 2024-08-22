@@ -17,7 +17,7 @@ public interface IDtoBase
     /// <summary>
     /// Represents a property key in a Data Transfer Object (DTO).
     /// </summary>
-    string Key { get; set; }
+    string EntityKey { get; set; }
     
     /// <summary>
     /// Represents the timestamp property of a data transfer object (DTO) that implements the <see cref="IDtoBase"/> interface.

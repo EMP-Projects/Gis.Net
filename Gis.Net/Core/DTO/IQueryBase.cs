@@ -17,7 +17,7 @@ public interface IQueryBase
     /// <summary>
     /// Represents a query base with an optional key parameter.
     /// </summary>
-    string? Key { get; set; }
+    string? EntityKey { get; set; }
 
     /// <summary>
     /// Represents a query base object used for property search.

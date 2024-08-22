@@ -16,8 +16,8 @@ public abstract class DtoBase : IDtoBase
     /// <summary>
     /// Represents the key property of a DTO object.
     /// </summary>
-    [JsonPropertyName("key")]
-    public required string Key { get; set; }
+    [JsonPropertyName("entityKey")]
+    public required string EntityKey { get; set; }
 
     /// <summary>
     /// Represents the timestamp of a data object.
