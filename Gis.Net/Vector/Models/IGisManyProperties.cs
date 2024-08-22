@@ -3,14 +3,24 @@ using Gis.Net.Core.Entities;
 namespace Gis.Net.Vector.Models;
 
 /// <summary>
-/// Inetrfaccia per il modello delle proprietà del vettore
+/// Represents an interface for a GIS model with multiple properties.
 /// </summary>
-/// <typeparam name="TGis">Modello della tabella con geometrie</typeparam>
-/// <typeparam name="TModel">Modello base della tabella con le proprietà</typeparam>
-public interface IGisManyProperties<TGis, TModel> 
+/// <typeparam name="TGis">The type of the GIS model.</typeparam>
+/// <typeparam name="TModel">The type of the base model with the properties.</typeparam>
+public interface IGisManyProperties<TGis, TModel>
     where TGis : GisCoreManyModel<TModel>
-    where TModel: ModelBase
+    where TModel : ModelBase
 {
+    /// <summary>
+    /// Represents the GIS ID property of a GIS model with multiple properties.
+    /// </summary>
+    /// <remarks>
+    /// The GIS ID is a unique identifier assigned to the GIS model.
+    /// </remarks>
     long GisId { get; set; }
+    
+    /// <summary>
+    /// Represents a GIS model with multiple properties.
+    /// </summary>
     TGis? Gis { get; set; }
 }

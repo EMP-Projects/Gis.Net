@@ -3,6 +3,7 @@ using Gis.Net.Vector.Models;
 using Gis.Net.Osm.OsmPg.Properties;
 namespace Gis.Net.Osm.OsmPg.Vector;
 
+/// <inheritdoc />
 [Table("osm_vector")]
 public class OsmVectorModel : GisCoreModel<OsmPropertiesModel>
 {

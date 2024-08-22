@@ -1,19 +1,14 @@
-﻿namespace Gis.Net.Core.Entities
+﻿namespace Gis.Net.Core.Entities;
+
+/// <summary>
+/// Provides extension methods for handling PgSqlDateTime values.
+/// </summary>
+public static class PgSqlDateTimeExtensions
 {
     /// <summary>
-    /// Estensione del tipo DateTime necessario per gestire correttamente le date con Postgres
+    /// Convert a DateTime object to a UTC Date object.
     /// </summary>
-    public static class PgSqlDateTimeExtensions
-    {
-        /// <summary>
-        /// Analogo a <see cref="DateTime.Date"/>, ma tenendo conto del fatto che la timezone corrente potrebbe non essere Utc
-        /// </summary>
-        /// <remarks>
-        /// <para>Origine del problema, il fatto che la data "xxxT22:00:00Z" se si fa il .Date diventa "xxxT00:00:00Z"</para>
-        /// </remarks>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        public static DateTime UtcDate(this DateTime dateTime) => new DateTimeOffset(dateTime).DateTime;
-    }
+    /// <param name="dateTime">The DateTime object to convert to UTC Date.</param>
+    /// <returns>A UTC Date object.</returns>
+    public static DateTime UtcDate(this DateTime dateTime) => new DateTimeOffset(dateTime).DateTime;
 }
-

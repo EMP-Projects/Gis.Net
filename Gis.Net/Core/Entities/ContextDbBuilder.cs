@@ -3,9 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gis.Net.Core.Entities;
 
+/// <summary>
+/// Adds the necessary PostGIS extensions to the model builder.
+/// </summary>
+/// <returns>The updated model builder.</returns>
 public static class ContextDbBuilder
 {
 
+    /// <summary>
+    /// Adds the necessary PostGIS extensions to the model builder.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder to which the extensions will be added.</param>
+    /// <returns>The updated model builder.</returns>
     public static ModelBuilder AddExtensionPostGis(this ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -17,12 +26,15 @@ public static class ContextDbBuilder
         
         return modelBuilder;
     }
-    
+
+    /// <summary>
+    /// Adds the pg_cron extension to the model builder.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder to be configured.</param>
+    /// <returns>The configured model builder.</returns>
     public static ModelBuilder AddExtensionCron(this ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasPostgresExtension("pg_catalog", "pg_cron");
-        
+        modelBuilder.HasPostgresExtension("pg_catalog", "pg_cron");
         return modelBuilder;
     }
     

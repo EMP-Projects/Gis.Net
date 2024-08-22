@@ -9,7 +9,10 @@ public class WfsService : IWfsService
 {
     private readonly HttpClient _httpClient;
     private const string Version = "version=2.0.0";
-    
+
+    /// <summary>
+    /// Represents a service that interacts with a Web Feature Service (WFS).
+    /// </summary>
     public WfsService(HttpClient httpClient)
     {
         _httpClient = httpClient;

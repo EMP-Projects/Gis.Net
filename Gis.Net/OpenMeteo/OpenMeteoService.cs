@@ -26,7 +26,13 @@ public abstract class OpenMeteoService : IOpenMeteoService
     /// </summary>
     /// <returns>A string representing additional URI parameters.</returns>
     protected abstract string UriParameters();
-    
+
+    /// <summary>
+    /// Sends an API request to the OpenMeteo service and deserializes the response as a list of the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type to deserialize the response as.</typeparam>
+    /// <param name="uri">The URI of the API request.</param>
+    /// <returns>The deserialized response as a list of the specified type.</returns>
     protected async Task<List<T>?> ApiRequest<T>(string uri) where T : class
     {
         var response = await HttpClient.GetAsync(uri);

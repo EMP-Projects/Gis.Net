@@ -3,9 +3,9 @@ using Gis.Net.Core.Entities;
 namespace Gis.Net.Vector.Models;
 
 /// <summary>
-/// Modello per la gestione di più modelli
+/// Represents a generic abstract class for a GIS core model with multiple properties.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">The type that inherits from ModelBase.</typeparam>
 public abstract class GisCoreManyModel<T> : VectorModel, IGisCoreManyModels<T> where T : ModelBase
 {
     /// <inheritdoc />

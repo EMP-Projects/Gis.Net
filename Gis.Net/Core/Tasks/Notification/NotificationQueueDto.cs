@@ -1,33 +1,35 @@
-// ---------------------------------------------
-// Project: netcorefw
-// Created at: 16:44
-// Company: Hextra srl
-// Dev: Mauro Revil
-// ---------------------------------------------
-
 namespace Gis.Net.Core.Tasks.Notification;
 
 /// <summary>
-/// Oggetto che lega un <see cref="INotificationHandler"/> con la data di prossima esecuzione
+/// Represents a notification handler in the notification queue.
 /// </summary>
 public class NotificationQueueDto
 {
     /// <summary>
-    /// La data in cui il task deve essere eseguito
+    /// The next execution time of the notification handler.
     /// </summary>
     public required DateTime NextExecutionTime { get; set; }
+
     /// <summary>
-    /// L'handler che processa il task
+    /// Represents a DTO object for the notification queue.
     /// </summary>
     public required INotificationHandler Handler { get; set; }
 
     /// <summary>
-    /// Se è true, l'handler non deve essere più eseguito
+    /// Gets or sets a value indicating whether the task associated with the <see cref="NotificationQueueDto"/> object has been executed.
     /// </summary>
+    /// <value>
+    /// <c>true</c> if the task has been executed; otherwise, <c>false</c>.
+    /// </value>
     public bool Executed { get; set; } = false;
 
     /// <summary>
-    /// Numero di tentativi consecutivi falliti
+    /// Represents the number of failed attempts for a notification handler in the NotificationService.
     /// </summary>
+    /// <remarks>
+    /// The <c>FailedAttempts</c> property keeps track of the number of consecutive failed attempts made to execute a notification handler in the <see cref="NotificationService"/>.
+    /// If a handler fails to complete successfully for a configurable number of times, it will be marked as executed and ignored in subsequent rounds.
+    /// The <c>FailedAttempts</c> property is incremented every time a handler fails to execute and is reset to 0 when the handler completes successfully.
+    /// </remarks>
     public int FailedAttempts { get; set; } = 0;
 }

@@ -48,12 +48,38 @@ public interface IGisCoreService<TModel, TDto, TQuery, in TRequest, out TContext
     /// <param name="models">The collection of models to add.</param>
     /// <returns>A task representing the asynchronous operation of adding the models.</returns>
     Task AddModels(IEnumerable<TModel> models);
-    
+
+    /// <summary>
+    /// Represents the name properties of a GIS core service.
+    /// </summary>
+    /// <remarks>
+    /// The NameProperties property represents the name properties of a GIS core service.
+    /// It is used to specify the name properties that should be used for the spatial data operations.
+    /// The default value is "data".
+    /// </remarks>
+    /// <seealso cref="IGisCoreService{TModel, TDto, TQuery, TRequest, TContext}"/>
+    /// <seealso cref="GisCoreService{TModel, TDto, TQuery, TRequest, TContext}"/>
     string? NameProperties { get; set; }
 
+    /// <summary>
+    /// Asynchronously uploads a data transfer object (DTO) to the GIS service.
+    /// </summary>
+    /// <param name="dto">The data transfer object to be uploaded.</param>
+    /// <returns>A task representing the asynchronous operation, containing the uploaded model or null if the upload fails.</returns>
+    /// <returns>A task representing the asynchronous operation, containing the uploaded model or null if the upload fails.</returns>
     Task<TModel?> Upload(TDto dto);
 
+    /// <summary>
+    /// Asynchronously retrieves the center coordinates based on the provided query.
+    /// </summary>
+    /// <param name="query">The query defining the spatial data.</param>
+    /// <returns>A task representing the asynchronous operation, containing the center coordinates as an array of double values [longitude, latitude].</returns>
     Task<double[]> Center(TQuery query);
-    
+
+    /// <summary>
+    /// Asynchronously retrieves the extent (bounding box) of a set of spatial features based on the provided query parameters.
+    /// </summary>
+    /// <param name="query">The parameters defining the query for the features.</param>
+    /// <returns>A task representing the asynchronous operation, containing an array of double values representing the minimum and maximum coordinates of the extent in the order [minX, minY, maxX, maxY].</returns>
     Task<double[]> Extent(TQuery query);
 }

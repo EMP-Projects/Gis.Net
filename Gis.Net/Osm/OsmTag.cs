@@ -1,8 +1,16 @@
 
 namespace Gis.Net.Osm;
 
+/// <summary>
+/// The OsmTag class provides methods to work with OpenStreetMap tags.
+/// </summary>
 public static class OsmTag
 {
+    /// <summary>
+    /// Converts an enumeration of OsmTag to a corresponding string value.
+    /// </summary>
+    /// <param name="tag">The OsmTag enumeration value.</param>
+    /// <returns>The string representation of the OsmTag enumeration.</returns>
     public static string Tags(EOsmTag tag)
     {
         return tag switch
@@ -33,8 +41,17 @@ public static class OsmTag
         };
     }
 
+    /// <summary>
+    /// Retrieves the items related to a specific OsmTag.
+    /// </summary>
+    /// <param name="tag">The OsmTag enum value.</param>
+    /// <returns>An array of strings representing the related items.</returns>
     public static string[] Items(EOsmTag tag) => DictionaryTags()[Tags(tag)];
-    
+
+    /// <summary>
+    /// Gets the dictionary of tags for OSM data.
+    /// </summary>
+    /// <returns>The dictionary of tags.</returns>
     private static Dictionary<string, string[]> DictionaryTags()
     {
         return new Dictionary<string, string[]>

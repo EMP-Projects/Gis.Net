@@ -9,6 +9,7 @@ public interface INotificationHandler : IBackgroundTask
     /// The name of the handler
     /// </summary>
     string Name { get; }
+    
     /// <summary>
     /// Asynchronously handles notifications.
     /// </summary>

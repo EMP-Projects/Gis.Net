@@ -3,6 +3,10 @@ using Gis.Net.Core.Entities;
 
 namespace Gis.Net.Vector.Models;
 
+/// <summary>
+/// The base class for GIS core models.
+/// </summary>
+/// <typeparam name="T">The type of properties associated with the model.</typeparam>
 public abstract class GisCoreModel<T> : VectorModel, IGisCoreProperties<T> where T : ModelBase
 {
     /// <inheritdoc />

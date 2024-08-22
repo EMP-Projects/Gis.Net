@@ -3,8 +3,12 @@ using Gis.Net.OpenMeteo.Weather;
 
 namespace Gis.Net.OpenMeteo.Elevation;
 
+/// <inheritdoc />
 public class ElevationService : OpenMeteoService, IElevationService
 {
+    /// <summary>
+    /// Represents a service that provides elevation data from the OpenMeteo API.
+    /// </summary>
     public ElevationService(HttpClient httpClient) : base(httpClient)
     {
     }

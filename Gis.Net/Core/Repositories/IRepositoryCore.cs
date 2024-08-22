@@ -131,5 +131,10 @@ public interface IRepositoryCore<TModel, TDto, TQuery, out TContext>
     /// <returns></returns>
     TContext GetDbContext();
 
+    /// <summary>
+    /// Retrieves the entity entry for the specified model.
+    /// </summary>
+    /// <param name="model">The model for which to retrieve the entity entry.</param>
+    /// <returns>The entity entry for the specified model.</returns>
     EntityEntry<TModel> Entry(TModel model);
 }

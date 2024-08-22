@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Http;
 namespace Gis.Net.Raster;
 
 /// <summary>
-/// 
+/// Saves the contents of a file from a <see cref="Stream"/> to the specified file path asynchronously.
 /// </summary>
+/// <returns>A <see cref="Task"/> representing the asynchronous save operation.</returns>
 public static class GisFiles
 {
     /// <summary>
-    /// 
+    /// Saves the contents of a file from a stream asynchronously.
     /// </summary>
-    /// <param name="filePath"></param>
-    /// <param name="stream"></param>
+    /// <param name="filePath">The path to the file where the contents will be saved.</param>
+    /// <param name="stream">The stream containing the file contents.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task SaveFileContentsAsync(string filePath, Stream stream)
     {
         await using (var destinationStream = new FileStream(filePath, FileMode.Create))
@@ -42,13 +44,18 @@ public static class GisFiles
             ? tmpDir : 
             $"{currentDir.FullName}/data/rise-gis/{uploadDirectory}";
     }
-    
+
     /// <summary>
-    /// 
+    /// Creates a new folder for uploading raster files in the specified upload directory.
     /// </summary>
-    /// <param name="uploadDirectory"></param>
-    /// <param name="subDirectory"></param>
-    /// <returns></returns>
+    /// <param name="uploadDirectory">The name of the upload directory. Defaults to "uploads" if not specified.</param>
+    /// <param name="subDirectory">The name of the subdirectory to be created inside the upload folder. Can be null or empty.</param>
+    /// <returns>The full path to the created upload folder for raster files.</returns>
+    /// <remarks>
+    /// This method constructs the path by combining the parent directory of the current working directory
+    /// with the specified upload directory. If the parent directory cannot be determined or the folder creation fails,
+    /// an empty string is returned.
+    /// </remarks>
     public static string CreateUploadsFolderRaster(string uploadDirectory, string? subDirectory)
     {
         var tmpDir = GetUploadFolderRaster(uploadDirectory);
@@ -82,13 +89,15 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// Controlla se il file sia un tiff
+    /// Determines whether the given file path corresponds to a TIFF file.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public static bool IsTiff(string path) 
+    /// <param name="path">The path of the file to check.</param>
+    /// <returns>
+    /// <c>true</c> if the file is a TIFF file; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsTiff(string path)
         => FileType(path).Equals("TIFF");
-    
+
     /// <summary>
     /// Internally, the file header information should help. if you do a low-level file open,
     /// such as StreamReader() or FOPEN()
@@ -132,30 +141,29 @@ public static class GisFiles
     /// <param name="path"></param>
     /// <returns></returns>
     private static string? GetPathShapeFile(string path) => CheckPathShapeFile(path, ".shp");
-    
+
     /// <summary>
-    /// 
+    /// Gets the path of a TIFF file within the specified directory.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <param name="path">The directory path where the TIFF file is located.</param>
+    /// <returns>The path of the TIFF file.</returns>
     private static string? GetPathTiffFile(string path) => CheckPathShapeFile(path, ".tiff");
 
     /// <summary>
-    /// 
+    /// Checks the path of a shape file within the specified directory and returns the path if found.
     /// </summary>
-    /// <param name="path"></param>
-    /// <param name="extension"></param>
-    /// <returns></returns>
+    /// <param name="path">The directory path where the shape file is located.</param>
+    /// <param name="extension">The extension of the shape file, including the dot (e.g., ".shp").</param>
+    /// <returns>The path of the shape file if found; otherwise, null.</returns>
     private static string? CheckPathShapeFile(string path, string extension) => Directory
         .EnumerateFiles(path)
         .Select(Path.GetFileName).First(fn 
             => Path.GetExtension(fn)!.ToUpper().Equals(extension.ToUpper()));
-    
+
     /// <summary>
-    /// 
+    /// Copies the contents of a stream to another stream asynchronously.
     /// </summary>
-    /// <param name="file"></param>
-    /// <param name="path"></param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CopyFiles(IFormFile file, string path)
     {
         await using var stream = File.Create(path);
@@ -164,24 +172,26 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// Copia asincrona di un file
+    /// Copies the contents of a stream to a file asynchronously.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="path"></param>
+    /// <param name="source">The source stream.</param>
+    /// <param name="path">The path to the destination file.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CopyFilesAsync(Stream source, string path)
     {
         await using var stream = File.Create(path);
         await source.CopyToAsync(stream);
         stream.Close();
     }
-    
+
     /// <summary>
-    /// 
+    /// Copies the contents of a source stream to a destination stream asynchronously.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="destination"></param>
-    public static async Task CopyFiles(Stream source, Stream destination) 
-    { 
+    /// <param name="source">The source stream containing the contents to be copied.</param>
+    /// <param name="destination">The destination stream where the contents will be copied to.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public static async Task CopyFiles(Stream source, Stream destination)
+    {
         var buffer = new byte[4096]; 
         int numRead; 
         while ((numRead = await source.ReadAsync(buffer)) != 0) 
@@ -191,12 +201,12 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// Decomprime un file esri e lo salva
+    /// Unzips a shapefile and saves it to the specified path.
     /// </summary>
-    /// <param name="file"></param>
-    /// <param name="path"></param>
-    /// <param name="replace"></param>
-    /// <returns></returns>
+    /// <param name="file">The shapefile to unzip.</param>
+    /// <param name="path">The path where the unzipped shapefile will be saved.</param>
+    /// <param name="replace">A flag indicating whether to replace an existing file with the same name in the specified path.</param>
+    /// <returns>The path of the unzipped shapefile.</returns>
     public static async Task<string?> UnzipShapeFileAndSave(IFormFile file, string path, bool replace)
     {
         var tmpFile = Path.Combine(path, file.FileName);
@@ -209,11 +219,11 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// 
+    /// Extracts a TIFF file from a zip archive and saves it to the specified directory.
     /// </summary>
-    /// <param name="path"></param>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
+    /// <param name="path">The directory where the TIFF file will be saved.</param>
+    /// <param name="fileName">The file name of the zip archive.</param>
+    /// <returns>The path of the extracted TIFF file.</returns>
     public static string UnzipTiffFile(string path, string fileName)
     {
         ZipFile.ExtractToDirectory(fileName, path, true);
@@ -242,14 +252,14 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// 
+    /// Uploads a file from a specified URL and saves the file contents to a specified file path asynchronously.
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="path"></param>
-    /// <param name="replace"></param>
-    /// <param name="extension"></param>
-    /// <returns></returns>
-    /// <exception cref="FileNotFoundException"></exception>
+    /// <param name="url">The URL of the file to upload.</param>
+    /// <param name="path">The path to save the file contents to.</param>
+    /// <param name="replace">A flag indicating whether to replace an existing file if it already exists.</param>
+    /// <param name="extension">The file extension of the uploaded file.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous upload and save operation.</returns>
+    /// <exception cref="FileNotFoundException">Thrown when the file at the specified URL is not found.</exception>
     private static async Task<string> UploadFileAndSave(string url, string path, bool replace, string extension)
     {
         using var client = new HttpClient();
@@ -258,15 +268,15 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// 
+    /// Uploads a file to the specified URL and saves the response stream to a file asynchronously.
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="body"></param>
-    /// <param name="path"></param>
-    /// <param name="replace"></param>
-    /// <param name="extension"></param>
-    /// <returns></returns>
-    /// <exception cref="FileNotFoundException"></exception>
+    /// <param name="url">The URL where the file will be uploaded.</param>
+    /// <param name="body">The body of the request.</param>
+    /// <param name="path">The path where the response stream will be saved.</param>
+    /// <param name="replace">Specifies whether to replace the existing file at the specified path.</param>
+    /// <param name="extension">The extension of the file to be saved.</param>
+    /// <returns>A task representing the asynchronous upload and save operation.</returns>
+    /// <exception cref="FileNotFoundException">Thrown if the uploaded file is not found on the server.</exception>
     private static async Task<string> UploadFileAndSave(string url, string body, string path, bool replace, string extension)
     {
         using var client = new HttpClient();
@@ -283,14 +293,16 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// 
+    /// Extracts and saves a shapefile from a zip file asynchronously.
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="path"></param>
-    /// <param name="replace"></param>
-    /// <param name="body"></param>
-    /// <returns></returns>
-    /// <exception cref="FileNotFoundException"></exception>
+    /// <param name="url">The URL of the zip file.</param>
+    /// <param name="path">The path where the extracted shapefile will be saved.</param>
+    /// <param name="replace">Specifies whether to replace the existing shapefile if it already exists.</param>
+    /// <param name="body">The zip file contents as a string. Set null if the zip file is provided via URL.</param>
+    /// <returns>
+    /// The path to the extracted shapefile. Returns null if the shapefile extraction fails.
+    /// </returns>
+    /// <exception cref="FileNotFoundException">Thrown when the zip file specified by the URL is not found.</exception>
     public static async Task<string?> UnzipShapeFileAndSave(string url, string path, bool replace, string? body)
     {
         var tmpFile = body is null
@@ -301,15 +313,15 @@ public static class GisFiles
         var newPath = Path.Combine(path, GetPathShapeFile(path)!);
         return newPath;
     }
-    
+
     /// <summary>
-    /// 
+    /// Uploads a TIFF file from a URL or body and saves it to the specified path asynchronously.
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="path"></param>
-    /// <param name="replace"></param>
-    /// <param name="body"></param>
-    /// <returns></returns>
+    /// <param name="url">The URL of the TIFF file to upload. If the body is not null, this parameter is ignored.</param>
+    /// <param name="path">The path where the TIFF file will be saved.</param>
+    /// <param name="replace">Specifies whether to replace an existing file with the same name at the destination path. Default is true.</param>
+    /// <param name="body">The string representing the body of the TIFF file to upload. If provided, it will be used instead of the URL.</param>
+    /// <returns>A task representing the asynchronous upload and save operation. The resulting file path is returned.</returns>
     public static async Task<string?> UploadTiffFileAndSave(string url, string path, bool replace, string? body)
     {
         var tmpFile = body is null
@@ -320,10 +332,10 @@ public static class GisFiles
     }
 
     /// <summary>
-    /// 
+    /// Reads a TIFF file and returns its contents as a byte array.
     /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <param name="path">The path to the TIFF file.</param>
+    /// <returns>The contents of the TIFF file as a byte array.</returns>
     public static byte[] ReadTiff(string path)
     {
         var stm = File.Open(path, FileMode.Open);
@@ -340,22 +352,22 @@ public static class GisFiles
 
         return data;
     }
-    
+
     /// <summary>
-    /// 
+    /// Deletes a file at the specified path.
     /// </summary>
-    /// <param name="pathFile"></param>
+    /// <param name="pathFile">The path to the file to be deleted.</param>
     public static void DeleteFile(string pathFile)
     {
         var f = new FileInfo(pathFile);
         f.Delete();
     }
-    
+
     /// <summary>
-    /// 
+    /// Deletes a folder and its contents recursively.
     /// </summary>
-    /// <param name="path"></param>
-    /// <param name="recursive"></param>
-    public static void DeleteFolder(string path, bool recursive) 
+    /// <param name="path">The path of the folder to be deleted.</param>
+    /// <param name="recursive">Specifies whether to delete subfolders and files recursively.</param>
+    public static void DeleteFolder(string path, bool recursive)
         => Directory.Delete(path, recursive);
 }

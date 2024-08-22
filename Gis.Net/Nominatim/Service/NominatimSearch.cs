@@ -3,8 +3,15 @@ using Gis.Net.Nominatim.Xml;
 
 namespace Gis.Net.Nominatim.Service;
 
+/// <summary>
+/// Represents a class for performing search operations using Nominatim.
+/// </summary>
 public class NominatimSearch : Nominatim<SearchResultsXml>
 {
+    /// <summary>
+    /// Sets the result limitations for the Nominatim search.
+    /// </summary>
+    /// <param name="qList">The list of query parameters to modify.</param>
     public override void SetResultLimitations(ref List<string> qList)
     {
         if (Limitations is null) return;
@@ -52,6 +59,10 @@ public class NominatimSearch : Nominatim<SearchResultsXml>
             qList.Add($"email={Limitations.Email}");
     }
 
+    /// <summary>
+    /// Generates a list of query parameters based on the specific implementation of the QueryParams method in the derived class.
+    /// </summary>
+    /// <returns>A list of query parameters.</returns>
     protected override List<string> QueryParams()
     {
         List<string> qList = new() { $"city={Request?.City}" };
@@ -71,6 +82,9 @@ public class NominatimSearch : Nominatim<SearchResultsXml>
         return qList;
     }
 
+    /// <summary>
+    /// Represents a class for performing search operations using Nominatim.
+    /// </summary>
     public NominatimSearch(HttpClient httpClient) : base(httpClient)
     {
     }

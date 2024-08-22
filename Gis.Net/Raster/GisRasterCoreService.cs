@@ -39,7 +39,6 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
     /// </summary>
     /// <param name="logger">The logger for logging messages.</param>
     /// <param name="repository">The repository for data access operations.</param>
-    /// <param name="authService">The authentication service for user authentication and authorization.</param>
     protected GisRasterCoreService(ILogger<GisRasterCoreService<TModel, TDto, TQuery, TRequest, TContext, TPropertiesModel, TPropertiesDto>> logger,
                                    GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TPropertiesModel, TPropertiesDto> repository) : 
         base(logger, repository)
@@ -62,7 +61,6 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
     /// </summary>
     /// <param name="dto">The raster DTO to insert.</param>
     /// <returns>A task representing the asynchronous operation, containing the inserted raster model or null if the insertion fails.</returns>
-    /// <exception cref="DtoNullException">Thrown when the provided dto is null.</exception>
     public override async Task<TModel?> Insert(TDto dto)
     {
         if (dto is null)
@@ -88,6 +86,11 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
         TimeStamp = DateTime.UtcNow
     };
 
+    /// <summary>
+    /// Deletes raster files from the specified subdirectories.
+    /// </summary>
+    /// <param name="subDirectories">The list of subdirectories to delete the raster files from. If null or empty, the files will be deleted from all subdirectories.</param>
+    /// <returns>A task representing the asynchronous delete operation.</returns>
     public virtual Task DeleteRasterFiles(List<string>? subDirectories)
     {
         var path = GisFiles.GetUploadFolderRaster();
@@ -107,45 +110,58 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
         return Task.CompletedTask;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Inserts raster files into the system. The raster files are read from the specified subdirectories and converted into DTO objects.
+    /// </summary>
+    /// <param name="subDirectories">The list of subdirectories containing the raster files to insert. If not specified, all subdirectories under the raster uploads folder will be processed.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public virtual async Task InsertRaster(List<string>? subDirectories)
     {
+        // Creating the uploads folder for raster files and getting its path
         var path = GisFiles.CreateUploadsFolderRaster(UploadPath, null);
-        
-        // leggo tutte le sotto directory in cui sono contenuti i file raster
+
+        // Reading all the subdirectories in the directory that contains the raster files
         var subdirectoryEntries = Directory.GetDirectories(path).ToList();
 
+        // If subDirectories parameter is not null or its count is greater than zero, we filter the subdirectoryEntries 
+        // to only include directories that exist in the subDirectories parameter
         if (subDirectories is not null || subDirectories?.Count > 0)
             subdirectoryEntries = subdirectoryEntries.Where(subDir 
                 => subDirectories.Contains(new DirectoryInfo(subDir).Name)).ToList();
 
+        // DTO list is defined to hold DTOs objects 
         var listDto = new List<TDto>();
+
+        // Iterating through each of the subdirectory entries
         foreach (var subdirectory in subdirectoryEntries)
         {
+            // Getting the name of the current subdirectory
             var subDir = new DirectoryInfo(subdirectory).Name;
-            var files = Directory.GetFiles(subdirectory).Where(GisFiles.IsTiff);
+
+            // Getting all TIFF files in the current subdirectory
+            var files = Directory.GetFiles(subdirectory).Where(GisFiles.IsTiff); 
+
+            // Creating DTO object for each TIFF file in the current directory and adding them to the DTO list
             listDto.AddRange(files.Select(file => CreateDtoFromRasterFile(file, subDir)));
         }
 
-        // Avvia un'attività asincrona utilizzando Task.Factory.StartNew
-        // https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/#avoiding-dbcontext-threading-issues
+        // Launching a new task using Task.Factory.StartNew 
+        // Each DTO object in listDto gets processed in a separate child task.
         await Task.Factory
             .StartNew(
                 () =>
                 {
-                    // Inizializza un contatore d'indice
                     var index = 0;
-                    // Itera attraverso ogni elemento nella lista 'listDto'
                     foreach (var dto in listDto)
-                        // Per ogni elemento, avvia un'ulteriore attività asincrona
                         Task.Factory.StartNew(async value 
-                                => await Insert(dto), // Chiama il metodo 'Insert' asincrono passando l'elemento corrente 'dto'
-                            index++, // Incrementa l'indice per ogni attività avviata
-                            TaskCreationOptions.AttachedToParent); 
-                    // L'opzione assicura che l'attività figlia sia collegata all'attività genitore
+                            => await Insert(dto), // Call insert for each list item (dto)
+                        index++, 
+                        TaskCreationOptions.AttachedToParent);
+                    // The task creation options ensure the child task attaches to the parent task
                 }).ContinueWith(
                 antecedent =>
-                    Console.WriteLine($"Executing continuation of Task [InsertRaster] {antecedent.Id}"));
+                    // Logging the completion of the task
+                     Console.WriteLine($"Executing continuation of Task [InsertRaster] {antecedent.Id}"));
     }
 
     /// <inheritdoc />
@@ -173,6 +189,7 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
         await base.Validate(dto, crudEnum);
     }
 
+    /// <inheritdoc />
     protected override async Task<ICollection<TModel>> ParseQueryParamsGeometry(ICollection<TModel> models, TQuery? queryByParams)
     {
         if (GetRepository() is not GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TPropertiesModel, TPropertiesDto> rasterRepository)

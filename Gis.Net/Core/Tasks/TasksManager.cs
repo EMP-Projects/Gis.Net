@@ -16,8 +16,6 @@ public static class TasksManager
     /// <returns>The IServiceCollection for chaining.</returns>
     public static IServiceCollection AddNotificationService(this IServiceCollection services)
     {
-        // devo registrare il servizio sia come SingleTon che come Service
-        // la prima registrazione mi serve per poter aggiungere i NotificationHandler al servizio di background
         services.AddSingleton<NotificationService>();
         services.AddHostedService<NotificationService>(provider => provider.GetService<NotificationService>()!);
         return services;

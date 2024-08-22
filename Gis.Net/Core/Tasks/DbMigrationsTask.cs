@@ -5,18 +5,21 @@ using Microsoft.Extensions.Logging;
 namespace Gis.Net.Core.Tasks;
 
 /// <summary>
-/// Task di servizio che esegue le migrazioni del database all'avvio dell'applicazione.
+/// Represents a task that executes database migrations on a specified DbContext.
 /// </summary>
+/// <typeparam name="T">The type of the DbContext.</typeparam>
 public class DbMigrationsTask<T> : TaskService where T : DbContext
 {
+    /// <summary>
+    /// Represents a task that performs database migrations for a specific DbContext.
+    /// </summary>
+    /// <typeparam name="T">The type of DbContext.</typeparam>
     private readonly T _dbContext;
 
     /// <summary>
-    /// Costruttore per DbMigrationsTask che inietta le dipendenze necessarie.
+    /// Represents a task for running database migrations for a given DbContext.
     /// </summary>
-    /// <param name="logger">Il logger per registrare i messaggi di log.</param>
-    /// <param name="serviceProvider">Il fornitore di servizi per la risoluzione delle dipendenze.</param>
-    /// <param name="dbContext"></param>
+    /// <typeparam name="T">The type of DbContext.</typeparam>
     public DbMigrationsTask(ILogger<DbMigrationsTask<T>> logger, IServiceProvider serviceProvider, T dbContext) : base(logger,
         serviceProvider)
     {
@@ -24,23 +27,23 @@ public class DbMigrationsTask<T> : TaskService where T : DbContext
     }
 
     /// <summary>
-    /// Il tempo di attesa iniziale prima di eseguire il task (5 secondi)
+    /// Represents the due time for executing a task.
     /// </summary>
     protected override TimeSpan DueTime => TimeSpan.FromSeconds(5);
 
     /// <summary>
-    /// Il periodo di esecuzione del task. In questo caso, il task viene eseguito una sola volta.
+    /// Represents a period of time.
     /// </summary>
     protected override TimeSpan Period => Timeout.InfiniteTimeSpan;
 
     /// <summary>
-    /// Esegue le operazioni di migrazione del database.
+    /// Executes the job associated with the task.
     /// </summary>
-    /// <param name="state">Lo stato associato al task. Può essere null.</param>
+    /// <param name="state">The state associated with the task. It can be null.</param>
     protected override void ExecuteJob(object? state)
     {
         var job = _dbContext.RunMigrations();
         if (job.Wait(TimeSpan.FromMinutes(1)))
-            Logger.LogInformation("Task di lancio migrazioni automatiche concluso");
+            Logger.LogInformation("Automatic migration launch task completed");
     }
 }

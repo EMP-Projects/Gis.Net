@@ -1,5 +1,8 @@
 namespace Gis.Net.OpenMeteo.Weather;
 
+/// <summary>
+/// Represents the options for specifying geographic coordinates.
+/// </summary>
 public interface ICoordinatesOptions
 {
     /// <summary>
@@ -9,7 +12,7 @@ public interface ICoordinatesOptions
     /// The latitude as a double, or null if not set.
     /// </value>
     double? Lat { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the longitude coordinate for weather data retrieval.
     /// </summary>

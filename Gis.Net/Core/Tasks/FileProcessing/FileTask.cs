@@ -4,8 +4,8 @@ namespace Gis.Net.Core.Tasks.FileProcessing;
 public class FileTask : IFileTask
 {
     /// <inheritdoc />
-    public string FilePath { get; set; }
+    public required string FilePath { get; set; }
 
     /// <inheritdoc />
-    public Func<string, CancellationToken, Task> Process { get; set; }
+    public required Func<string, CancellationToken, Task> Process { get; set; }
 }

@@ -7,7 +7,10 @@ using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Osm.OsmPg;
 
-/// <inheritdoc />
+/// <summary>
+/// Represents an abstract base class for OSM PostgreSQL services.
+/// </summary>
+/// <typeparam name="T">The type of the database context.</typeparam>
 public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2PgsqlDbContext
 {
     private readonly IOsmPg<PlanetOsmLine, T> _lines;
@@ -15,6 +18,10 @@ public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2
     private readonly IOsmPg<PlanetOsmPoint, T> _points;
     private readonly IOsmPg<PlanetOsmRoads, T> _roads;
 
+    /// <summary>
+    /// Represents an abstract base class for OSM PostgreSQL services.
+    /// </summary>
+    /// <typeparam name="T">The type of the database context.</typeparam>
     protected OsmPgService(
         IOsmPg<PlanetOsmLine, T> lines, 
         IOsmPg<PlanetOsmPolygon, T> polygons, 
@@ -36,31 +43,38 @@ public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2
     }
 
     /// <summary>
-    /// Configurazione delle opzioni per la ricerca di features geometriche di tipo linea
+    /// Returns the OsmOptions for lines based on the given geometry.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="geom">The geometry used for querying lines.</param>
+    /// <returns>The OsmOptions for lines based on the given geometry.</returns>
     protected abstract OsmOptions<PlanetOsmLine>? OsmOptionsLines(Geometry geom);
-    
+
     /// <summary>
-    /// Configurazione delle opzioni per la ricerca di features geometriche di tipo poligono
+    /// Gets the OSM options for polygons based on the provided geometry.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="geom">The geometry for which to get the options.</param>
+    /// <returns>The OSM options for polygons.</returns>
     protected abstract OsmOptions<PlanetOsmPolygon>? OsmOptionsPolygon(Geometry geom);
 
     /// <summary>
-    /// Configurazione delle opzioni per la ricerca di features geometriche di tipo punto
+    /// Represents a method to generate OSM options for the specified point geometry.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="geom">The point geometry.</param>
+    /// <returns>An instance of <see cref="OsmOptions{T}"/> with the generated OSM options, or null if no options are available.</returns>
     protected abstract OsmOptions<PlanetOsmPoint>? OsmOptionsPoint(Geometry geom);
 
     /// <summary>
-    /// Configurazione delle opzioni per la ricerca di features geometriche di tipo strade
+    /// Retrieves the options for querying road features from the OSM PostgreSQL database based on the given geometry.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="geom">The geometry representing the area of interest.</param>
+    /// <returns>The options for querying road features.</returns>
     protected abstract OsmOptions<PlanetOsmRoads>? OsmOptionsRoads(Geometry geom);
 
-    /// <param name="geom"></param>
-    /// <inheritdoc />
+    /// <summary>
+    /// Retrieves a collection of features based on a given geometry.
+    /// </summary>
+    /// <param name="geom">The geometry used as a filter for retrieving features.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a FeatureCollection.</returns>
     public async Task<FeatureCollection> GetFeatures(Geometry geom)
     {
         var features = new List<Feature>();

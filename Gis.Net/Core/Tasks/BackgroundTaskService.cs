@@ -10,6 +10,9 @@ namespace Gis.Net.Core.Tasks;
 public abstract class BackgroundTaskService
 {
 
+    /// <summary>
+    /// Logger used for logging messages and errors in the BackgroundTaskService class.
+    /// </summary>
     protected readonly ILogger Logger;
 
     /// <summary>
@@ -22,6 +25,9 @@ public abstract class BackgroundTaskService
     /// </summary>
     protected void DisposeScope() => Scope.Dispose();
 
+    /// <summary>
+    /// Base abstract class for implementing task services.
+    /// </summary>
     protected BackgroundTaskService(
         ILogger logger,
         IServiceProvider serviceProvider
@@ -44,6 +50,14 @@ public abstract class BackgroundTaskService
         return null;
     }
 
+    /// <summary>
+    /// Waits for the completion of a task with a specified timeout and returns the result.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="task">The task to wait for.</param>
+    /// <param name="timeoutInSeconds">The timeout in seconds.</param>
+    /// <param name="taskName">The name of the task.</param>
+    /// <returns>The result of the task if it completes within the timeout; otherwise, <c>null</c>.</returns>
     protected TResult? JobAwaiter<TResult>(Task<TResult?> task, int timeoutInSeconds, string taskName)
         where TResult : class
     {
@@ -81,7 +95,15 @@ public abstract class BackgroundTaskService
 
         return result;
     }
-    
+
+    /// <summary>
+    /// Waits for the completion of a task and returns the result.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result. Must be a class.</typeparam>
+    /// <param name="task">The task to await.</param>
+    /// <param name="timeoutInSeconds">The timeout for waiting for the task completion, in seconds.</param>
+    /// <param name="taskName">The name of the task.</param>
+    /// <returns>The result of the task. Null if the task did not complete within the specified timeout.</returns>
     protected bool JobAwaiter(Task task, int timeoutInSeconds, string taskName)
     {
         
@@ -113,7 +135,15 @@ public abstract class BackgroundTaskService
 
         return false;
     }
-    
+
+    /// <summary>
+    /// Generic method for awaiting a task and returning its result.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the task result.</typeparam>
+    /// <param name="task">The task to wait for.</param>
+    /// <param name="timeoutInSeconds">The timeout duration in seconds.</param>
+    /// <param name="taskName">The name of the task.</param>
+    /// <returns>The result of the task if it completes within the timeout, otherwise null.</returns>
     protected int? JobAwaiter(Task<int> task, int timeoutInSeconds, string taskName)
     {
         int? result = null;
@@ -148,12 +178,21 @@ public abstract class BackgroundTaskService
         return result;
     }
 
+    /// <summary>
+    /// Logs the exceptions contained in the given AggregateException.
+    /// </summary>
+    /// <param name="e">The AggregateException containing the exceptions to be logged.</param>
     protected void LogExceptions(AggregateException e)
     {
         foreach (var item in e.InnerExceptions)
             LogException(item);
     }
 
+    /// <summary>
+    /// This method logs an exception, including any inner exceptions and specific information related to the exception.
+    /// </summary>
+    /// <param name="e">The exception to be logged.</param>
+    /// <param name="level">The level of indentation for the log message. Default is 0.</param>
     protected void LogException(Exception e, int level = 0)
     {
         while (true)

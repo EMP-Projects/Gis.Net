@@ -34,5 +34,10 @@ public interface IGisCoreRepository<TModel, TDto, TQuery, out TContext> :
     /// <returns>A task that represents the asynchronous operation, containing the found FeatureCollection.</returns>
     Task<FeatureCollection> Find(long id, GisOptionsGetRows<TModel, TDto, TQuery> options);
 
+    /// <summary>
+    /// Retrieves a collection of features based on the specified options.
+    /// </summary>
+    /// <param name="options">The options specifying the criteria for retrieving features.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the retrieved FeatureCollection.</returns>
     Task<List<IFeature>> GetFeatures(GisOptionsGetRows<TModel, TDto, TQuery> options);
 }

@@ -5,34 +5,57 @@ namespace Gis.Net.Vector.DTO;
 /// <inheritdoc />
 public abstract class GisVectorQuery : GisQuery
 {
+    /// <summary>
+    /// Represents a geometric filter used for GIS queries.
+    /// </summary>
     [FromQuery(Name = "geomFilter")] public string? GeomFilter { get; set; }
-    
+
+    /// <summary>
+    /// Represents the spatial reference code used for GIS data.
+    /// </summary>
     [FromQuery(Name = "srCode")]
     public int? SrCode { get; set; } = (int)ESrCode.WebMercator;
-    
+
     /// <summary>
-    /// Array di Id per filtrare i record dei vettori geografici direttamente con ID
+    /// Represents an array of property IDs used for GIS queries.
     /// </summary>
-    [FromQuery(Name = "ids")] 
+    [FromQuery(Name = "ids")]
     public long[]? Ids { get; set; }
-    
+
     /// <summary>
-    /// Id della proprietà per filtrare il record del vettore grafico 
+    /// Represents the property ID used for a GIS vector query.
     /// </summary>
     [FromQuery(Name = "propertyId")] 
     public long? PropertyId { get; set; }
-    
+
     /// <summary>
-    /// Array di Id delle proprietà per filtrare i record dei vettori geografici direttamente con ID
+    /// Represents a property filter used for GIS queries.
     /// </summary>
     [FromQuery(Name = "propertiesIds")] 
     public long[]? PropertyIds { get; set; }
-    
+
+    /// <summary>
+    /// Represents the distance for a GIS query.
+    /// </summary>
     [FromQuery(Name = "distance")] 
     public long? Distance { get; set; }
-    
+
+    /// <summary>
+    /// Gets a value indicating whether the GisVectorQuery object is valid.
+    /// </summary>
+    /// <remarks>
+    /// The GisVectorQuery object is considered valid if it meets the following conditions:
+    /// - The SrCode property is not null.
+    /// - Either the GisGeometry property is null or both the SrCode and GisGeometry properties are not null.
+    /// </remarks>
     public bool IsValid => this is { SrCode : not null, GisGeometry: null } || this is { SrCode : not null, GisGeometry: not null };
 
+    /// <summary>
+    /// Represents an error message related to the <see cref="GisNet.Vector.DTO.Error"/> property.
+    /// </summary>
+    /// <value>
+    /// The error message is a string that provides information about the error condition.
+    /// </value>
     public string? Error
     {
         get
@@ -51,6 +74,9 @@ public abstract class GisVectorQuery : GisQuery
         }
     }
 
+    /// <summary>
+    /// Represents a GIS geometry.
+    /// </summary>
     public GisGeometry? GisGeometry
     {
         get

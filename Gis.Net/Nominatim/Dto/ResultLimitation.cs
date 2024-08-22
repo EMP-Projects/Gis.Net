@@ -1,8 +1,6 @@
 namespace Gis.Net.Nominatim.Dto;
 
-/// <summary>
-/// 
-/// </summary>
+/// <inheritdoc />
 public class ResultLimitation : IResultLimitations
 {
     /// <summary>

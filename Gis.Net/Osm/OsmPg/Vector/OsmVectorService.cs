@@ -25,48 +25,55 @@ where T : DbContext
         _osmPgService = osmPgService;
         _mapper = mapper;
     }
-   
+
+
     /// <summary>
-    /// Crea la base dati 
+    /// Seeds geometries in the OsmVectorModel table based on the given bounding box and key.
     /// </summary>
-    /// <param name="bbox"></param>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <param name="bbox">The bounding box representing the area to seed geometries.</param>
+    /// <param name="key">The key to associate with the seeded geometries.</param>
+    /// <returns>The number of geometries inserted or 0 if no geometries were inserted.</returns>
     public async Task<int> SeedGeometries(Geometry bbox, string key)
     {
-        // leggo le features di Osm
+        // Awaiting for the GetFeatures method from the _osmPgService with the given Geometry object (bbox) as an argument.
         var featuresOsm = await _osmPgService.GetFeatures(bbox);
 
-        // leggo tutte le features presenti per controllare le feature già presenti nel database
-        var featuresDb = await FeatureCollection(new OsmVectorQuery
-        {
-            SrCode = 3857
-        });
+        // Awaiting for the FeatureCollection method with a new OsmVectorQuery created as an argument.
+        // The SrCode property of OsmVectorQuery is set to 3857.
+        var featuresDb = await FeatureCollection(new OsmVectorQuery { SrCode = 3857 });
 
+        // An exception is thrown when the featuresDb is null.
         if (featuresDb is null)
-            throw new ApplicationException("Non riesco a leggere le features dal database");
+            throw new ApplicationException("I can't read features from the database.");
 
+        // Initialization of the countInsert variable to 0. It's used to count the number of successful inserts.
         var countInsert = 0;
+
+        // For every feature in featuresOsm, do the following
         foreach (var feature in featuresOsm)
         {
-            // controllo se la feature è già presente nel database
+            // If there is any feature in featuresDb with exactly the same Geometry as the current feature, skip to the next feature.
             if (featuresDb.Any(f => f.Geometry.EqualsExact(feature.Geometry)))
                 continue;
 
-            // aggiungo la feature al database se la feature ha le proprietà di OSM
+            // Get all attribute names of the feature.
             var propertiesName = feature.Attributes.GetNames();
+            // If the feature doesn't have any attributes, skip to the next feature.
             if (propertiesName.Length == 0)
                 continue;
 
-            var propertiesFeatures = propertiesName.Contains("OSM") 
-                ? feature.Attributes.GetOptionalValue("OSM")
-                : null;
+            // Get the value of the "OSM" attribute from the feature if it exists.
+            // If it doesn't exist, set the propertiesFeatures variable to null.
+            var propertiesFeatures = propertiesName.Contains("OSM") ? feature.Attributes.GetOptionalValue("OSM") : null;
 
+            // If propertiesFeatures is null, skip to the next feature.
             if (propertiesFeatures is null)
                 continue;
-            
+
+            // Map the propertiesFeatures to an OsmPropertiesDto object using the _mapper.
             var properties = _mapper.Map<OsmPropertiesDto>(propertiesFeatures);
             
+            // Create a new OsmVectorDto object and set its properties.
             var osmVectorModel = new OsmVectorDto
             {
                 Guid = Guid.NewGuid(),
@@ -76,10 +83,14 @@ where T : DbContext
                 Key = key
             };
 
+            // Await on the Insert method with the new OsmVectorDto object as an argument.
             await Insert(osmVectorModel);
+            // Increment the countInsert variable, indicating a successful insertion.
             countInsert++;
         }
 
+        // If the countInsert variable is more than 0, await on the SaveContext method and return its result.
+        // Else, return the countInsert variable as is.
         return countInsert > 0 ? await SaveContext() : countInsert;
     }
 }

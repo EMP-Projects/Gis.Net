@@ -28,7 +28,6 @@ public class FileProcessingService : BackgroundService
         {
             await _signal.WaitAsync(stoppingToken);
             if (_fileTasks.TryDequeue(out var task))
-                // Execute the file processing task
                 await task.Process(task.FilePath, stoppingToken);
         }
     }

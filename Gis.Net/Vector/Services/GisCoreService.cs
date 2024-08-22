@@ -10,7 +10,15 @@ using NetTopologySuite.IO.Esri;
 
 namespace Gis.Net.Vector.Services;
 
-/// <inheritdoc cref="IGisCoreService{TModel,TDto,TQuery,TRequest,TContext}<TDto,TModel,TQuery>" />
+/// <summary>
+/// GisCoreService is an abstract class that provides core functionality for GIS services.
+/// It is responsible for handling CRUD operations and other common operations related to GIS.
+/// </summary>
+/// <typeparam name="TModel">The type of the model.</typeparam>
+/// <typeparam name="TDto">The type of the DTO.</typeparam>
+/// <typeparam name="TQuery">The type of the query.</typeparam>
+/// <typeparam name="TRequest">The type of the request.</typeparam>
+/// <typeparam name="TContext">The type of the context.</typeparam>
 public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>: 
     ServiceCore<TModel, TDto, TQuery, TRequest, TContext>, 
     IGisCoreService<TModel, TDto, TQuery, TRequest, TContext>
@@ -38,14 +46,21 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
         
         return Task.CompletedTask;
     }
-    
+
+    /// <summary>
+    /// Parses the query parameters for geometry filtering and returns the filtered collection of models.
+    /// </summary>
+    /// <param name="models">The collection of models to filter.</param>
+    /// <param name="queryByParams">The query parameters object.</param>
+    /// <returns>The filtered collection of models.</returns>
+    /// <exception cref="Exception">Thrown if the srCode parameter is not specified.</exception>
     protected virtual async Task<ICollection<TModel>> ParseQueryParamsGeometry(ICollection<TModel> models, TQuery? queryByParams)
     {
         if (queryByParams is null)
             return models;
         
         if (queryByParams.SrCode is null)
-            throw new Exception("E' necessario specificare almeno il parametro srCode");
+            throw new Exception("At least the srCode parameter must be specified");
         
         if (queryByParams.GisGeometry is not null)
             models = models.Where(x => queryByParams.GisGeometry & new GisGeometry(queryByParams.SrCode.Value, x.Geom)).ToList();
@@ -66,25 +81,23 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
     }
 
     /// <summary>
-    /// Permette di aggiungere un array di Id delle proprieta nella query
-    /// per selezionare solo le features con le proprietà contenute nell'array
+    /// Retrieves property IDs based on query parameters.
     /// </summary>
-    /// <param name="query"></param>
-    /// <returns></returns>
+    /// <param name="query">The query parameters.</param>
+    /// <returns>The property IDs matching the query parameters.</returns>
     protected virtual Task<long[]?> QueryParamsByProperties(TQuery query) => Task.FromResult<long[]?>(null);
-    
+
     /// <summary>
-    /// Ordina le fetaures in base ai criteri applicati ai parametri geografici della query
+    /// Sorts the query based on the provided parameters.
     /// </summary>
-    /// <param name="query"></param>
-    /// <param name="queryByParams"></param>
-    /// <returns></returns>
-    /// <exception cref="GisExceptions"></exception>
+    /// <param name="query">The query to be sorted.</param>
+    /// <param name="queryByParams">The query parameters to be used for sorting.</param>
+    /// <returns>The sorted query.</returns>
     protected virtual IQueryable<TModel> OnSortParams(IQueryable<TModel> query, TQuery? queryByParams)
     {
         if (queryByParams?.GisGeometry is null)
             return query;
-        
+
         if (queryByParams.GisGeometry.IsPoint)
             query = query.OrderBy(x => x.Geom.Distance(queryByParams.GisGeometry.Geom));
         else if (queryByParams.GisGeometry.IsLine)
@@ -95,11 +108,17 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
         return query;
 
     }
-    
-    /// <inheritdoc />
+
+    /// <summary>
+    /// Uploads a file and processes it.
+    /// </summary>
+    /// <param name="dto">The DTO object containing the file information.</param>
+    /// <param name="path">The directory path where the file will be saved.</param>
+    /// <returns>The processed DTO object.</returns>
+    /// <exception cref="Exception">Thrown if there is an error while processing the file.</exception>
     protected virtual async Task<TDto> UploadFile(TDto dto, string path)
     {
-        var filePath = dto.UrlFile is not null 
+        var filePath = dto.UrlFile is not null
             ? await GisFiles.UnzipShapeFileAndSave(dto.UrlFile!, path, true, dto.UploadBody)
             : await GisFiles.UnzipShapeFileAndSave(dto.File!, path, true);
 
@@ -115,7 +134,18 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
         return dto;
     }
 
-    protected virtual IQueryable<TModel> BeforeQuery(IQueryable<TModel> query) => query; 
+    /// <summary>
+    /// Allows modifying the query before executing it.
+    /// </summary>
+    /// <param name="query">The query to be modified.</param>
+    /// <returns>The modified query.</returns>
+    protected virtual IQueryable<TModel> BeforeQuery(IQueryable<TModel> query) => query;
+
+    /// <summary>
+    /// Sorts the query based on custom sorting logic.
+    /// </summary>
+    /// <param name="query">The query to be sorted.</param>
+    /// <returns>The sorted query.</returns>
     protected virtual IQueryable<TModel> SortQuery(IQueryable<TModel> query) => query; 
     
     /// <inheritdoc />
@@ -174,8 +204,16 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
     /// <inheritdoc />
     public virtual async Task AddModels(IEnumerable<TModel> models) => await GetRepository().GetDbContext().AddRangeAsync(models);
 
+    /// <summary>
+    /// The <see cref="NameProperties"/> property represents the name of the properties in the feature.
+    /// </summary>
     public virtual string? NameProperties { get; set; } = "data";
-    
+
+    /// <summary>
+    /// Uploads a file for the specified DTO.
+    /// </summary>
+    /// <param name="dto">The DTO containing the file to be uploaded.</param>
+    /// <returns>The uploaded model, or null if the upload fails.</returns>
     public virtual async Task<TModel?> Upload(TDto dto)
     {
         if (dto is null)

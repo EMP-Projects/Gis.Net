@@ -3,75 +3,61 @@ using NetTopologySuite.Geometries;
 namespace Gis.Net.Vector;
 
 /// <summary>
-/// classe per controllare ed eseguire operazioni spaziali con le geometrie
+/// Represents a GIS Geometry object.
 /// </summary>
 public class GisGeometry
 {
     /// <summary>
-    /// La geometria dell'elemento GIS. Può essere null.
+    /// The geometry of the GIS element. Can be null.
     /// </summary>
     public Geometry? Geom { get; set; }
-    
+
     /// <summary>
-    /// Distance tollerabile tra due punti
+    /// The distance associated with the GIS element.
     /// </summary>
     public double? Distance { get; set; }
-    
+
     /// <summary>
-    /// Sistema di riferimento obbligatorio
+    /// The spatial reference code (SRCode) of the GIS element.
     /// </summary>
     public int SrCode { get; set; }
-    
+
     /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con codice SR specificato.
+    /// Represents a GIS geometry object.
     /// </summary>
-    /// <param name="srCode">Sistema di riferimento</param>
     public GisGeometry()
     {
         SrCode = (int)ESrCode.Wgs84;
     }
 
     /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con codice SR specificato.
+    /// Represents a GIS geometry with associated spatial reference code (SR code).
     /// </summary>
-    /// <param name="srCode">Sistema di riferimento</param>
-    /// <param name="srCode"></param>
     public GisGeometry(int srCode)
     {
         SrCode = srCode;
     }
- 
+
     /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con una geometria specificata.
+    /// Class representing a GIS geometry.
     /// </summary>
-    /// <param name="geom">La geometria da assegnare all'elemento.</param>
-    /// <param name="srCode">Sistema di riferimento</param>
     public GisGeometry(int srCode, Geometry geom) : this(srCode)
     {
         Geom = geom;
     }
 
     /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con latitudine, longitudine, codice SR e buffer.
+    /// Represents a GIS geometry object.
     /// </summary>
-    /// <param name="lat">Latitudine del punto.</param>
-    /// <param name="lng">Longitudine del punto.</param>
-    /// <param name="srCode">Codice del sistema di riferimento spaziale.</param>
-    /// <param name="distance">Distanza di tolleranza dall'elemento.</param>
     public GisGeometry(int srCode, double lat, double lng, double distance) : this(srCode)
     {
         Distance = distance;
         Geom = GisUtility.CreatePoint(srCode, new Coordinate(lng, lat));
     }
-    
+
     /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con coordinate di bounding box, codice SR e buffer.
+    /// Represents a GIS geometry.
     /// </summary>
-    /// <param name="lngMin">Longitudine minima.</param>
-    /// <param name="latMin">Latitudine minima.</param>
-    /// <param name="lngMax">Longitudine massima.</param>
-    /// <param name="latMax">Latitudine massima.</param>
-    /// <param name="srCode">Codice del sistema di riferimento spaziale.</param>
     public GisGeometry(int srCode, double lngMin, double latMin, double lngMax, double latMax) : this(srCode)
     {
         Geom = GisUtility.CreateGeometryFromBBox(
@@ -82,32 +68,31 @@ public class GisGeometry
             latMax);
     }
 
-    /// <summary>
-    /// Costruttore che inizializza una nuova istanza di GisGeometry con una stringa JSON che rappresenta la geometria e un buffer.
-    /// </summary>
-    /// <param name="srCode"></param>
-    /// <param name="geoJson">Stringa JSON che rappresenta la geometria.</param>
+    /// The GisGeometry class represents a GIS geometry object.
+    /// /
     public GisGeometry(int srCode, string geoJson) : this(srCode)
     {
         Geom = GisUtility.CreateGeometryFromFilter(geoJson, null);
     }
 
     /// <summary>
-    /// Verifica se la geometria è una linea.
+    /// Gets a value indicating whether the geometry is a line or a multi-line.
     /// </summary>
-    /// <returns>True se la geometria è una linea, altrimenti false.</returns>
+    /// <value><c>true</c> if the geometry is a line or a multi-line; otherwise, <c>false</c>.</value>
     public bool IsLine => Geom is not null && (Geom.GeometryType.ToUpper().Equals(GisGeometries.LineString) ||
                                                Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiLineString) ||
                                                Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiCurve) ||
                                                Geom.GeometryType.ToUpper().Equals(GisGeometries.Curve) ||
                                                Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiLineStringZ) ||
                                                Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiCurveZ));
-        
+
     /// <summary>
-    /// Verifica se la geometria è un poligono.
+    /// Determines whether the geometry represents a polygon or not.
     /// </summary>
-    /// <returns>True se la geometria è un poligono, altrimenti false.</returns>
-    public bool IsPolygon => 
+    /// <value>
+    /// <c>true</c> if the geometry represents a polygon; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsPolygon =>
         Geom is not null && (Geom.GeometryType.ToUpper().Equals(GisGeometries.Polygon) ||
                              Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiPolygon) ||
                              Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiSurface) ||
@@ -116,20 +101,26 @@ public class GisGeometry
                              Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiSurfaceZ));
 
     /// <summary>
-    /// Verifica se la geometria è un punto.
+    /// Gets a value indicating whether the GisGeometry is a point.
     /// </summary>
-    /// <returns>True se la geometria è un punto, altrimenti false.</returns>
+    /// <remarks>
+    /// The GisGeometry is considered a point if the Geom property is not null and the GeometryType is "POINT",
+    /// "MULTIPOINT", or "MULTIPOINTZ".
+    /// </remarks>
+    /// <value>
+    /// <c>true</c> if the GisGeometry is a point; otherwise, <c>false</c>.
+    /// </value>
     public bool IsPoint => Geom is not null && (Geom.GeometryType.ToUpper().Equals(GisGeometries.Point) ||
                                                 Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiPoint) ||
                                                 Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiPointZ));
-    
+
     /// <summary>
     /// Esegue un confronto tra due geometrie per determinare se interagiscono in un certo modo (ad esempio, se si toccano, si intersecano, etc.).
     /// </summary>
     /// <param name="geom1">La prima geometria per il confronto.</param>
     /// <param name="geom2">La seconda geometria per il confronto.</param>
     /// <returns>True se le geometrie soddisfano la condizione di interazione specificata, altrimenti false.</returns>
-    public static bool operator& (GisGeometry geom1, GisGeometry geom2)
+    public static bool operator &(GisGeometry geom1, GisGeometry geom2)
     {
         if (geom1.IsPoint)
         {
@@ -177,18 +168,18 @@ public class GisGeometry
                 return geom2 is { IsPolygon: true, Geom: not null } && geom2.Geom.Intersects(geom1.Geom);
         }
     }
-    
+
     /// <summary>
-    /// Calcola la differenza tra due geometrie, restituendo una nuova geometria che rappresenta la parte geometrica che si interseca con il primo operatore, oppure null.
+    /// Calculates the difference between two geometries, returning a new geometry that represents the intersecting part with the first operand, or null.
     /// </summary>
-    /// <param name="geom1">La prima geometria per il calcolo della differenza.</param>
-    /// <param name="geom2">La seconda geometria per il calcolo della differenza.</param>
-    /// <returns>Una nuova geometria che rappresenta la parte di intersezione, oppure null se non c'è intersezione.</returns>
-    public static GisGeometry? operator- (GisGeometry geom1, GisGeometry geom2)
+    /// <param name="geom1">The first geometry for the difference calculation.</param>
+    /// <param name="geom2">The second geometry for the difference calculation.</param>
+    /// <returns>A new geometry that represents the intersection part, or null if there is no intersection.</returns>
+    public static GisGeometry? operator -(GisGeometry geom1, GisGeometry geom2)
     {
         if (geom1.IsPoint)
         {
-            // nel confronto di punti verificare che la distanza sia minore del buffer
+            // when comparing points, check that the distance is less than the buffer
             if (geom2.IsPoint)
                 return geom2.Geom is not null && geom2.Geom?.Distance(geom1.Geom) <= geom1.Distance
                     ? geom2
@@ -196,8 +187,7 @@ public class GisGeometry
 
             switch (geom2)
             {
-                // nel caso in cui la geomeria del modello è una linea,
-                // è valida solo se si tocca con il punto di ricerca
+                // in case the model geometry is a line, it is valid only if it touches the search point
                 case { IsLine: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
                     return geom2;
                 // se la geometria del modello è un poligono è valida solo se il punto di ricerca

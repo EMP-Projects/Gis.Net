@@ -12,6 +12,7 @@ using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Raster;
 
+/// <inheritdoc />
 public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TPropertiesModel, TPropertiesDto> : 
     GisCoreRepository<TModel, TDto, TQuery, TContext>,
     IGisRasterCoreRepository<TModel, TDto, TPropertiesModel, TPropertiesDto>
@@ -47,7 +48,6 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
     /// <returns>
     /// A task that represents the asynchronous insert operation. The task result contains the inserted model object if successful, or null if not.
     /// </returns>
-    /// <exception cref="GisExceptions">Throws a GisExceptions if there is an error during the insert operation.</exception>
     public virtual async Task<int> InsertRaw(TDto dto, string path)
     {
         try
@@ -150,9 +150,15 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
             return await Task.FromResult<List<TModel>?>(null);
         }
     }
-    
+
+    /// <summary>
+    /// Abstract class representing a repository for managing raster data in a GIS system.
+    /// </summary>
     protected abstract string Table { get; set; }
-    
+
+    /// <summary>
+    /// Represents a base repository for GIS raster data.
+    /// </summary>
     protected abstract string Schema { get; set; }
     
     private async Task<TModel?> ConvertRasterToPolygon(long id) 
@@ -165,6 +171,12 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
         return await GetDbContext().Set<TModel>().FromSqlRaw(sql).AsNoTracking().FirstOrDefaultAsync();
     }
 
+    /// <summary>
+    /// Selects raster data based on a model and a geometry for comparison.
+    /// </summary>
+    /// <param name="model">The model representing the raster data.</param>
+    /// <param name="geomByParams">The geometry to compare with the raster data.</param>
+    /// <returns>Returns a boolean value representing whether there is a match or not.</returns>
     public async Task<bool> WhereRaster(TModel model, GisGeometry geomByParams)
     {
         if (geomByParams.Geom is null)
@@ -181,7 +193,13 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
         
         return false;
     }
-    
+
+    /// <summary>
+    /// Creates a <see cref="Feature"/> object with geometry from the provided <paramref name="dto"/> and <paramref name="options"/>.
+    /// </summary>
+    /// <param name="dto">The DTO object containing the required information.</param>
+    /// <param name="options">The options for creating the feature.</param>
+    /// <returns>A <see cref="Feature"/> object with the created geometry.</returns>
     protected override async Task<Feature> CreateGeometry(TDto dto, GisOptionsGetRows<TModel, TDto, TQuery> options) 
     {
         var geom = (await ConvertRasterToPolygon(dto.Id))?.Geom;

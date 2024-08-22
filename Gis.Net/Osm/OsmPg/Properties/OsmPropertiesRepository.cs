@@ -17,7 +17,8 @@ where T : DbContext, IOsmDbContext
         base(logger, context, mapper)
     {
     }
-    
+
+    /// <inheritdoc />
     protected override IQueryable<OsmPropertiesModel> ParseQueryParams(IQueryable<OsmPropertiesModel> query, OsmPropertiesQuery? queryByParams)
     {
         if (queryByParams?.Name != null)

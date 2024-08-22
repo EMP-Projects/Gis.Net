@@ -2,6 +2,7 @@ using Gis.Net.Vector;
 
 namespace Gis.Net.Osm.Overpass;
 
+/// <inheritdoc />
 public class OverPassDelegate : GisDelegate
 {
     /// <summary>

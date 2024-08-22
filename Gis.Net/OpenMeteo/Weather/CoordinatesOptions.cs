@@ -1,5 +1,6 @@
 namespace Gis.Net.OpenMeteo.Weather;
 
+/// <inheritdoc />
 public class CoordinatesOptions : ICoordinatesOptions
 {
     /// <inheritdoc />

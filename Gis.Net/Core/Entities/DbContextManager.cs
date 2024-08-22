@@ -3,8 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Gis.Net.Core.Entities;
 
+/// <summary>
+/// Provides methods for managing the configuration and initialization of DbContext instances.
+/// </summary>
 public static class DbContextManager
 {
+    /// <summary>
+    /// Check the validity of the connection string and prints it if in development mode.
+    /// </summary>
+    /// <param name="connection">The connection string to be checked</param>
+    /// <param name="isDev">Indicates whether the application is in development mode</param>
     private static void CheckConnectionString(string connection, bool isDev = false)
     {
         if (string.IsNullOrEmpty(connection))
@@ -14,6 +22,14 @@ public static class DbContextManager
             Console.WriteLine($"ConnectionString is:\r\n{connection}");
     }
 
+    /// <summary>
+    /// Adds PostgreSQL database context to the IServiceCollection using the specified connection.
+    /// </summary>
+    /// <typeparam name="TContext">The type of the DbContext.</typeparam>
+    /// <param name="services">The IServiceCollection instance.</param>
+    /// <param name="connection">The PostgreSQL connection configuration.</param>
+    /// <param name="isDev">A flag indicating if the application is running in development mode. Default is false.</param>
+    /// <exception cref="Exception">Thrown when the connection string is empty.</exception>
     public static void AddPostGres<TContext>(
         this IServiceCollection services,
         ConnectionPgSql connection,
@@ -27,17 +43,14 @@ public static class DbContextManager
     }
 
     /// <summary>
-    /// Crea un contesto per PostGis
+    /// Adds a PostgreSQL database with PostGIS support to the IServiceCollection.
     /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    /// <param name="services"></param>
-    /// <param name="connection"></param>
-    /// <param name="project">
-    /// GisDbContext si riferisce all'assembry di netcorefw, bisogna specificare il progetto per la classe parziale compilata.
-    /// Per il Gis la classe parziale GisDbContext è già definita nel netcorefw, ogni progetto che eventualmente estende la classe
-    /// deve specificare l'assembly di riferimento
-    /// </param>
-    /// <param name="isDev"></param>
+    /// <typeparam name="TContext">The type of the DbContext to be added.</typeparam>
+    /// <param name="services">The IServiceCollection to add the DbContext to.</param>
+    /// <param name="connection">The PostgreSQL connection configuration.</param>
+    /// <param name="project">The name of the project.</param>
+    /// <param name="isDev">Indicates whether the application is running in development mode.</param>
+    /// <exception cref="System.Exception">Thrown when the connection string is empty.</exception>
     public static void AddPostGis<TContext>(
         this IServiceCollection services,
         ConnectionPgSql connection,
@@ -57,9 +70,11 @@ public static class DbContextManager
     }
 
     /// <summary>
-    /// Apply migrations to db context
+    /// Runs the database migrations for the specified DbContext.
     /// </summary>
-    /// <param name="dbContext"></param>
+    /// <typeparam name="T">The type of DbContext.</typeparam>
+    /// <param name="dbContext">The instance of the DbContext.</param>
+    /// <returns>The instance of the DbContext after the migrations have been run.</returns>
     public static async Task<T> RunMigrations<T>(this T dbContext) where T : DbContext
     {
         await dbContext.Database.MigrateAsync(cancellationToken: default);

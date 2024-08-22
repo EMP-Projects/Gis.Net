@@ -4,8 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gis.Net.Osm.OsmPg;
 
+/// <summary>
+/// The OsmDbManager class provides configuration for the OSM database using Entity Framework Core.
+/// </summary>
 public static class OsmDbManager
 {
+    /// <summary>
+    /// Configures the OpenStreet Map database in the DbContext ModelBuilder.
+    /// </summary>
+    /// <param name="modelBuilder">The ModelBuilder instance.</param>
+    /// <returns>The updated ModelBuilder instance.</returns>
     public static ModelBuilder OsmDbConfig(this ModelBuilder modelBuilder)
     {
         modelBuilder.AddExtensionPostGis();

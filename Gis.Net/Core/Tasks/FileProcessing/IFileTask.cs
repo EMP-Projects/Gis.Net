@@ -11,7 +11,7 @@ public interface IFileTask
     /// <value>
     /// The file path.
     /// </value>
-    string FilePath { get; set; }
+    string? FilePath { get; set; }
     
     /// <summary>
     /// Gets or sets the delegate that defines the process to be performed on the file.
@@ -19,5 +19,5 @@ public interface IFileTask
     /// <value>
     /// The function that takes a file path and a cancellation token and returns a Task.
     /// </value>
-    Func<string, CancellationToken, Task> Process { get; set; } 
+    Func<string, CancellationToken, Task>? Process { get; set; } 
 }

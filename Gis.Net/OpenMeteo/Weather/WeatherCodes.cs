@@ -1,12 +1,13 @@
 namespace Gis.Net.OpenMeteo.Weather;
 
 /// <summary>
-/// 
+/// Get Description WMO Weather interpretation codes (WW).
 /// </summary>
+/// <returns>The description of the weather code.</returns>
 public static class WeatherCodes
 {
     /// <summary>
-    /// WMO Weather interpretation codes (WW)
+    /// A dictionary mapping WMO weather interpretation codes to their descriptions.
     /// </summary>
     private static Dictionary<List<int>, string>? WmoCodes { get; set; } = new () {
         { new List<int> { 0 }, "Clear sky" },
@@ -27,8 +28,8 @@ public static class WeatherCodes
     /// <summary>
     /// Get Description WMO Weather interpretation codes (WW)
     /// </summary>
-    /// <param name="code"></param>
-    /// <returns></returns>
+    /// <param name="code">The weather code.</param>
+    /// <returns>The description of the weather code, or "Unknown" if the code is not found.</returns>
     public static string GetWmo(int code)
     {
         var wmo = WmoCodes?.FirstOrDefault(x => x.Key.Contains(code));

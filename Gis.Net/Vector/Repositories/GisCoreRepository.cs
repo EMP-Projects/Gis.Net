@@ -9,6 +9,7 @@ using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Vector.Repositories;
 
+/// <inheritdoc />
 public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> : 
     RepositoryCore<TModel, TDto, TQuery, TContext>,
     IGisCoreRepository<TModel, TDto, TQuery, TContext>
@@ -23,10 +24,23 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
     {
         
     }
-    
+
+    /// <summary>
+    /// Creates a geometry feature for the given DTO and options.
+    /// </summary>
+    /// <param name="dto">The DTO containing the geometry information.</param>
+    /// <param name="options">The options for creating the geometry feature.</param>
+    /// <returns>The created geometry feature.</returns>
     protected virtual async Task<Feature> CreateGeometry(TDto dto, GisOptionsGetRows<TModel, TDto, TQuery> options)
         =>  await CreateFeatureFromGeometry(dto, dto.Geom!, options);
-    
+
+    /// <summary>
+    /// Creates a feature from a geometry.
+    /// </summary>
+    /// <param name="dto">The DTO object containing the geometry information.</param>
+    /// <param name="geom">The geometry object.</param>
+    /// <param name="options">The options for creating the feature.</param>
+    /// <returns>The created feature.</returns>
     protected virtual async Task<Feature> CreateFeatureFromGeometry(TDto dto, Geometry geom, GisOptionsGetRows<TModel, TDto, TQuery> options)
     {
         if (options.QueryParams?.SrCode is null)
@@ -41,6 +55,12 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
         return await Task.FromResult(feature);
     }
 
+    /// <summary>
+    /// Parses the query parameters and applies them to the IQueryable query.
+    /// </summary>
+    /// <param name="query">The original IQueryable query.</param>
+    /// <param name="queryByParams">The query parameters to apply.</param>
+    /// <returns>The modified IQueryable query with the applied query parameters.</returns>
     protected override IQueryable<TModel> ParseQueryParams(IQueryable<TModel> query, TQuery? queryByParams)
     {
         if (queryByParams?.Ids is not null)
@@ -55,8 +75,6 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
         var features = await GetFeatures(options);
         return GisUtility.CreateFeatureCollection(features!);
     }
-
-    Task<List<IFeature>> IGisCoreRepository<TModel, TDto, TQuery, TContext>.GetFeatures(GisOptionsGetRows<TModel, TDto, TQuery> options) => GetFeatures(options);
 
     /// <inheritdoc />
     public virtual async Task<FeatureCollection> Find(long id, GisOptionsGetRows<TModel, TDto, TQuery> options)
@@ -97,7 +115,8 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
         return feature;
     }
 
-    protected virtual async Task<List<IFeature>> GetFeatures(GisOptionsGetRows<TModel, TDto, TQuery> options)
+    /// <inheritdoc />
+    public virtual async Task<List<IFeature>> GetFeatures(GisOptionsGetRows<TModel, TDto, TQuery> options)
     {
         // return collection Dto
         var collection = await base.GetRows(options);

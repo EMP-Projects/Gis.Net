@@ -10,7 +10,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Controllers;
 
-/// <inheritdoc />
+/// <summary>
+/// Abstract base class for read-only controllers that implement the IReadOnlyController interface.
+/// </summary>
+/// <typeparam name="TModel">The type of the model.</typeparam>
+/// <typeparam name="TDto">The type of the DTO.</typeparam>
+/// <typeparam name="TQuery">The type of the query parameters.</typeparam>
+/// <typeparam name="TRequest">The type of the request.</typeparam>
+/// <typeparam name="TContext">The type of the database context.</typeparam>
 public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TContext> : 
     RootControllerBase,
     IReadOnlyController<TQuery>
@@ -21,6 +28,14 @@ public abstract class RootReadOnlyController<TModel, TDto, TQuery, TRequest, TCo
     where TContext : DbContext
 {
 
+    /// <summary>
+    /// Base class for all controllers that provide read-only operations on a service.
+    /// </summary>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TDto">The type of the DTO.</typeparam>
+    /// <typeparam name="TQuery">The type of the query.</typeparam>
+    /// <typeparam name="TRequest">The type of the request.</typeparam>
+    /// <typeparam name="TContext">The type of the database context.</typeparam>
     protected readonly IServiceCore<TModel, TDto, TQuery, TRequest, TContext> ServiceCore;
     
     /// <inheritdoc />

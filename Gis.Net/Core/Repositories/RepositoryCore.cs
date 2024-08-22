@@ -58,7 +58,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
             query = query.Where(x => x.Id == queryByParams.Id);
         
         if (queryByParams?.Key is not null)
-            query = query.Where(x => x.Key == queryByParams.Key);
+            query = query.Where(x => x.EntityKey == queryByParams.Key);
         
         if (queryByParams?.Search is not null)
             query = query.Where(x => x.SearchText != null && x.SearchText.Matches(queryByParams.Search));

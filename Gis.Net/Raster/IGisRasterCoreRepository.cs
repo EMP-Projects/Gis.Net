@@ -26,7 +26,12 @@ public interface IGisRasterCoreRepository<TModel, in TDto, TPropertiesModel, TPr
     /// <param name="path">The file path to the binary file containing the raw raster data.</param>
     /// <returns>A task that represents the asynchronous insert operation, containing the inserted raster model or null if the operation fails.</returns>
     Task<int> InsertRaw(TDto dto, string path);
-    
+
+    /// <summary>
+    /// Asynchronously uploads raster data using the specified options.
+    /// </summary>
+    /// <param name="options">The options for uploading the raster data.</param>
+    /// <returns>A task that represents the asynchronous upload operation, containing the URL of the uploaded raster data.</returns>
     Task<string> UploadRaster(IRasterUploadDto options);
 
     /// <summary>

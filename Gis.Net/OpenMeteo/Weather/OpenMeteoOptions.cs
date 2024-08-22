@@ -1,6 +1,6 @@
 namespace Gis.Net.OpenMeteo.Weather;
 
-/// <inheritdoc />
+/// <inheritdoc cref="Gis.Net.OpenMeteo.Weather.IOpenMeteoOptions" />
 public class OpenMeteoOptions : CoordinatesOptions, IOpenMeteoOptions
 {
     /// <inheritdoc />

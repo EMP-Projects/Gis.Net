@@ -4,14 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gis.Net.Core.Tasks;
 
 /// <summary>
-/// Classe di estensione per IServiceCollection per registrare DbMigrationsTask come HostedService.
+/// Extension class for configuring database migrations.
 /// </summary>
 public static class DbMigrationsTaskExtension
 {
     /// <summary>
-    /// Estende IServiceCollection per aggiungere DbMigrationsTask come servizio ospitato.
+    /// Provides an extension method to add database migrations to the service collection.
     /// </summary>
-    /// <param name="services">La collezione di servizi a cui aggiungere il task di migrazione del database.</param>
+    /// <typeparam name="T">The type of the DbContext.</typeparam>
+    /// <param name="services">The service collection.</param>
     public static void WithDbMigrations<T>(this IServiceCollection services) where T : DbContext
     {
         services.AddHostedService<DbMigrationsTask<T>>();

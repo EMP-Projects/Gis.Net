@@ -13,14 +13,17 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
 {
     private readonly TContext _context;
 
+    /// <summary>
+    /// Represents a class that provides operations for retrieving OpenStreetMap (OSM) entities and generating feature collections using the Osm2Pgsql database context.
+    /// </summary>
+    /// <typeparam name="TGeom">The type of OSM entity, must implement both IOsmPgGenericModel and IOsmPgGeometryModel.</typeparam>
+    /// <typeparam name="TContext">The type of Osm2Pgsql database context.</typeparam>
     public OsmPg(TContext context) => _context = context;
 
     /// <summary>
     /// Asynchronously retrieves a collection of OSM entities based on provided criteria.
     /// </summary>
     /// <param name="options"></param>
-    /// <param name="key"></param>
-    /// <param name="values"></param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of OSM entities.</returns>
     private async Task<IEnumerable<TGeom>> GetOsmEntities(OsmOptions<TGeom>? options)
     {
@@ -29,8 +32,7 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
 
         if (entities == null)
             return [];
-
-        // query spaziale sulla geometria
+        
         if (options?.Geom is not null)
             entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(options.Geom));
         
@@ -38,9 +40,14 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
         
         return options?.OnAfterQuery?.Invoke(query, options.Tags) ?? query;
     }
-
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// GetFeatures method retrieves OpenStreetMap (OSM) entities and generates a list of features.
+    /// </summary>
+    /// <typeparam name="TGeom">The type of OSM entity, must implement both IOsmPgGenericModel and IOsmPgGeometryModel.</typeparam>
+    /// <typeparam name="TContext">The type of Osm2Pgsql database context.</typeparam>
+    /// <param name="options">Options for querying OSM entities and generating features.</param>
+    /// <returns>A list of features that represent the retrieved OSM entities.</returns>
     public async Task<List<Feature>> GetFeatures(OsmOptions<TGeom>? options)
     {
         if (options?.Error is not null)
@@ -50,7 +57,6 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
         
         var features = entities.Select(entry =>
         {
-            // options.SrCode qui ha sempre un valore
             var feature = GisUtility.CreateEmptyFeature(3857, entry.Way!);
             feature.Attributes.Add("OSM", new OsmProperties
             {

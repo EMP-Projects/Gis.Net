@@ -69,6 +69,12 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     /// <returns>A task that represents the asynchronous operation. The task result contains the number of state entries written to the database.</returns>
     Task<int> SaveContext(TModel model, ECrudActions crudAction);
 
+    /// <summary>
+    /// Saves the changes made to the context.
+    /// </summary>
+    /// <param name="model">The model to be saved.</param>
+    /// <param name="crudAction">The CRUD action performed on the model.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result indicates the number of state entries written to the database.</returns>
     Task<int> SaveContext();
     
     /// <summary>
@@ -93,5 +99,11 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     /// <returns>The repository instance.</returns>
     IRepositoryCore<TModel, TDto, TQuery, TContext> GetRepository();
 
+    /// <summary>
+    /// Validates the given request based on the specified CRUD action.
+    /// </summary>
+    /// <param name="request">The request to be validated.</param>
+    /// <param name="crudAction">The CRUD action to be performed.</param>
+    /// <returns>A task that represents the asynchronous validation operation.</returns>
     Task ValidateRequest(TRequest request, ECrudActions crudAction);
 }

@@ -4,20 +4,18 @@ using NetTopologySuite.Geometries;
 namespace Gis.Net.Vector.DTO;
 
 /// <summary>
-/// Interfaccia che definisce le proprietà base per un Data Transfer Object (DTO) GIS.
+/// Represents the base interface for GIS Data Transfer Objects (DTOs).
 /// </summary>
 public interface IGisDto : IDtoBase
 {
+
     /// <summary>
-    /// Identificativo univoco globale (GUID) dell'oggetto.
+    /// Represents a globally unique identifier (GUID).
     /// </summary>
     Guid Guid { get; set; }
-    
+
     /// <summary>
-    /// Gets or sets the geometry associated with the GIS vector data.
+    /// Represents a GIS Data Transfer Object (DTO) with geometry information.
     /// </summary>
-    /// <value>
-    /// The geometry of the GIS vector data. It can hold a variety of geometric shapes like points, lines, and polygons.
-    /// </value>
     Geometry? Geom { get; set; }
 }
