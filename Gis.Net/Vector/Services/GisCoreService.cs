@@ -38,7 +38,7 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
     /// <inheritdoc />
     public override Task Validate(TDto dto, ECrudActions crudEnum)
     {
-        if (dto.Key is null)
+        if (dto.EntityKey is null)
             throw new Exception("E' necessario specificare almeno il parametro [Key]");
         
         if (dto.Geom is null)

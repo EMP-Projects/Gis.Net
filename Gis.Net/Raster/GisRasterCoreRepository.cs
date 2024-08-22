@@ -55,7 +55,7 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
             var ts = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
             // Constructs the SQL insert statement using parameters from the DTO and the given file path.
             var sql = $"INSERT INTO {Schema}.{Table} (guid, \"key\", \"timestamp\", rast) " +
-                           $"VALUES ('{dto.Guid}', '{dto.Key}', '{ts}', " +
+                           $"VALUES ('{dto.Guid}', '{dto.EntityKey}', '{ts}', " +
                            $"ST_FromGDALRaster(pg_read_binary_file('{path}')))";
 
             return await GetDbContext().Database.ExecuteSqlRawAsync(sql);

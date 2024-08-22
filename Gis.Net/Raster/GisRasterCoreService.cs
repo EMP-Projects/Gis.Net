@@ -81,7 +81,7 @@ public abstract class GisRasterCoreService<TModel, TDto, TQuery, TRequest, TCont
     private static TDto CreateDtoFromRasterFile(string rasterFile, string subDir) => new()
     {
         Guid = Guid.NewGuid(),
-        Key = subDir,
+        EntityKey = subDir,
         PathFileRaster = $"/var/lib/postgresql/uploads/{subDir}/{Path.GetFileName(rasterFile)}",
         TimeStamp = DateTime.UtcNow
     };

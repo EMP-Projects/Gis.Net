@@ -80,7 +80,7 @@ where T : DbContext
                 TimeStamp = DateTime.UtcNow,
                 Geom = feature.Geometry,
                 Properties = properties,
-                Key = key
+                EntityKey = key
             };
 
             // Await on the Insert method with the new OsmVectorDto object as an argument.
