@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Serialization;
 using Gis.Net.Core;
 using Gis.Net.Vector.DTO;
@@ -585,7 +586,7 @@ public static class GisUtility
     /// <returns>The raw content of the specified GeoJSON file.</returns>
     private static string GetRawGeoJson(string geoJsonFile)
     {
-        var path = Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GeoJson"));
+        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GeoJson");
         return GetRawContent(geoJsonFile, path);
     }
 
@@ -600,7 +601,6 @@ public static class GisUtility
     private static string GetRawContent(string fileName, string path)
     {
         var pathDir = Path.Combine(path, fileName);
-        Console.WriteLine($"GeoJson path -> {pathDir}");
         return File.ReadAllText(pathDir);
     }
 
@@ -611,8 +611,11 @@ public static class GisUtility
     /// <returns>The feature collection parsed from the GeoJSON file.</returns>
     public static FeatureCollection? GetFeatureCollectionByGeoJson(string geoJsonFileName)
     {
-        var geoJson = AdjustSingleQuote(GetRawGeoJson(geoJsonFileName));
-        return NetCore.DeserializeString<FeatureCollection>(geoJson);
+        // var geoJson = AdjustSingleQuote(GetRawGeoJson(geoJsonFileName));
+        var pathGeoJson = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GeoJson");
+        var fileGeoJson = Path.Combine(pathGeoJson, geoJsonFileName);
+        using var streamGeoJson = File.OpenRead(fileGeoJson);
+        return JsonSerializer.Deserialize<FeatureCollection>(streamGeoJson);
     }
 
     /// <summary>

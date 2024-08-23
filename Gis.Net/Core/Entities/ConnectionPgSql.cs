@@ -54,15 +54,14 @@ public class ConnectionPgSql : IConnectionInterface
             Port ??= "5432";
             ReadBufferSize ??= 8192;
             WriteBufferSize ??= 8192;
-            TimeoutInMs ??= 20000;
+            TimeoutInMs ??= 120000;
 
             const string cnn =
                 "Host={0};Database={1};Username={2};Password={3};Port={4};" +
                 "CommandTimeout={5};Include Error Detail=true;" +
                 "Read Buffer Size={6};Write Buffer Size={7}";
 
-            return string.Format(cnn, Host, Name, User, Password, Port, TimeoutInMs, ReadBufferSize,
-                WriteBufferSize);
+            return string.Format(cnn, Host, Name, User, Password, Port, TimeoutInMs, ReadBufferSize, WriteBufferSize);
         }
     }
 
@@ -86,6 +85,9 @@ public class ConnectionPgSql : IConnectionInterface
     /// </remarks>
     public long? WriteBufferSize { get; set; }
 
+    /// <summary>
+    /// Represents a PostgreSQL connection configuration.
+    /// </summary>
     public ConnectionPgSql(string host, string port, string name, string user, string password)
     {
         Host = host;

@@ -81,9 +81,9 @@ public partial class NotificationService : BackgroundService
                 // To prevent the flow from blocking, I make sure to trap any errors to avoid blocking the API
                 try
                 {
-                    LogMessage($"pronto per eseguire l'handler {handler.Name}");
+                    LogMessage($"ready to run the handler {handler.Name}");
                     await handler.HandleNotificationsAsync();
-                    LogMessage($"handler {handler.Name} concluso con successo");
+                    LogMessage($"handler {handler.Name} concluded successfully");
                     // if periodic task, I modify the next run time otherwise, I mark it as executed to be ignored in subsequent rounds
                     if (handler.Period != null)
                     {
