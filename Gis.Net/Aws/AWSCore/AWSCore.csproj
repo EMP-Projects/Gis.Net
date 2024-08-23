@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>TeamSviluppo.AWSCore</Title>
+        <Authors>Hextra srl - Giuseppe Zileni</Authors>
+        <Description>Libreria per la gestione di AWS</Description>
+        <Copyright>Hextra srl</Copyright>
+        <Version>8.1.5</Version>
+        <PackageIcon>logo.jpg</PackageIcon>
+        <RepositoryUrl>https://github.com/team-sviluppo/AWSCoreNet</RepositoryUrl>
+        <PackageProjectUrl>http://www.hextra.it</PackageProjectUrl>
+        <UserSecretsId>9f1e1cb4-1149-4625-8d87-3265dcc4bc14</UserSecretsId>
+        <AssemblyName>TeamSviluppo.AWSCore</AssemblyName>
+        <RootNamespace>TeamSviluppo.AWSCore</RootNamespace>
+        <PackageId>TeamSviluppo.AWSCore</PackageId>
+        <Product>TeamSviluppo.AWSCore</Product>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <Optimize>true</Optimize>
+      <DebugSymbols>true</DebugSymbols>
+      <DocumentationFile>bin\Debug\net7.0\AWSCore.xml</DocumentationFile>
+      <DefineConstants>TRACE;AWSS3;AWSSNS;AWSTIMESTREAM;AWSCOGNITO</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net7.0\AWSCore.xml</DocumentationFile>
+      <DefineConstants>TRACE;AWSS3;AWSSNS;AWSTIMESTREAM;AWSCOGNITO</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="3.0.2" />
+      <PackageReference Include="Amazon.CDK.AWS.Cognito" Version="1.204.0" />
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="AWSSDK.Athena" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.CognitoSync" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.Core" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
+      <PackageReference Include="AWSSDK.S3" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.TimestreamQuery" Version="3.7.400.3" />
+      <PackageReference Include="AWSSDK.TimestreamWrite" Version="3.7.400.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+      <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0" />
+      <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Logging" Version="8.0.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.0.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.0.1" />
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.1" />
+      <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="logo.ico">
+          <Pack>True</Pack>
+        </None>
+
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="logo.jpg">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+
+
+
+</Project>
