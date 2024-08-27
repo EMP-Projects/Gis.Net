@@ -3,7 +3,7 @@ namespace Gis.Net.Istat;
 /// <summary>
 /// Represents a province with its limits and associated properties.
 /// </summary>
-public interface ILimitsProvince : ILimitsRegion
+public interface ILimitsProvince : ILimitsModelBase
 {
     /// <summary>
     /// Gets or sets the name of the province.

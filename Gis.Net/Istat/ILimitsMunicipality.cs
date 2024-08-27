@@ -5,7 +5,7 @@ namespace Gis.Net.Istat;
 /// <summary>
 /// Represents a municipality with its limits and associated properties.
 /// </summary>
-public interface ILimitsMunicipality : ILimitsProvince
+public interface ILimitsMunicipality: ILimitsModelBase
 {
     /// <summary>
     /// Gets or sets the name of the municipality.

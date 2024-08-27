@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Istat.Models;
 
 /// <inheritdoc />
 [Table("limits_it_region")]
-public partial class LimitsItRegion : ILimitsRegion
+[Index(nameof(RegName))]
+public class LimitsItRegion : ILimitsRegion
 {
     /// <inheritdoc />
-    [Column("ogc_fid")]
+    [Column("ogc_fid"), Key]
     public int OgcFid { get; set; }
 
     /// <inheritdoc />

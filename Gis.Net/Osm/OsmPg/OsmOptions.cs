@@ -55,6 +55,8 @@ public class OsmOptions<T> where T : class, IOsmPgGeometryModel
     /// </summary>
     /// <typeparam name="T">The type of the OSM geometry model.</typeparam>
     public required Geometry? Geom { get; set; }
+    
+    public int Distance { get; set; }
 
     /// <summary>
     /// Represents an error message related to the <see cref="OsmOptions{T}"/> class.

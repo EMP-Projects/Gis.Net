@@ -30,6 +30,7 @@ public partial class IstatContext : DbContext, IStatDbContext
             .HasPostgresExtension("tiger", "postgis_tiger_geocoder")
             .HasPostgresExtension("topology", "postgis_topology");
 
+        
         modelBuilder.Entity<LimitsItMunicipality>(entity =>
         {
             entity.HasKey(e => e.OgcFid).HasName("limits_it_municipalities_pkey");
