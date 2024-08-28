@@ -38,7 +38,7 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
         
         var query = await entities.ToListAsync();
         
-        return options?.OnAfterQuery?.Invoke(query, options.Tags) ?? query;
+        return options?.OnAfterQuery?.Invoke(query, options.Tags ?? []) ?? query;
     }
     
     /// <summary>

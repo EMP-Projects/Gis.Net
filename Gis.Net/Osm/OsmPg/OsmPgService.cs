@@ -81,19 +81,19 @@ public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2
 
         var optionsLines = OsmOptionsLines(geom);
         if (optionsLines is not null)
-            features.AddRange(await _lines.GetFeatures(OsmOptionsLines(geom)));
+            features.AddRange(await _lines.GetFeatures(optionsLines));
 
         var optionsPolygons = OsmOptionsPolygon(geom);
         if (optionsPolygons is not null)
-            features.AddRange(await _polygons.GetFeatures(OsmOptionsPolygon(geom)));
+            features.AddRange(await _polygons.GetFeatures(optionsPolygons));
         
         var optionsPoints = OsmOptionsPoint(geom);
         if (optionsPoints is not null)
-            features.AddRange(await _points.GetFeatures(OsmOptionsPoint(geom)));
+            features.AddRange(await _points.GetFeatures(optionsPoints));
         
         var optionsRoads = OsmOptionsRoads(geom);
         if (optionsRoads is not null)
-            features.AddRange(await _roads.GetFeatures(OsmOptionsRoads(geom)));
+            features.AddRange(await _roads.GetFeatures(optionsRoads));
         
         var featuresCollection = GisUtility.CreateFeatureCollection(features.ToArray());
         featuresCollection.BoundingBox = CalculateBoundingBox(features);
