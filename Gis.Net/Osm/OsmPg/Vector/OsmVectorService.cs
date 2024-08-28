@@ -32,8 +32,9 @@ where T : DbContext
     /// </summary>
     /// <param name="bbox">The bounding box representing the area to seed geometries.</param>
     /// <param name="key">The key to associate with the seeded geometries.</param>
+    /// <param name="distance"></param>
     /// <returns>The number of geometries inserted or 0 if no geometries were inserted.</returns>
-    public async Task<int> SeedGeometries(Geometry bbox, string key, int distance = 100)
+    public async Task<int> SeedGeometries(Geometry bbox, string key)
     {
         // Awaiting for the GetFeatures method from the _osmPgService with the given Geometry object (bbox) as an argument.
         var featuresOsm = await _osmPgService.GetFeatures(bbox);

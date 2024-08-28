@@ -28,35 +28,53 @@ public class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2PgsqlDbCo
     /// </summary>
     /// <param name="geom">The geometry used for querying.</param>
     /// <returns>The OsmOptions<PlanetOsmLine> for the query.</PlanetOsmLine></returns>
-    protected override OsmOptions<PlanetOsmLine>? OsmOptionsLines(Geometry geom, int distance = 100) => null;
+    protected override OsmOptions<PlanetOsmLine> OsmOptionsLines(Geometry geom) => new()
+    {
+        Type = "lines",
+        Geom = geom,
+        SrCode = 3857,
+        DistanceMt = 100
+    };
 
     /// <summary>
     /// Get the options for querying polygon features.
     /// </summary>
     /// <param name="geom">The geometry used for querying.</param>
     /// <returns>The options for querying polygon features.</returns>
-    protected override OsmOptions<PlanetOsmPolygon>? OsmOptionsPolygon(Geometry geom, int distance = 100) => null;
+    protected override OsmOptions<PlanetOsmPolygon> OsmOptionsPolygon(Geometry geom) => new()
+    {
+        Type = "polygons",
+        Geom = geom,
+        SrCode = 3857,
+        DistanceMt = 100
+    };
 
     /// <summary>
     /// Determines the OSM options for querying point features based on the given geometry.
     /// </summary>
     /// <param name="geom">The geometry to query.</param>
     /// <returns>The OSM options for querying point features.</returns>
-    protected override OsmOptions<PlanetOsmPoint>? OsmOptionsPoint(Geometry geom, int distance = 100) => null;
+    protected override OsmOptions<PlanetOsmPoint> OsmOptionsPoint(Geometry geom) => new()
+    {
+        Type = "points",
+        Geom = geom,
+        SrCode = 3857,
+        DistanceMt = 100
+    };
 
     /// <summary>
     /// Retrieves OSM features of roads based on the specified geometry.
     /// </summary>
     /// <param name="geom">The geometry to filter the roads.</param>
     /// <returns>A <see cref="OsmOptions{PlanetOsmRoads}"/> instance containing the options for querying OSM road features.</returns>
-    protected override OsmOptions<PlanetOsmRoads> OsmOptionsRoads(Geometry geom, int distance = 100) => new()
+    protected override OsmOptions<PlanetOsmRoads> OsmOptionsRoads(Geometry geom) => new()
     {
         Type = "roads",
         Geom = geom,
         SrCode = 3857,
-        DistanceMt = distance,
-        OnBeforeQuery = query => query.Where(x => x.Highway != null),
-        Tags = OsmTag.Items(EOsmTag.Highway),
-        OnAfterQuery = (query, tags ) => query.Where(x => tags.Contains(x.Highway))
+        DistanceMt = 100
+        // OnBeforeQuery = query => query.Where(x => x.Highway != null),
+        // Tags = OsmTag.Items(EOsmTag.Highway),
+        // OnAfterQuery = (query, tags ) => query.Where(x => tags.Contains(x.Highway))
     };
 }

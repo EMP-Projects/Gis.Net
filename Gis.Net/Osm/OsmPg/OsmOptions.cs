@@ -19,7 +19,7 @@ public class OsmOptions<T> where T : class, IOsmPgGeometryModel
     /// Represents the options for querying OSM entities.
     /// </summary>
     /// <typeparam name="T">The type of OSM geometry model.</typeparam>
-    public required string[] Tags { get; set; }
+    public string[]? Tags { get; set; }
 
     /// <summary>
     /// Represents an event that is triggered before executing the query.
@@ -56,8 +56,6 @@ public class OsmOptions<T> where T : class, IOsmPgGeometryModel
     /// <typeparam name="T">The type of the OSM geometry model.</typeparam>
     public required Geometry? Geom { get; set; }
     
-    public int Distance { get; set; }
-
     /// <summary>
     /// Represents an error message related to the <see cref="OsmOptions{T}"/> class.
     /// </summary>
@@ -65,8 +63,6 @@ public class OsmOptions<T> where T : class, IOsmPgGeometryModel
     {
         get
         {
-            if (Tags.Length == 0)
-                return "Tags is required";
             if (DistanceMt == null)
                 return "DistanceMt is required";
             if (SrCode == null)

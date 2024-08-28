@@ -12,5 +12,5 @@ public interface IOsmPgService
     /// </summary>
     /// <param name="geom"></param>
     /// <param name="distance"></param>
-    Task<FeatureCollection> GetFeatures(Geometry geom, int distance = 100);
+    Task<FeatureCollection> GetFeatures(Geometry geom);
 }
