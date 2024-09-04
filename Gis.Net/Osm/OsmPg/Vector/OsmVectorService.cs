@@ -65,7 +65,7 @@ where T : DbContext
 
             // Get the value of the "OSM" attribute from the feature if it exists.
             // If it doesn't exist, set the propertiesFeatures variable to null.
-            var propertiesFeatures = propertiesName.Contains("OSM") ? feature.Attributes.GetOptionalValue("OSM") : null;
+            var propertiesFeatures = propertiesName.Contains("OSM") ? (OsmProperties)feature.Attributes.GetOptionalValue("OSM") : null;
 
             // If propertiesFeatures is null, skip to the next feature.
             if (propertiesFeatures is null)

@@ -25,5 +25,5 @@ public delegate IQueryable<T> QueryDelegate<T>(IQueryable<T> query)
 /// The EnumerableDelegate is used to apply additional filtering or transformations to the query before it is executed.
 /// It is typically used in conjunction with the <see cref="OsmOptions{T}"/> class to customize the behavior of the query.
 /// </remarks>
-public delegate IEnumerable<T> EnumerableDelegate<T>(IEnumerable<T> query, string[] tags) 
+public delegate List<T> EnumerableDelegate<T>(IEnumerable<T> query, string[] tags) 
     where T : class, IOsmPgGeometryModel;
