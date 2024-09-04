@@ -1,4 +1,3 @@
-using Gis.Net.Osm.OsmPg;
 using Gis.Net.Osm.OsmPg.Models;
 using Gis.Net.Vector;
 using Microsoft.EntityFrameworkCore;
@@ -25,20 +24,35 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
     /// </summary>
     /// <param name="options"></param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of OSM entities.</returns>
-    private async Task<IEnumerable<TGeom>> GetOsmEntities(OsmOptions<TGeom>? options)
+    private async Task<IEnumerable<TGeom>?> GetOsmEntities(OsmOptions<TGeom>? options)
     {
         var entities = _context.Set<TGeom>().AsNoTracking();
-        entities = options?.OnBeforeQuery?.Invoke(entities);
+        if (options?.OnBeforeQuery is not null)
+            entities = options.OnBeforeQuery.Invoke(entities);
 
-        if (entities == null)
-            return [];
-        
         if (options?.Geom is not null)
-            entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(options.Geom));
-        
+        {
+            if (GisGeometries.IsPoint(options.Geom))
+            {
+                var d  = options.DistanceMt is not null ? options.DistanceMt.Value / 10000 : 0.0001;
+                entities = entities.Where(entry => entry.Way != null && entry.Way.IsWithinDistance(options.Geom, d));
+            } else if (GisGeometries.IsLineString(options.Geom))
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Touches(options.Geom));
+            else if (GisGeometries.IsPolygon(options.Geom))
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(options.Geom));
+            else
+            {
+                var geom = GisGeometries.NormalizeGeometry(options.Geom);
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(geom));
+            }
+        }
+
         var query = await entities.ToListAsync();
         
-        return options?.OnAfterQuery?.Invoke(query, options.Tags ?? []) ?? query;
+        if (options?.OnAfterQuery is not null)
+            query = options.OnAfterQuery?.Invoke(query, options.Tags ?? []);
+        
+        return query;
     }
     
     /// <summary>
@@ -48,14 +62,14 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
     /// <typeparam name="TContext">The type of Osm2Pgsql database context.</typeparam>
     /// <param name="options">Options for querying OSM entities and generating features.</param>
     /// <returns>A list of features that represent the retrieved OSM entities.</returns>
-    public async Task<List<Feature>> GetFeatures(OsmOptions<TGeom>? options)
+    public async Task<List<Feature>?> GetFeatures(OsmOptions<TGeom>? options)
     {
         if (options?.Error is not null)
             throw new Exception(options.Error);
 
         var entities = await GetOsmEntities(options);
         
-        var features = entities.Select(entry =>
+        var features = entities?.Select(entry =>
         {
             var feature = GisUtility.CreateEmptyFeature(3857, entry.Way!);
             feature.Attributes.Add("OSM", new OsmProperties

@@ -8,5 +8,9 @@ namespace Gis.Net.Osm.OsmPg.Properties;
 /// </summary>
 public class OsmPropertiesMapper : AbstractMapperProfile<OsmPropertiesModel, OsmPropertiesDto, OsmPropertiesRequest>
 {
-   
+    /// <inheritdoc />
+    public OsmPropertiesMapper()
+    {
+        CreateMap<OsmProperties, OsmPropertiesDto>();
+    }
 }

@@ -1,3 +1,4 @@
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Vector;
@@ -28,7 +29,7 @@ public class GisOptions
     /// <returns>A task that represents the asynchronous operation.</returns>
     /// <remarks>
     /// This delegate is used in the <see cref="GisOptions"/> class to specify a method that will be called when a feature is created.
-    /// The method must accept a <see cref="Feature"/> parameter and return a <see cref="Task"/> representing the asynchronous operation.
+    /// The method must accept a <see cref="NetTopologySuite.Features.Feature"/> parameter and return a <see cref="Task"/> representing the asynchronous operation.
     /// The implementation of the method can modify the feature as needed.
     /// </remarks>
     public GisDelegate.CreatedFromDelegate? OnCreatedFeature { get; set; }

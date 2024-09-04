@@ -7,20 +7,17 @@ using NetTopologySuite.Geometries;
 namespace Gis.Net.Osm.OsmPg;
 
 /// <inheritdoc />
-public class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2PgsqlDbContext
+public abstract class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2PgsqlDbContext
 {
     
-    private readonly IConfiguration _configuration;
-    
     /// <inheritdoc />
-    public OsmService(
+    protected OsmService(
         IOsmPg<PlanetOsmLine, T> lines, 
         IOsmPg<PlanetOsmPolygon, T> polygons, 
         IOsmPg<PlanetOsmPoint, T> points, 
-        IOsmPg<PlanetOsmRoads, T> roads, 
-        IConfiguration configuration) : base(lines, polygons, points, roads)
+        IOsmPg<PlanetOsmRoads, T> roads) : base(lines, polygons, points, roads)
     {
-        _configuration = configuration;
+        
     }
 
     /// <summary>
@@ -73,8 +70,5 @@ public class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2PgsqlDbCo
         Geom = geom,
         SrCode = 3857,
         DistanceMt = 100
-        // OnBeforeQuery = query => query.Where(x => x.Highway != null),
-        // Tags = OsmTag.Items(EOsmTag.Highway),
-        // OnAfterQuery = (query, tags ) => query.Where(x => tags.Contains(x.Highway))
     };
 }

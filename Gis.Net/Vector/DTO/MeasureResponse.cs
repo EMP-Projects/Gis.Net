@@ -22,7 +22,6 @@ public class MeasureResponse
     /// <summary>
     /// Converts a length value from geometric units to meters.
     /// </summary>
-    /// <param name="length">The length value in geometric units.</param>
     /// <returns>The length value in meters.</returns>
     [JsonPropertyName("lenght")]
     public double? Lenght  = 0;

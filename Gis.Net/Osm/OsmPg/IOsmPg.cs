@@ -18,5 +18,5 @@ public interface IOsmPg<TGeom, TContext>
     /// Asynchronously generates a feature collection based on provided criteria.
     /// </summary>
     /// <param name="options"></param>
-    Task<List<Feature>> GetFeatures(OsmOptions<TGeom>? options);
+    Task<List<Feature>?> GetFeatures(OsmOptions<TGeom>? options);
 }

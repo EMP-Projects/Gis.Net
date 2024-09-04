@@ -32,7 +32,6 @@ where T : DbContext
     /// </summary>
     /// <param name="bbox">The bounding box representing the area to seed geometries.</param>
     /// <param name="key">The key to associate with the seeded geometries.</param>
-    /// <param name="distance"></param>
     /// <returns>The number of geometries inserted or 0 if no geometries were inserted.</returns>
     public async Task<int> SeedGeometries(Geometry bbox, string key)
     {
@@ -65,7 +64,7 @@ where T : DbContext
 
             // Get the value of the "OSM" attribute from the feature if it exists.
             // If it doesn't exist, set the propertiesFeatures variable to null.
-            var propertiesFeatures = propertiesName.Contains("OSM") ? feature.Attributes.GetOptionalValue("OSM") : null;
+            var propertiesFeatures = propertiesName.Contains("OSM") ? (OsmProperties)feature.Attributes.GetOptionalValue("OSM") : null;
 
             // If propertiesFeatures is null, skip to the next feature.
             if (propertiesFeatures is null)
