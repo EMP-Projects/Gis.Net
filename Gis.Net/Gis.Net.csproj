@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>8.3.0</Version>
+        <Version>8.3.1</Version>
         <Authors>Giuseppe Zileni &lt;gzileni@hotmail.com&gt;</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Description>Libreria .Net per applicazioni Gis</Description>
@@ -12,6 +12,7 @@
         <PackageProjectUrl>https://github.com/EMP-Projects/Gis.Net</PackageProjectUrl>
         <RepositoryUrl>https://github.com/EMP-Projects/Gis.Net</RepositoryUrl>
         <PackageTags>.net gis</PackageTags>
+        <Title>Gis.Net</Title>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
