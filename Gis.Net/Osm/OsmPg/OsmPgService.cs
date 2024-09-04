@@ -80,21 +80,33 @@ public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2
         var features = new List<Feature>();
 
         var optionsLines = OsmOptionsLines(geom);
-        if (optionsLines is not null)
-            features.AddRange(await _lines.GetFeatures(optionsLines));
+        if (optionsLines is not null && optionsLines.Tags?.Length > 0)
+        {
+            var lines = await _lines.GetFeatures(optionsLines);
+            if (lines is not null) features.AddRange(lines);
+        }
 
         var optionsPolygons = OsmOptionsPolygon(geom);
-        if (optionsPolygons is not null)
-            features.AddRange(await _polygons.GetFeatures(optionsPolygons));
-        
+        if (optionsPolygons is not null && optionsPolygons.Tags?.Length > 0)
+        {
+            var polygons = await _polygons.GetFeatures(optionsPolygons);
+            if (polygons is not null) features.AddRange(polygons);
+        }
+
         var optionsPoints = OsmOptionsPoint(geom);
-        if (optionsPoints is not null)
-            features.AddRange(await _points.GetFeatures(optionsPoints));
-        
+        if (optionsPoints is not null && optionsPoints.Tags?.Length > 0)
+        {
+            var points = await _points.GetFeatures(optionsPoints);
+            if (points is not null) features.AddRange(points);
+        }
+
         var optionsRoads = OsmOptionsRoads(geom);
-        if (optionsRoads is not null)
-            features.AddRange(await _roads.GetFeatures(optionsRoads));
-        
+        if (optionsRoads is not null && optionsRoads.Tags?.Length > 0)
+        {
+            var roads = await _roads.GetFeatures(optionsRoads);
+            if (roads is not null) features.AddRange(roads);
+        }
+
         var featuresCollection = GisUtility.CreateFeatureCollection(features.ToArray());
         featuresCollection.BoundingBox = CalculateBoundingBox(features);
         return featuresCollection;

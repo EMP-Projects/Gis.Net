@@ -71,7 +71,7 @@ public static class OsmPgManager
         services.AddControllersToFeatureCollection();
 
         services.AddScoped(typeof(IOsmPg<,>), typeof(OsmPg<,>));
-        services.AddScoped<IOsmPgService, OsmService<TContextOsm>>();
+        // services.AddScoped<IOsmPgService, OsmService<TContextOsm>>();
         services.AddScoped<OsmPropertiesRepository<TContextDb>>();
         services.AddScoped<OsmPropertiesService<TContextDb>>();
         services.AddScoped<OsmVectorRepository<TContextDb>>();
