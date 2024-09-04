@@ -31,7 +31,21 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
             entities = options.OnBeforeQuery.Invoke(entities);
 
         if (options?.Geom is not null)
-            entities = entities.Where(entry => entry.Way != null && GisGeometries.CompareGeometries(entry.Way, options.Geom, options.DistanceMt));
+        {
+            if (GisGeometries.IsPoint(options.Geom))
+            {
+                var d  = options.DistanceMt is not null ? options.DistanceMt.Value / 10000 : 0.0001;
+                entities = entities.Where(entry => entry.Way != null && entry.Way.IsWithinDistance(options.Geom, d));
+            } else if (GisGeometries.IsLineString(options.Geom))
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Touches(options.Geom));
+            else if (GisGeometries.IsPolygon(options.Geom))
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(options.Geom));
+            else
+            {
+                var geom = GisGeometries.NormalizeGeometry(options.Geom);
+                entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(geom));
+            }
+        }
 
         var query = await entities.ToListAsync();
         

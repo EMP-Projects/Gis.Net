@@ -10,7 +10,6 @@ public interface IOverPassModel<T> where T : class
     /// <summary>
     /// Represents the collection of tags associated with an Overpass model.
     /// </summary>
-    /// <typeparam name="T">The type of the tags.</typeparam>
     ICollection<T>? Tags { get; set; }
 
     /// <summary>

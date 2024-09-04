@@ -65,7 +65,7 @@
       <PackageReference Include="Microsoft.OpenApi" Version="1.6.17" />
       <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
       <PackageReference Include="NetTopologySuite" Version="2.5.0" />
-      <PackageReference Include="NetTopologySuite.Features" Version="2.1.0" />
+      <PackageReference Include="NetTopologySuite.Features" Version="2.2.0" />
       <PackageReference Include="NetTopologySuite.IO.Esri.Shapefile" Version="1.1.0" />
       <PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="4.0.0" />
       <PackageReference Include="NetTopologySuite.IO.GPX" Version="1.1.1" />
