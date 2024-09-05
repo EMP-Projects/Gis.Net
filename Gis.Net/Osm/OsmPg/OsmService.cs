@@ -30,7 +30,8 @@ public abstract class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2
         Type = "lines",
         Geom = geom,
         SrCode = 3857,
-        DistanceMt = 100
+        DistanceMt = 100,
+        Tags = []
     };
 
     /// <summary>
@@ -43,7 +44,8 @@ public abstract class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2
         Type = "polygons",
         Geom = geom,
         SrCode = 3857,
-        DistanceMt = 100
+        DistanceMt = 100,
+        Tags = []
     };
 
     /// <summary>
@@ -56,7 +58,8 @@ public abstract class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2
         Type = "points",
         Geom = geom,
         SrCode = 3857,
-        DistanceMt = 100
+        DistanceMt = 100,
+        Tags = []
     };
 
     /// <summary>
@@ -69,6 +72,7 @@ public abstract class OsmService<T> : OsmPgService<T> where T : DbContext, IOsm2
         Type = "roads",
         Geom = geom,
         SrCode = 3857,
-        DistanceMt = 100
+        DistanceMt = 100,
+        Tags = []
     };
 }

@@ -8,11 +8,11 @@ public class OsmPropertiesRequest : RequestBase, IOsmProperties
 {
     /// <inheritdoc />
     [JsonPropertyName("type")]
-    public required string Type { get; set; }
+    public required string? Type { get; set; }
 
     /// <inheritdoc />
     [JsonPropertyName("tags")]
-    public required string[] Tags { get; set; }
+    public required string[]? Tags { get; set; }
 
     /// <inheritdoc />
     [JsonPropertyName("name")]

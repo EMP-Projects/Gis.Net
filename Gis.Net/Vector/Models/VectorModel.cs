@@ -23,6 +23,6 @@ public class VectorModel : ModelBase, IVectorModel
     /// <remarks>
     /// This property stores the geometry information associated with a VectorModel.
     /// </remarks>
-    [Column("geom", TypeName = "geography")] 
+    [Column("geom")] 
     public required Geometry Geom { get; set; }
 }

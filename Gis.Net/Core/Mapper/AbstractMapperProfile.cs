@@ -58,7 +58,7 @@ public abstract class AbstractMapperProfile<TModel, TDto, TRequest> : Profile
         DtoToModelMapper = CreateMap<TDto, TModel>();
         RequestToDtoMapper = CreateMap<TRequest, TDto>();
 
-        DtoToModelMapper.ForAllMembers(o => o.Condition((source, target, sourceMbr, targetMbr) => targetMbr is not null));
+        //DtoToModelMapper.ForAllMembers(o => o.Condition((source, target, sourceMbr, targetMbr) => targetMbr is not null));
         RequestToDtoMapper.ForAllMembers(o => o.Condition((source, target, sourceMbr, targetMbr) => targetMbr is not null));
     }
 }

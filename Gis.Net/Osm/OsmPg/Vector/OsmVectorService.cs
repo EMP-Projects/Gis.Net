@@ -26,7 +26,6 @@ where T : DbContext
         _mapper = mapper;
     }
 
-
     /// <summary>
     /// Seeds geometries in the OsmVectorModel table based on the given bounding box and key.
     /// </summary>
@@ -72,6 +71,11 @@ where T : DbContext
 
             // Map the propertiesFeatures to an OsmPropertiesDto object using the _mapper.
             var properties = _mapper.Map<OsmPropertiesDto>(propertiesFeatures);
+
+            if (properties.Tags?.Length <= 0) continue;
+            
+            properties.EntityKey = key;
+            properties.TimeStamp = DateTime.UtcNow;
             
             // Create a new OsmVectorDto object and set its properties.
             var osmVectorModel = new OsmVectorDto

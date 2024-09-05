@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Gis.Net.Core.Entities;
 
@@ -10,14 +11,14 @@ namespace Gis.Net.Osm.OsmPg.Properties;
 public class OsmPropertiesModel : ModelBase, IOsmProperties
 {
     /// <inheritdoc />
-    [Column("type")]
-    public required string Type { get; set; }
+    [Column("type"), MaxLength(100)]
+    public string? Type { get; set; }
 
     /// <inheritdoc />
     [Column("tags")]
-    public required string[] Tags { get; set; }
+    public string[]? Tags { get; set; }
 
     /// <inheritdoc />
-    [Column("name")]
+    [Column("name"), MaxLength(500)]
     public string? Name { get; set; }
 }

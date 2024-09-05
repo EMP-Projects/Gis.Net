@@ -8,11 +8,11 @@ public interface IOsmProperties
     /// <summary>
     /// Represents the properties of an OpenStreetMap entity.
     /// </summary>
-    string Type { get; set; }
+    string? Type { get; set; }
     /// <summary>
     /// Represents the properties of an OpenStreetMap entity.
     /// </summary>
-    string[] Tags { get; set; }
+    string[]? Tags { get; set; }
     /// <summary>
     /// Gets or sets the name of the OpenStreetMap entity.
     /// </summary>
