@@ -48,7 +48,7 @@ public class GisQuery : QueryBase, IGisQuery, IGisRequest
     /// Represents a GIS query with specific parameters.
     /// </summary>
     [FromQuery(Name = "srCode")]
-    public int? SrCode { get; set; }
+    public int? SrCode { get; set; } = (int)ESrCode.WebMercator;
 
     /// <summary>
     /// Gets or sets the buffer value.

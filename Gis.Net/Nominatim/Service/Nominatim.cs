@@ -16,6 +16,10 @@ public abstract class Nominatim<T>: INominatim<T> where T : class
     /// </summary>
     protected readonly HttpClient HttpClient;
     
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Nominatim{T}"/> class with the specified HttpClient.
+    /// </summary>
+    /// <param name="httpClient">The HttpClient used for making HTTP requests.</param>
     protected Nominatim(HttpClient httpClient)
     {
         HttpClient = httpClient;
@@ -39,7 +43,6 @@ public abstract class Nominatim<T>: INominatim<T> where T : class
     /// <summary>
     /// Deserialize the provided XML string into an instance of type T.
     /// </summary>
-    /// <typeparam name="T">The type to deserialize.</typeparam>
     /// <param name="xml">The XML string to deserialize.</param>
     /// <returns>The deserialized instance of type T.</returns>
     private static T? DeSerializeToXml(string xml)
@@ -78,12 +81,6 @@ public abstract class Nominatim<T>: INominatim<T> where T : class
         return serializer.Deserialize<NominatimResponse[]>(jsonReader);
     }
 
-    /// <summary>
-    /// Returns a query string from a list of strings.
-    /// Each element in the list is concatenated with & character, and the resulting string is prefixed with "?".
-    /// </summary>
-    /// <param name="query">The list of strings to be concatenated.</param>
-    /// <returns>The query string generated from the list.</returns>
     private static string GetQueryFromList(IEnumerable<string> query)
     {
         var result = "?";

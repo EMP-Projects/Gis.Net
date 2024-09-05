@@ -60,7 +60,7 @@ public interface ILimitsMunicipality: ILimitsModelBase
     /// <summary>
     /// Gets or sets the geometry of the municipality in Well-Known Binary (WKB) format.
     /// </summary>
-    new MultiPolygon? WkbGeometry { get; set; }
+    MultiPolygon? WkbGeometry { get; set; }
     
     /// <summary>
     /// Gets or sets the operational domain identifier of the municipality.

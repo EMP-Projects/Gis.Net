@@ -13,42 +13,49 @@ public class GisGeometry
     public Geometry? Geom { get; set; }
 
     /// <summary>
-    /// The distance associated with the GIS element.
+    /// The distance in meters associated with the GIS element.
     /// </summary>
-    public double? Distance { get; set; }
+    public double? Distance { get; set; } = 100;
 
     /// <summary>
     /// The spatial reference code (SRCode) of the GIS element.
     /// </summary>
     public int SrCode { get; set; }
-
+    
     /// <summary>
-    /// Represents a GIS geometry object.
+    /// Initializes a new instance of the <see cref="GisGeometry"/> class with the default spatial reference code (WebMercator).
     /// </summary>
     public GisGeometry()
     {
-        SrCode = (int)ESrCode.Wgs84;
+        SrCode = (int)ESrCode.WebMercator;
     }
 
     /// <summary>
-    /// Represents a GIS geometry with associated spatial reference code (SR code).
+    /// Initializes a new instance of the <see cref="GisGeometry"/> class with the specified spatial reference code (SR code).
     /// </summary>
+    /// <param name="srCode">The spatial reference code (SR code) of the GIS element.</param>
     public GisGeometry(int srCode)
     {
         SrCode = srCode;
     }
 
     /// <summary>
-    /// Class representing a GIS geometry.
+    /// Initializes a new instance of the <see cref="GisGeometry"/> class with the specified spatial reference code (SR code) and geometry.
     /// </summary>
+    /// <param name="srCode">The spatial reference code (SR code) of the GIS element.</param>
+    /// <param name="geom">The geometry of the GIS element.</param>
     public GisGeometry(int srCode, Geometry geom) : this(srCode)
     {
         Geom = geom;
     }
-
+    
     /// <summary>
-    /// Represents a GIS geometry object.
+    /// Initializes a new instance of the <see cref="GisGeometry"/> class with the specified spatial reference code (SR code), latitude, longitude, and distance.
     /// </summary>
+    /// <param name="srCode">The spatial reference code (SR code) of the GIS element.</param>
+    /// <param name="lat">The latitude of the GIS element.</param>
+    /// <param name="lng">The longitude of the GIS element.</param>
+    /// <param name="distance">The distance in meters associated with the GIS element.</param>
     public GisGeometry(int srCode, double lat, double lng, double distance) : this(srCode)
     {
         Distance = distance;
@@ -115,25 +122,25 @@ public class GisGeometry
                                                 Geom.GeometryType.ToUpper().Equals(GisGeometries.MultiPointZ));
 
     /// <summary>
-    /// Esegue un confronto tra due geometrie per determinare se interagiscono in un certo modo (ad esempio, se si toccano, si intersecano, etc.).
+    /// Performs a comparison between two geometries to determine if they interact in a certain way (for example, if they touch each other, intersect, etc.).
     /// </summary>
-    /// <param name="geom1">La prima geometria per il confronto.</param>
-    /// <param name="geom2">La seconda geometria per il confronto.</param>
-    /// <returns>True se le geometrie soddisfano la condizione di interazione specificata, altrimenti false.</returns>
+    /// <param name="geom1">The first geometry for comparison.</param>
+    /// <param name="geom2">The second geometry for comparison.</param>
+    /// <returns>True if the geometries satisfy the specified interaction condition, otherwise false.</returns>
     public static bool operator &(GisGeometry geom1, GisGeometry geom2)
     {
         if (geom1.IsPoint)
         {
             switch (geom2)
             {
-                // nel confronto di punti verificare che la distanza sia minore del buffer
+                // when comparing points, check that the distance is less than the buffer
                 case { IsPoint: true, Geom: not null } when geom1.Distance is not null:
                     return geom2.Geom.Distance(geom1.Geom) <= geom1.Distance.Value;
-                // nel caso in cui la geometria del modello è una linea,
-                // è valida solo se si tocca con il punto di ricerca
+                // in case the model geometry is a line,
+                // is only valid if touched with the search point
                 case { IsLine: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
-                // se la geometria del modello è un poligono è valida solo se il punto di ricerca
-                // cade all'interno della geometria o si toccano
+                // if the model geometry is a polygon it is valid only if the search point
+                // falls inside the geometry or touches each other
                 case { IsPolygon: true, Geom: not null } when geom2.Geom.Within(geom1.Geom) || geom2.Geom.Touches(geom1.Geom):
                     return true;
             }
@@ -143,12 +150,12 @@ public class GisGeometry
         {
             switch (geom2)
             {
-                // la geometria è valida solo se si tocca con il punto di ricerca
+                // geometry is only valid if touched with the search point
                 case { IsPoint: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
-                // se il confronto è tra due linee devono almeno toccarsi
+                // if the comparison is between two lines they must at least touch each other
                 case { IsLine: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
-                // se ci sono punti in comune con il poligono di ricerca restituisce
-                // solo la parte geometrica che si interseca
+                // if there are points in common with the search polygon returns
+                // only the geometric part that intersects
                 case { IsPolygon: true, Geom: not null } when geom2.Geom.Crosses(geom1.Geom):
                     return true;
             }
@@ -158,13 +165,13 @@ public class GisGeometry
 
         switch (geom2)
         {
-            // se il confronto è con un punto geometrico devono almeno toccarsi o deve essere contenuto nel poligono
+            // if the comparison is with a geometric point they must at least touch each other or it must be contained in the polygon
             case { IsPoint: true, Geom: not null } when (geom2.Geom.Within(geom1.Geom) || geom2.Geom.Touches(geom1.Geom)):
-            // nel caso di confronto tra poligono e linea devono almeno incrociarsi
+            // in the case of comparison between polygon and line they must at least intersect
             case { IsLine: true, Geom: not null } when geom2.Geom.Crosses(geom1.Geom):
                 return true;
             default:
-                // nel caso di confronto di due poligono devono almeno intersecarsi
+                // in the case of comparison of two polygons they must at least intersect
                 return geom2 is { IsPolygon: true, Geom: not null } && geom2.Geom.Intersects(geom1.Geom);
         }
     }
@@ -190,8 +197,8 @@ public class GisGeometry
                 // in case the model geometry is a line, it is valid only if it touches the search point
                 case { IsLine: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
                     return geom2;
-                // se la geometria del modello è un poligono è valida solo se il punto di ricerca
-                // cade all'interno della geometria o si toccano
+                // if the model geometry is a polygon it is valid only if the search point
+                // falls inside the geometry or touches each other
                 case { IsPolygon: true, Geom: not null } when geom2.Geom.Within(geom1.Geom) || geom2.Geom.Touches(geom1.Geom):
                     return geom2;
             }
@@ -201,16 +208,16 @@ public class GisGeometry
         {
             switch (geom2)
             {
-                // la geometria è valida solo se si tocca con il punto di ricerca
+                // geometry is only valid if touched with the search point
                 case { IsPoint: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
                     return geom2;
-                // se il confronto è tra due linee devono almeno toccarsi
+                // if the comparison is between two lines they must at least touch each other
                 case { IsLine: true, Geom: not null } when geom2.Geom.Touches(geom1.Geom):
                     return geom2;
             }
 
-            // se ci sono punti in comune con il poligono di ricerca restituisce
-            // solo la parte geometrica che si interseca
+            // if there are points in common with the search polygon returns
+            // only the geometric part that intersects
             if (geom2.IsPolygon && geom1.Geom is not null && geom2.Geom!.Crosses(geom1.Geom))
                 return new GisGeometry(geom1.SrCode, geom1.Geom.Intersection(geom2.Geom)!);
         }
@@ -219,11 +226,11 @@ public class GisGeometry
 
         return geom2 switch
         {
-            // se il confronto è con un punto geometrico devono almeno toccarsi o deve essere contenuto nel poligono
+            // if the comparison is with a geometric point they must at least touch each other or it must be contained in the polygon
             { IsPoint: true, Geom: not null } when geom2.Geom.Within(geom1.Geom) || geom2.Geom.Touches(geom1.Geom) => geom2,
-            // nel caso di confronto tra poligono e linea devono almeno incrociarsi
+            // in the case of comparison between polygon and line they must at least intersect
             { IsLine: true, Geom: not null } when geom2.Geom.Crosses(geom1.Geom) => geom2,
-            // nel caso di confronto di due poligonio devono almento inetersecarsi
+            // in the case of comparison of two polygons they must at least intersect
             { IsPolygon: true, Geom: not null } when geom1.Geom is not null && geom2.Geom.Intersects(geom1.Geom) 
                 => new GisGeometry( geom1.SrCode, geom1.Geom.Intersection(geom2.Geom)!),
             _ => null

@@ -21,7 +21,6 @@ public abstract class OsmPgService<T> : IOsmPgService where T : DbContext, IOsm2
     /// <summary>
     /// Represents an abstract base class for OSM PostgreSQL services.
     /// </summary>
-    /// <typeparam name="T">The type of the database context.</typeparam>
     protected OsmPgService(
         IOsmPg<PlanetOsmLine, T> lines, 
         IOsmPg<PlanetOsmPolygon, T> polygons, 

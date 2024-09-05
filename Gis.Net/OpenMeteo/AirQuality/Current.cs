@@ -25,6 +25,9 @@ public partial class Current
     [JsonPropertyName("nitrogen_dioxide")]
     public double? NitrogenDioxide { get; set; }
 
+    /// <summary>
+    /// Represents the measurement of PM10 particles in the air.
+    /// </summary>
     [JsonPropertyName("pm10")]
     public double? Pm10 { get; set; }
 

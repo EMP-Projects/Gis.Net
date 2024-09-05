@@ -1,5 +1,8 @@
 namespace Gis.Net.Core.Services;
 
+/// <summary>
+/// Defines the CRUD (Create, Read, Update, Delete) actions.
+/// </summary>
 public enum ECrudActions
 {
     /// <summary>
@@ -13,7 +16,7 @@ public enum ECrudActions
     Update,
 
     /// <summary>
-    /// Represents the Delete action in the ECrudActions enum.
+    /// Represents the delete action in the CRUD operations.
     /// </summary>
     Delete
 }

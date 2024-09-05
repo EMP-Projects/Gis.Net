@@ -13,6 +13,11 @@ public class AwsAthenaService : IAwsAthenaService
     private readonly IAmazonAthena _athenaClient;
     private readonly IConfiguration _configuration;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AwsAthenaService"/> class.
+    /// </summary>
+    /// <param name="configuration">The configuration settings.</param>
+    /// <param name="athenaClient">The Amazon Athena client.</param>
     public AwsAthenaService(IConfiguration configuration, IAmazonAthena athenaClient)
     {
         _configuration = configuration;

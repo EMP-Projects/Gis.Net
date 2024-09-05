@@ -36,9 +36,6 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     /// <summary>
     /// Represents the options for retrieving a list of rows from the database.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO (Data Transfer Object).</typeparam>
-    /// <typeparam name="TQuery">The type of the query parameters.</typeparam>
     protected virtual ListOptions<TModel, TDto, TQuery> GetRowsOptions(TQuery q) => new(q);
 
     /// <inheritdoc />
@@ -53,8 +50,6 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     /// <summary>
     /// Represents the options for the Find method in the ServiceCore class.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
     protected virtual FindOptions<TModel, TDto> FindOptions() => new();
 
     /// <inheritdoc />
@@ -63,9 +58,6 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     /// <summary>
     /// Represents the options for inserting a new record into the database.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model class.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO class.</typeparam>
-    /// <typeparam name="TQuery">The type of the query class.</typeparam>
     protected virtual InsertOptions<TModel, TDto, TQuery> InsertOptions() => new();
 
     /// <summary>
@@ -98,9 +90,6 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     /// <summary>
     /// Represents the options for updating a model.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <returns>An instance of UpdateOptions.</returns>
     protected virtual UpdateOptions<TModel, TDto, TQuery> UpdateOptions() => new();
 
@@ -126,9 +115,6 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     /// <summary>
     /// Represents the options for the Delete operation.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
     protected virtual DeleteOptions<TModel, TDto, TQuery> DeleteOptions() => new();
 
     /// <summary>

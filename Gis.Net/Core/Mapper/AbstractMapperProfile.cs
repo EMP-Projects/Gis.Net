@@ -40,9 +40,6 @@ public abstract class AbstractMapperProfile<TModel, TDto, TRequest> : Profile
     /// <summary>
     /// Represents a mapper for mapping from a request type to a DTO type.
     /// </summary>
-    /// <typeparam name="TModel">The type of the Model.</typeparam>
-    /// <typeparam name="TDto">The type of the Data Transfer Object.</typeparam>
-    /// <typeparam name="TRequest">The type of the request object.</typeparam>
     protected IMappingExpression<TRequest, TDto> RequestToDtoMapper;
     
     /// <summary>

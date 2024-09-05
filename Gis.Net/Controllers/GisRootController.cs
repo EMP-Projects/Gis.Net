@@ -29,11 +29,6 @@ public abstract class GisRootController<TModel, TDto, TQuery, TRequest, TContext
     /// <summary>
     /// Base class for GIS root controllers that provide CRUD operations for vector data.
     /// </summary>
-    /// <typeparam name="TModel">The type of the entity model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO (Data Transfer Object) model.</typeparam>
-    /// <typeparam name="TQuery">The type of the query object.</typeparam>
-    /// <typeparam name="TRequest">The type of the request object.</typeparam>
-    /// <typeparam name="TContext">The type of the database context.</typeparam>
     protected GisRootController(ILogger logger,
         IConfiguration configuration,
         IMapper mapper,
@@ -46,7 +41,6 @@ public abstract class GisRootController<TModel, TDto, TQuery, TRequest, TContext
     /// <summary>
     /// Retrieves the center coordinates of a given query.
     /// </summary>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
     /// <param name="query">The query object containing the parameters for the center calculation.</param>
     /// <returns>The center coordinates as an array of doubles.</returns>
     /// <exception cref="Exception">Thrown when the GIS service is not initialized.</exception>

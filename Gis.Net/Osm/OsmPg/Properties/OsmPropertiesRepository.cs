@@ -25,7 +25,7 @@ where T : DbContext, IOsmDbContext
             query = query.Where(x => x.Name == queryByParams.Name);
         
         if (queryByParams?.Type != null)
-            query = query.Where(x => x.Type.Equals(queryByParams.Type));
+            query = query.Where(x => x.Type != null && x.Type.Equals(queryByParams.Type));
         
         return query;
     }

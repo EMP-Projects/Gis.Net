@@ -8,9 +8,15 @@ namespace Gis.Net.Osm.Overpass.Dto;
 public class Bounds
 {
 
+    /// <summary>
+    /// Represents the minimum latitude of a geographic bounds.
+    /// </summary>
     [JsonPropertyName("minlat")]
     public double MinLat;
 
+    /// <summary>
+    /// Represents the minimum longitude of a geographic bounds.
+    /// </summary>
     [JsonPropertyName("minlon")]
     public double MinLon;
 

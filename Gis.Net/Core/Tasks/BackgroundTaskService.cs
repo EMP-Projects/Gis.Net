@@ -99,7 +99,6 @@ public abstract class BackgroundTaskService
     /// <summary>
     /// Waits for the completion of a task and returns the result.
     /// </summary>
-    /// <typeparam name="TResult">The type of the result. Must be a class.</typeparam>
     /// <param name="task">The task to await.</param>
     /// <param name="timeoutInSeconds">The timeout for waiting for the task completion, in seconds.</param>
     /// <param name="taskName">The name of the task.</param>
@@ -139,7 +138,6 @@ public abstract class BackgroundTaskService
     /// <summary>
     /// Generic method for awaiting a task and returning its result.
     /// </summary>
-    /// <typeparam name="TResult">The type of the task result.</typeparam>
     /// <param name="task">The task to wait for.</param>
     /// <param name="timeoutInSeconds">The timeout duration in seconds.</param>
     /// <param name="taskName">The name of the task.</param>

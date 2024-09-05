@@ -34,10 +34,11 @@ public class AwsCognitoResponseUsersDto
     /// Gets or sets the list of attributes for a user in the AWS Cognito service.
     /// </summary>
     /// <value>The list of attributes.</value>
-    [JsonPropertyName("attributes")] public List<AwsCognitoResponseUsersAttribute>? Attributes { get; set; } = new();
+    [JsonPropertyName("attributes")] public List<AwsCognitoResponseUsersAttribute>? Attributes { get; set; } = [];
 
-    /// Gets or sets the list of groups associated with the user.
+    /// <summary>
+    /// Gets or sets the list of groups for a user in the AWS Cognito service.
     /// </summary>
-    /// <value>The list of groups associated with the user.</value>
-    [JsonPropertyName("groups")] public List<AwsCognitoResponseGroupDto>? Groups { get; set; } = new();
+    /// <value>The list of groups.</value>
+    [JsonPropertyName("groups")] public List<AwsCognitoResponseGroupDto>? Groups { get; set; } = [];
 }

@@ -26,6 +26,9 @@ public class LimitsItProvince : ILimitsProvince, ILimitsRegion
     [Column("prov_istat_code")]
     public string? ProvIstatCode { get; set; }
     
+    /// <summary>
+    /// Represents the unique identifier for the OGC feature.
+    /// </summary>
     [Column("ogc_fid"), Key]
     public int OgcFid { get; set; }
 
@@ -41,6 +44,9 @@ public class LimitsItProvince : ILimitsProvince, ILimitsRegion
     [Column("reg_istat_code")]
     public string? RegIstatCode { get; set; }
 
+    /// <summary>
+    /// Represents the geometry of the province in Well-Known Binary (WKB) format.
+    /// </summary>
     [Column("wkb_geometry")]
     public Geometry? WkbGeometry { get; set; }
 }

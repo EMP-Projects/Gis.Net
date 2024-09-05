@@ -13,13 +13,11 @@ public class DbMigrationsTask<T> : TaskService where T : DbContext
     /// <summary>
     /// Represents a task that performs database migrations for a specific DbContext.
     /// </summary>
-    /// <typeparam name="T">The type of DbContext.</typeparam>
     private readonly T _dbContext;
 
     /// <summary>
     /// Represents a task for running database migrations for a given DbContext.
     /// </summary>
-    /// <typeparam name="T">The type of DbContext.</typeparam>
     public DbMigrationsTask(ILogger<DbMigrationsTask<T>> logger, IServiceProvider serviceProvider, T dbContext) : base(logger,
         serviceProvider)
     {

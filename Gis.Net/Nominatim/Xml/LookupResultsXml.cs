@@ -29,6 +29,9 @@ public class LookupResultsXml
     [XmlAttribute(AttributeName = "attribution")]
     public string? Attribution { get; set; }
 
+    /// <summary>
+    /// Represents the query string used in the lookup request.
+    /// </summary>
     [XmlAttribute(AttributeName = "querystring")]
     public string? Querystring { get; set; }
 

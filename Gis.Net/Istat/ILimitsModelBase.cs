@@ -1,5 +1,8 @@
 namespace Gis.Net.Istat;
 
+/// <summary>
+/// Represents the base interface for limit models.
+/// </summary>
 public interface ILimitsModelBase
 {
     /// <summary>

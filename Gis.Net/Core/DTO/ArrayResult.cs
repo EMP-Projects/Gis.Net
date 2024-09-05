@@ -9,9 +9,12 @@ namespace Gis.Net.Core.DTO;
 public class ArrayResult<T>: ResultBase where T : IDtoBase
 {
     /// <summary>
-    /// Represents a property that holds data of type <typeparam name="T"/>.
+    /// Gets or initializes the data array.
     /// </summary>
-    /// <typeparam name="T">The type of data.</typeparam>
+    /// <remarks>
+    /// The Data property represents a collection of elements of type T. 
+    /// It is serialized to JSON with the name "data" and is ignored when writing null values.
+    /// </remarks>
     [JsonPropertyName("data"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<T>? Data { get; init; }
 
@@ -29,12 +32,10 @@ public class ArrayResult<T>: ResultBase where T : IDtoBase
     /// <summary>
     /// Represents a result object that contains an array of data.
     /// </summary>
-    /// <typeparam name="T">The type of data contained in the array. This type must implement IDtoBase.</typeparam>
     public ArrayResult(string error) => Error = error;
 
     /// <summary>
     /// Represents a result object that contains an array of data.
     /// </summary>
-    /// <typeparam name="T">The type of data stored in the array. The type must implement IDtoBase.</typeparam>
     public ArrayResult(IEnumerable<T> data) => Data = data;
 }

@@ -19,7 +19,6 @@ public class AwsCognitoResponseDto<T> : AwsResponseDto<T> where T : class
     /// <summary>
     /// Represents a generic Cognito response data transfer object.
     /// </summary>
-    /// <typeparam name="T">The type of the result.</typeparam>
     public AwsCognitoResponseDto(T result) : base(result)
     {
     }

@@ -166,6 +166,9 @@ public partial class PlanetOsmRoads : IOsmPgGeometryModel
     [Column("embankment")]
     public string? Embankment { get; set; }
 
+    /// <summary>
+    /// Represents the foot property of the PlanetOsmRoads class.
+    /// </summary>
     [Column("foot")]
     public string? Foot { get; set; }
 
@@ -323,6 +326,9 @@ public partial class PlanetOsmRoads : IOsmPgGeometryModel
     [Column("railway")]
     public string? Railway { get; set; }
 
+    /// <summary>
+    /// Represents the reference identifier for the road.
+    /// </summary>
     [Column("ref")]
     public string? Ref { get; set; }
 
@@ -332,6 +338,9 @@ public partial class PlanetOsmRoads : IOsmPgGeometryModel
     [Column("religion")]
     public string? Religion { get; set; }
 
+    /// <summary>
+    /// Represents the route property of the PlanetOsmRoads class.
+    /// </summary>
     [Column("route")]
     public string? Route { get; set; }
 

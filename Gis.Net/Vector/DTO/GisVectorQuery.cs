@@ -11,12 +11,6 @@ public abstract class GisVectorQuery : GisQuery
     [FromQuery(Name = "geomFilter")] public string? GeomFilter { get; set; }
 
     /// <summary>
-    /// Represents the spatial reference code used for GIS data.
-    /// </summary>
-    [FromQuery(Name = "srCode")]
-    public int? SrCode { get; set; } = (int)ESrCode.WebMercator;
-
-    /// <summary>
     /// Represents an array of property IDs used for GIS queries.
     /// </summary>
     [FromQuery(Name = "ids")]
@@ -49,30 +43,37 @@ public abstract class GisVectorQuery : GisQuery
     /// - Either the GisGeometry property is null or both the SrCode and GisGeometry properties are not null.
     /// </remarks>
     public bool IsValid => this is { SrCode : not null, GisGeometry: null } || this is { SrCode : not null, GisGeometry: not null };
-
-    /// <summary>
-    /// Represents an error message related to the <see cref="GisNet.Vector.DTO.Error"/> property.
-    /// </summary>
-    /// <value>
-    /// The error message is a string that provides information about the error condition.
-    /// </value>
-    public string? Error
+    
+/// <summary>
+/// Gets the error message if the GIS vector query is invalid.
+/// </summary>
+/// <remarks>
+/// The error message is determined based on the following conditions:
+/// - If the SrCode property is null, an error message indicating the need for the srCode parameter is returned.
+/// - If Measure is true and Buffer is null, an error message indicating the need for the Buffer parameter is returned.
+/// - If both LatY and LngX are less than or equal to 0, an error message indicating invalid geographic coordinates is returned.
+/// - If both LatY and LngX are greater than 0 and Distance is null or less than 0, an error message indicating the need for the Distance parameter is returned.
+/// - If any of LatYMin, LngXMin, LatYMax, or LngXMax are less than or equal to 0, an error message indicating invalid geographic coordinates is returned.
+/// - If LatYMin, LngXMin, LatYMax, and LngXMax are all greater than 0 and Distance is null, an error message indicating invalid geographic coordinates is returned.
+/// - If GeomFilter, LatY, LngX, LatYMin, LngXMin, LatYMax, and LngXMax are all null, an error message indicating the need for at least one geographical search criterion is returned.
+/// </remarks>
+public string? Error
+{
+    get
     {
-        get
+        return this switch
         {
-            return this switch
-            {
-                { SrCode: null } => "E' necessario specificare almeno il parametro srCode per il sistema di riferimento geografico [SrCode]",
-                { Measure: true, Buffer: null } => "Per calcolare le misure è' necessario specificare almeno il parametro Buffer [Buffer]",
-                { LatY: <= 0, LngX: <= 0 } => "Valori non validi per le coordinate geografiche X,Y. [LatY, LngX]",
-                { LatY: > 0, LngX: > 0, Distance: null or < 0 } => "Per calcolare la distanza da un punto è necessario il parametro [Distance]",
-                { LatYMin: <= 0, LngXMin: <= 0, LatYMax: <= 0, LngXMax: <= 0 } => "Valori non validi per le coordinate geografiche [LatYMin, LngXMin, LatYMax, LngXMax].",
-                { LatYMin: > 0, LngXMin: > 0, LatYMax: > 0, LngXMax: > 0, Distance: null } => "Valori non validi per le coordinate geografiche [LatYMin, LngXMin, LatYMax, LngXMax].",
-                { GeomFilter: null, LatY: null, LngX: null, LatYMin: null, LngXMin: null, LatYMax: null, LngXMax: null } => "E' necessario specificare almeno un criterio di ricerca geografico.",
-                _ => null
-            };
-        }
+            { SrCode: null } => "It is necessary to specify at least the srCode parameter for the geographic reference system [SrCode]",
+            { Measure: true, Buffer: null } => "To calculate the measurements it is necessary to specify at least the Buffer parameter [Buffer]",
+            { LatY: <= 0, LngX: <= 0 } => "Invalid values for X,Y geographic coordinates. [LatY, LngX]",
+            { LatY: > 0, LngX: > 0, Distance: null or < 0 } => "To calculate the distance from a point you need the [Distance] parameter",
+            { LatYMin: <= 0, LngXMin: <= 0, LatYMax: <= 0, LngXMax: <= 0 } => "Invalid values for geographic coordinates [LatYMin, LngXMin, LatYMax, LngXMax]",
+            { LatYMin: > 0, LngXMin: > 0, LatYMax: > 0, LngXMax: > 0, Distance: null } => "Invalid values for geographic coordinates [LatYMin, LngXMin, LatYMax, LngXMax].",
+            { GeomFilter: null, LatY: null, LngX: null, LatYMin: null, LngXMin: null, LatYMax: null, LngXMax: null } => "It is necessary to specify at least one geographical search criterion",
+            _ => null
+        };
     }
+}
 
     /// <summary>
     /// Represents a GIS geometry.

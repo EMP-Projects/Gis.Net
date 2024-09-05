@@ -10,6 +10,12 @@ public class IstatService<TContext> : IIStatService<TContext> where TContext : D
     private readonly ILimits<TContext, LimitsItProvince> _province;
     private readonly ILimits<TContext, LimitsItMunicipality> _municipality;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IstatService{TContext}"/> class.
+    /// </summary>
+    /// <param name="region">The region limits service.</param>
+    /// <param name="province">The province limits service.</param>
+    /// <param name="municipality">The municipality limits service.</param>
     public IstatService(
         ILimits<TContext, LimitsItRegion> region, 
         ILimits<TContext, LimitsItProvince> province, 
@@ -54,6 +60,11 @@ public class IstatService<TContext> : IIStatService<TContext> where TContext : D
         });
     }
 
+    /// <summary>
+    /// Retrieves a list of municipalities based on the specified query parameters.
+    /// </summary>
+    /// <param name="queryParams">The query parameters to filter the municipalities.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable collection of municipalities.</returns>
     public async Task<IEnumerable<LimitsItMunicipality>> GetMunicipalities(LimitsItMunicipality? queryParams)
     {
         return await _municipality.List(new IstatLimitOptions<LimitsItMunicipality>

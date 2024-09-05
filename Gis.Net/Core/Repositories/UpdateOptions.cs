@@ -18,15 +18,11 @@ public class UpdateOptions<TModel, TDto, TQuery>
     /// <summary>
     /// Represents the query parameters for the update operation in a repository.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
     public TQuery? QueryParams { get; set; }
+    
     /// <summary>
     /// Gets or sets the delegate for mapping a Dto to a Model with additional mapping logic.
     /// </summary>
-    /// <typeparam name="TDto">The type of the Dto.</typeparam>
-    /// <typeparam name="TModel">The type of the Model.</typeparam>
     /// <remarks>
     /// The mapping logic should be implemented in this delegate.
     /// </remarks>
@@ -35,17 +31,10 @@ public class UpdateOptions<TModel, TDto, TQuery>
     /// <summary>
     /// Represents a delegate for mapping a DTO object to a Model object asynchronously with extra parameters.
     /// </summary>
-    /// <typeparam name="TDto">The type of the DTO object.</typeparam>
-    /// <typeparam name="TModel">The type of the Model object.</typeparam>
-    /// <typeparam name="TQuery">The type of the query parameters.</typeparam>
-    /// <returns>A task representing the asynchronous mapping operation.</returns>
     public DtoToModelExtraMapperAsyncDelegate<TDto, TModel>? OnExtraMappingAsync { get; set; } = null;
 
     /// <summary>
     /// Represents a delegate that takes a DTO, a model, and a query as input and performs extra mapping asynchronously.
     /// </summary>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TQuery">The type of the query.</typeparam>
     public DtoToModelExtraMapperWithParamsAsyncDelegate<TDto, TModel, TQuery>? OnExtraMappingWithParamsAsync { get; set; } = null;
 }

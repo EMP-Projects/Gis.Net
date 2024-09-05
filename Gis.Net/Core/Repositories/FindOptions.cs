@@ -16,8 +16,6 @@ public class FindOptions<TModel, TDto>
     /// <summary>
     /// Represents a delegate that performs extra mapping operations from a model to a DTO.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
     /// <remarks>
     /// This delegate is used to perform extra mapping operations beyond the automatic mapping performed by the system.
     /// It can be used to map additional properties or modify existing properties before returning the DTO.
@@ -27,15 +25,12 @@ public class FindOptions<TModel, TDto>
     /// <summary>
     /// Represents an asynchronous delegate for performing extra mapping operations from a model to a DTO.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TDto">The type of the DTO.</typeparam>
     /// <returns>A task representing the asynchronous operation.</returns>
     public ModelToDtoExtraMapperAsyncDelegate<TModel, TDto>? OnExtraMappingAsync { get; set; }
 
     /// <summary>
     /// Represents a delegate that allows explicit loading of related entities for a model.
     /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
     /// <returns>A task representing the asynchronous operation.</returns>
     public TaskModelDelegate<TModel>? OnExplicitLoading { get; set; }
 }

@@ -18,6 +18,7 @@ public class AwsTimeStreamQueryDto
     /// </summary>
     [JsonPropertyName("invocation_time")] public DateTime InvocationTime { get; set; }
 
+    /// <summary>
     /// Gets or sets the state of the scheduled query.
     /// </summary>
     [JsonPropertyName("state")] public ScheduledQueryState? State { get; set; }

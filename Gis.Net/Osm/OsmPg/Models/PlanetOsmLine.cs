@@ -11,6 +11,12 @@ namespace Gis.Net.Osm.OsmPg.Models;
 [Index("OsmId", Name = "planet_osm_line_osm_id_idx")]
 public partial class PlanetOsmLine : IOsmPgGeometryModel
 {
+    /// <summary>
+    /// Gets or sets the OSM ID.
+    /// </summary>
+    /// <value>
+    /// The OSM ID is a unique identifier for the OpenStreetMap element.
+    /// </value>
     [Column("osm_id")]
     public long? OsmId { get; set; }
 
@@ -266,6 +272,9 @@ public partial class PlanetOsmLine : IOsmPgGeometryModel
     [Column("motorcar")]
     public string? Motorcar { get; set; }
 
+    /// <summary>
+    /// Represents a natural feature in the OpenStreetMap data.
+    /// </summary>
     [Column("natural")]
     public string? Natural { get; set; }
 
@@ -389,6 +398,9 @@ public partial class PlanetOsmLine : IOsmPgGeometryModel
     [Column("tower:type")]
     public string? TowerType { get; set; }
 
+    /// <summary>
+    /// Represents a track type in the PlanetOsmLine data.
+    /// </summary>
     [Column("tracktype")]
     public string? Tracktype { get; set; }
 

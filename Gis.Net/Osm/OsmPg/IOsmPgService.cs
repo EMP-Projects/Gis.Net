@@ -11,6 +11,5 @@ public interface IOsmPgService
     /// Asynchronously retrieves a feature collection based on specified tags, geometry, and distance.
     /// </summary>
     /// <param name="geom"></param>
-    /// <param name="distance"></param>
     Task<FeatureCollection> GetFeatures(Geometry geom);
 }

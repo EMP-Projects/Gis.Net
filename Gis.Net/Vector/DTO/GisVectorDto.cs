@@ -39,6 +39,5 @@ public abstract class GisVectorDto<T> : GisVectorDto, IGisVectorPropertiesDto<T>
     /// <summary>
     /// Represents the properties of a GIS vector object.
     /// </summary>
-    /// <typeparam name="T">The type of the properties object.</typeparam>
     [JsonPropertyName("properties")] public T? Properties { get; set; }
 }

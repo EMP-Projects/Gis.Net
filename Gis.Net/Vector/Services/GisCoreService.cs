@@ -23,7 +23,7 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
     ServiceCore<TModel, TDto, TQuery, TRequest, TContext>, 
     IGisCoreService<TModel, TDto, TQuery, TRequest, TContext>
     where TDto : GisVectorDto
-    where TModel : Vector.Models.VectorModel
+    where TModel : Models.VectorModel
     where TQuery : GisVectorQuery, new()
     where TRequest : GisRequest
     where TContext : DbContext
@@ -182,7 +182,7 @@ public abstract class GisCoreService<TModel, TDto, TQuery, TRequest, TContext>:
             listModels.Add(await base.Delete(dto.Id));
 
         if (listModels is null || listModels.Count == 0)
-            throw new Exception("Non ho cancellato nessuna geometria");
+            throw new Exception("I didn't delete any geometry");
         
         return listModels;
     }

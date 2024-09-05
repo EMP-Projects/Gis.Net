@@ -13,6 +13,9 @@ public class Element
     [JsonPropertyName("type")]
     public string? Type;
 
+    /// <summary>
+    /// Represents the unique identifier of an element in the Overpass API response.
+    /// </summary>
     [JsonPropertyName("id")]
     public long? Id;
 

@@ -199,7 +199,7 @@ public partial class PlanetOsmPolygon : IOsmPgGeometryModel
 
     /// <summary>
     /// Represents the intermittent property of a polygon in the Planet OSM database.
-    /// </summary
+    /// </summary>
     [Column("intermittent")]
     public string? Intermittent { get; set; }
 
@@ -317,6 +317,9 @@ public partial class PlanetOsmPolygon : IOsmPgGeometryModel
     [Column("railway")]
     public string? Railway { get; set; }
 
+    /// <summary>
+    /// Represents a reference identifier in the OSM data.
+    /// </summary>
     [Column("ref")]
     public string? Ref { get; set; }
 

@@ -74,6 +74,9 @@ public partial class LimitsItMunicipality : ILimitsMunicipality, ILimitsRegion, 
     [Column("prov_istat_code")]
     public string? ProvIstatCode { get; set; }
     
+    /// <summary>
+    /// Represents the unique identifier for the OGC feature.
+    /// </summary>
     [Column("ogc_fid"), Key]
     public int OgcFid { get; set; }
 

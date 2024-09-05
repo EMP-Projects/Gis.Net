@@ -13,6 +13,9 @@ public class Member
     [JsonPropertyName("type")]
     public string? Type;
     
+    /// <summary>
+    /// Represents the reference ID of a member in an Overpass response.
+    /// </summary>
     [JsonPropertyName("ref")]
     public long? Ref;
 

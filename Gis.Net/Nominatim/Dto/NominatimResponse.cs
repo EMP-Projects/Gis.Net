@@ -35,6 +35,13 @@ public abstract class NominatimResponse
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Importance { get; set; }
     
+    /// <summary>
+    /// Gets or sets the latitude coordinate value.
+    /// </summary>
+    /// <remarks>
+    /// The latitude coordinate provides the north-south location of a point on the Earth's surface.
+    /// </remarks>
+    /// <value>The latitude coordinate as a string.</value>
     [JsonPropertyName("lat")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Lat { get; set; }

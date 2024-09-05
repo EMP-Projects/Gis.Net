@@ -13,15 +13,14 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
 {
     private readonly ILogger<AwsTimeStreamDatabaseService> _logger;
     private readonly IAmazonTimestreamWrite _timeStreamClient;
-
+    
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="AwsTimeStreamDatabaseService"/> class.
     /// </summary>
-    /// <param name="configuration"></param>
-    /// <param name="logger"></param>
-    /// <param name="timeStreamClient"></param>
+    /// <param name="logger">The logger instance for logging.</param>
+    /// <param name="timeStreamClient">The Amazon Timestream client instance.</param>
     public AwsTimeStreamDatabaseService(ILogger<AwsTimeStreamDatabaseService> logger, 
-                                IAmazonTimestreamWrite timeStreamClient)
+        IAmazonTimestreamWrite timeStreamClient)
     {
         _logger = logger;
         _timeStreamClient = timeStreamClient;

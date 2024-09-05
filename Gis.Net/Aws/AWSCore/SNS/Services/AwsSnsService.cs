@@ -15,9 +15,15 @@ public class AwsSnsService : IAwsSnsService
     private readonly ILogger<AwsSnsService> _logger;
     private readonly IAmazonSimpleNotificationService _snsClient;
     
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AwsSnsService"/> class.
+    /// </summary>
+    /// <param name="configuration">The configuration settings.</param>
+    /// <param name="logger">The logger instance for logging.</param>
+    /// <param name="snsClient">The Amazon SNS client instance.</param>
     public AwsSnsService(IConfiguration configuration, 
-                         ILogger<AwsSnsService> logger, 
-                         IAmazonSimpleNotificationService snsClient)
+        ILogger<AwsSnsService> logger, 
+        IAmazonSimpleNotificationService snsClient)
     {
         _configuration = configuration;
         _logger = logger;

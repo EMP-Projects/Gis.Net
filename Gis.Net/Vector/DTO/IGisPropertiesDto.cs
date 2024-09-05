@@ -22,7 +22,5 @@ public interface IGisPropertiesDto<TGisDto, TDto>
     /// <summary>
     /// Represents the properties of a GIS entity.
     /// </summary>
-    /// <typeparam name="TGisDto">The type of the GIS vector properties DTO.</typeparam>
-    /// <typeparam name="TDto">The type of the properties DTO.</typeparam>
     TGisDto? Gis { get; set; }
 }

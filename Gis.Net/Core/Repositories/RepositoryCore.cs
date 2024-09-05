@@ -30,6 +30,12 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// </summary>
     protected readonly IMapper Mapper;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RepositoryCore{TModel, TDto, TQuery, TContext}"/> class.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> instance used for logging.</param>
+    /// <param name="context">The <see cref="DbContext"/> instance representing the session with the database.</param>
+    /// <param name="mapper">The <see cref="IMapper"/> instance used for object mapping.</param>
     protected RepositoryCore(ILogger logger, TContext context, IMapper mapper)
     {
         Logger = logger;
@@ -47,56 +53,62 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     public EntityEntry<TModel> Entry(TModel model) => _context.Entry(model);
 
     /// <summary>
-    /// Salva le modifiche sul database
+    /// Save changes to the database
     /// </summary>
     /// <returns></returns>
     public async Task<int> SaveChanges() => await _context.SaveChangesAsync();
 
+    /// <summary>
+    /// Parses the query parameters and applies them to the given query.
+    /// </summary>
+    /// <param name="query">The initial query to which the parameters will be applied.</param>
+    /// <param name="queryByParams">The parameters to apply to the query.</param>
+    /// <returns>The query with the applied parameters.</returns>
     protected virtual IQueryable<TModel> ParseQueryParams(IQueryable<TModel> query, TQuery? queryByParams)
     {
         if (queryByParams?.Id is not null)
             query = query.Where(x => x.Id == queryByParams.Id);
-        
+    
         if (queryByParams?.EntityKey is not null)
             query = query.Where(x => x.EntityKey == queryByParams.EntityKey);
-        
+    
         if (queryByParams?.Search is not null)
             query = query.Where(x => x.SearchText != null && x.SearchText.Matches(queryByParams.Search));
-        
+    
         return query;
     }
     
     /// <inheritdoc />
     public async Task<ICollection<TDto>> GetRows(ListOptions<TModel, TDto, TQuery> options)
     {
-        // se la cache non ha valori memorizzati leggo i records dal database
+        // get the query
         var q = ApplyIncludes(_context.Set<TModel>()).AsNoTracking();
         
-        // controllo dei parametri obbligatori
+        // check of mandatory parameters
         if (!ValidateParameters(options.QueryParams!))
             throw new Exception("Parametri obbligatori mancanti");
 
-        // query parametrizzata
+        // parameterized query
         q = ParseQueryParams(q, options.QueryParams);
 
-        // esegue delegate prima dell'inserimento
+        // executes delegate before insert
         if (options.OnBeforeQuery is not null)
             q = options.OnBeforeQuery.Invoke(q);
 
-        // ordina elementi
+        // sort elements
         if (options.OnSort is not null)
             q = options.OnSort(q);
         
-        // ordina elementi in base ai parametri della query
-        // Attenzione! Questo ordinamento sostituisce OnSort
+        // sort items based on query parameters
+        // Attention! This sort replaces OnSort
         if (options.OnSortParams is not null)
             q = options.OnSortParams(q, options.QueryParams);
         
         var rows = await q.ToListAsync();
         
-        // il metodo delegato esegue un ulteriore query sulla lista dei modelli
-        // in questo punto è possibile utilizzare metodi che non sono supportati dal database
-        // ma è necessario prima eseguire la query e lavorare sulla lista di oggetti
+        // the delegate method performs a further query on the list of models
+        // Here you can use methods that are not supported by the database
+        // but you need to run the query first and work on the list of objects
         // Info: https://learn.microsoft.com/it-it/ef/core/querying/client-eval#explicit-client-evaluation
         if (options.OnAfterQueryParams is not null)
             await options.OnAfterQueryParams.Invoke(rows, options.QueryParams);
@@ -200,37 +212,48 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
 
         options.OnExtraMapping?.Invoke(dto, newModel);
 
+        // invoke OnExtraMappingAsync
         if (options.OnExtraMappingAsync is not null)
             await options.OnExtraMappingAsync.Invoke(dto, newModel);
         
+        // invoke OnExtraMappingWithParamsAsync
         if (options.OnExtraMappingWithParamsAsync is not null && options.QueryParams is not null)
             await options.OnExtraMappingWithParamsAsync.Invoke(dto, newModel, options.QueryParams);
         
+        // insert the new model
         _context.Set<TModel>().Add(newModel);
         return newModel;
     }
 
     /// <summary>
-    /// Esegue azioni prima di aggiornare un record
+    /// Performs actions before updating a record
     /// </summary>
     protected virtual async Task StartUpdate() => await Task.Run(() => { });
 
     /// <inheritdoc />
     public async Task<TModel> Update(TDto dto, UpdateOptions<TModel, TDto, TQuery> options)
     {
+        // invoke StartUpdate
         await StartUpdate();
+        
+        // find the model
         var model = await FindAsync(dto.Id);
+        
+        // map dto to model
         var newModel = Mapper.Map(dto, model);
 
         // invoke OnExtraMapping 
         options.OnExtraMapping?.Invoke(dto, newModel);
 
+        // invoke OnExtraMappingAsync
         if (options.OnExtraMappingAsync is not null)
             await options.OnExtraMappingAsync.Invoke(dto, newModel);
         
+        // invoke OnExtraMappingWithParamsAsync
         if (options.OnExtraMappingWithParamsAsync is not null && options.QueryParams is not null)
             await options.OnExtraMappingWithParamsAsync.Invoke(dto, newModel, options.QueryParams);
 
+        // update the model
         _context.Update(newModel);
 
         return newModel;
@@ -242,10 +265,15 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// <returns></returns>
     protected virtual async Task StartDelete() => await Task.Run(() => { });
 
+    /// <inheritdoc />
     public async Task<TModel> Delete(long id, DeleteOptions<TModel, TDto, TQuery> options)
     {
+        // invoke StartDelete
         await StartDelete();
+        
+        // find the model
         var model = await FindAsync(id);
+        
         var result = await Delete(model, options);
         return result;
     }
@@ -257,11 +285,11 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         if (options.OnBeforeDeleteAsync is not null)
             await options.OnBeforeDeleteAsync.Invoke(model);
         
+        // invoke OnExtraMapping
         if (options.OnExtraMappingWithParamsAsync is not null && options.QueryParams is not null)
             await options.OnExtraMappingWithParamsAsync.Invoke(model, options.QueryParams);
         
-        Logger.LogInformation(
-            "elimino in modo il record {Id} per la entity {Name}",
+        Logger.LogInformation("delete the {Id} record for the entity {Name}",
             model.Id,
             model.GetType().Name
         );
@@ -270,7 +298,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         return model;
     }
 
-    #region " === Token del Dto "
+    #region " === Dto token "
 
     /// <inheritdoc />
     public virtual async Task<string?> CreateToken(long id, string secret)
@@ -292,7 +320,10 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// <returns></returns>
     public virtual bool ValidateParameters(TQuery? queryParameters) => true;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Executes a raw SQL command against the database.
+    /// </summary>
+    /// <param name="sql">The SQL command to execute.</param>
     public void ExecuteSqlCommand(string sql)
     {
         Logger.LogInformation("Requested direct SQL Command: {Sql}", sql);

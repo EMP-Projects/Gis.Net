@@ -3,7 +3,6 @@ namespace Gis.Net.Aws.AWSCore.Athena.Services;
 /// <summary>
 /// Interface for AWS Athena operations.
 /// </summary>
-/// <typeparam name="T">The type of the objects returned by the query.</typeparam>
 public interface IAwsAthenaService
 {
     /// <summary>

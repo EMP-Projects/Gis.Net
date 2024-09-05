@@ -9,6 +9,10 @@ public class Limits<TContext, TModel> : ILimits<TContext, TModel>
 {
     private readonly TContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Limits{TContext, TModel}"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public Limits(TContext context)
     {
         _context = context;

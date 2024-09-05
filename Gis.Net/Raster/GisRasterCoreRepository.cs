@@ -82,7 +82,6 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
     /// <summary>
     /// Finds all entities of type T that intersect with the specified point and buffer.
     /// </summary>
-    /// <typeparam name="TVector">The type of the entities to find, must inherit from GisVectorCoreModel.</typeparam>
     /// <param name="geom">The point geometry to test for intersection.</param>
     /// <param name="buffer">The buffer distance around the point geometry.</param>
     /// <returns>A list of entities of type T that intersect with the specified geometry.</returns>

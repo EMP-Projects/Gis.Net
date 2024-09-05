@@ -15,8 +15,6 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
     /// <summary>
     /// Represents a class that provides operations for retrieving OpenStreetMap (OSM) entities and generating feature collections using the Osm2Pgsql database context.
     /// </summary>
-    /// <typeparam name="TGeom">The type of OSM entity, must implement both IOsmPgGenericModel and IOsmPgGeometryModel.</typeparam>
-    /// <typeparam name="TContext">The type of Osm2Pgsql database context.</typeparam>
     public OsmPg(TContext context) => _context = context;
 
     /// <summary>
@@ -33,10 +31,8 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
         if (options?.Geom is not null)
         {
             if (GisGeometries.IsPoint(options.Geom))
-            {
-                var d  = options.DistanceMt is not null ? options.DistanceMt.Value / 10000 : 0.0001;
-                entities = entities.Where(entry => entry.Way != null && entry.Way.IsWithinDistance(options.Geom, d));
-            } else if (GisGeometries.IsLineString(options.Geom))
+                entities = entities.Where(entry => entry.Way != null && entry.Way.IsWithinDistance(options.Geom, options.DistanceMt ?? 100));
+            else if (GisGeometries.IsLineString(options.Geom))
                 entities = entities.Where(entry => entry.Way != null && entry.Way.Touches(options.Geom));
             else if (GisGeometries.IsPolygon(options.Geom))
                 entities = entities.Where(entry => entry.Way != null && entry.Way.Intersects(options.Geom));
@@ -58,8 +54,6 @@ public class OsmPg<TGeom, TContext> : IOsmPg<TGeom, TContext>
     /// <summary>
     /// GetFeatures method retrieves OpenStreetMap (OSM) entities and generates a list of features.
     /// </summary>
-    /// <typeparam name="TGeom">The type of OSM entity, must implement both IOsmPgGenericModel and IOsmPgGeometryModel.</typeparam>
-    /// <typeparam name="TContext">The type of Osm2Pgsql database context.</typeparam>
     /// <param name="options">Options for querying OSM entities and generating features.</param>
     /// <returns>A list of features that represent the retrieved OSM entities.</returns>
     public async Task<List<Feature>?> GetFeatures(OsmOptions<TGeom>? options)

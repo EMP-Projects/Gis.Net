@@ -42,7 +42,6 @@ public class NominatimReverse: Nominatim<ReverseGeocodeXml>
     /// <summary>
     /// Represents a class for performing Nominatim reverse geocoding operations.
     /// </summary>
-    /// <typeparam name="T">The type of result to be returned.</typeparam>
     public NominatimReverse(HttpClient httpClient) : base(httpClient)
     {
     }

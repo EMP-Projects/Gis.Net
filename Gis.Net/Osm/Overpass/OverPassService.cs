@@ -7,15 +7,25 @@ using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Osm.Overpass;
 
-/// <inheritdoc />
+/// <summary>
+/// Represents a service for interacting with the OverPass API.
+/// </summary>
 public class OverPassService : IOverPass
 {
     private readonly HttpClient _httpClient;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OverPassService"/> class.
+    /// </summary>
+    /// <param name="httpClient">The HTTP client used to make requests to the OverPass API.</param>
     public OverPassService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
-    
+
+    /// <summary>
+    /// Gets or sets the list of OverPass elements.
+    /// </summary>
     private List<OverPassElement>? Elements { get; set; } =
     [
         new OverPassElement(EOsmTag.Amenity),
@@ -41,7 +51,11 @@ public class OverPassService : IOverPass
         new OverPassElement(EOsmTag.Tourist),
         new OverPassElement(EOsmTag.Waterway)
     ];
-    
+
+    /// <summary>
+    /// Sets the query for each OverPass element.
+    /// </summary>
+    /// <param name="value">The dictionary containing the query parameters.</param>
     private void SetQuery(Dictionary<string, List<string>> value)
     {
         if (Elements is null) return;
@@ -49,13 +63,24 @@ public class OverPassService : IOverPass
             element.Query = value;
     }
 
+    /// <summary>
+    /// Generates the payload for the OverPass query based on the provided geometry.
+    /// </summary>
+    /// <param name="geom">The geometry to use in the query.</param>
+    /// <returns>The generated payload string.</returns>
     private string Payload(Geometry geom)
     {
         return Elements is null 
             ? string.Empty 
             : Elements.Aggregate(string.Empty, (current, element) => current + element.GetPayload(geom));
     }
-    
+
+    /// <summary>
+    /// Creates a feature based on the provided options and OSM property.
+    /// </summary>
+    /// <param name="options">The options for creating the feature.</param>
+    /// <param name="osmProperty">The OSM property to use for creating the feature.</param>
+    /// <returns>The created feature.</returns>
     private static Feature CreateFeature(OverPassOptions options, OsmDto osmProperty)
     {
         var feature = GisUtility.CreateEmptyFeature((int)options.SrCode!);
@@ -85,7 +110,13 @@ public class OverPassService : IOverPass
 
         return feature;
     }
-    
+
+    /// <summary>
+    /// Fetches OverPass data based on the provided payload.
+    /// </summary>
+    /// <param name="payload">The payload for the OverPass query.</param>
+    /// <returns>The OverPass response data.</returns>
+    /// <exception cref="ArgumentException">Thrown when the payload is null or empty.</exception>
     private Task<OverPassResponseDto?> FetchOverpassData(string payload)
     {
         if (string.IsNullOrEmpty(payload))
@@ -96,7 +127,15 @@ public class OverPassService : IOverPass
         var q = $"{queryStart}{payload}{queryEnd}";
         return FetchFeaturesFromOsm<OverPassResponseDto>($"{_httpClient.BaseAddress?.ToString()}/api/interpreter", q);
     }
-    
+
+    /// <summary>
+    /// Fetches features from OpenStreetMap based on the provided URL and query.
+    /// </summary>
+    /// <typeparam name="T">The type of the response data.</typeparam>
+    /// <param name="url">The URL to send the request to.</param>
+    /// <param name="query">The query to send in the request.</param>
+    /// <returns>The fetched features.</returns>
+    /// <exception cref="Exception">Thrown when the request is not successful.</exception>
     private async Task<T?> FetchFeaturesFromOsm<T>(string url, string query) where T : class
     {
         var body = new Dictionary<string, string>
@@ -110,15 +149,15 @@ public class OverPassService : IOverPass
         
         var responseStr = await response.Content.ReadAsStringAsync();
         return NetCore.DeserializeString<T>(responseStr);
-
     }
-        
+
     /// <summary>
-    /// Find geometry from Openstreetmap by intersect with geometry
+    /// Finds geometry from OpenStreetMap by intersecting with the provided geometry.
     /// </summary>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+    /// <param name="options">The options for the OverPass query.</param>
+    /// <returns>A collection of features that intersect with the provided geometry.</returns>
+    /// <exception cref="ArgumentException">Thrown when the geometry is not valid.</exception>
+    /// <exception cref="Exception">Thrown when an error occurs during the query.</exception>
     public virtual async Task<FeatureCollection?> Intersects(OverPassOptions options)
     {
         // get query;
@@ -157,10 +196,21 @@ public class OverPassService : IOverPass
         listFeatures = CalculateFeatureDifference(listFeatures.ToList(), options)?.ToArray();
         return GisUtility.CreateFeatureCollection(listFeatures!);
     }
-    
+
+    /// <summary>
+    /// Gets the coordinates from the provided element.
+    /// </summary>
+    /// <param name="e">The element to get the coordinates from.</param>
+    /// <returns>A list of coordinates.</returns>
     private static List<double[]>? GetCoordinates(Element? e) 
         => e?.Geometry?.Select(g => new[] { (double)g.Lon!, (double)g.Lat! }).ToList();
 
+    /// <summary>
+    /// Gets the nodes from the OverPass response.
+    /// </summary>
+    /// <param name="srCode">The spatial reference code.</param>
+    /// <param name="features">The OverPass response data.</param>
+    /// <returns>A collection of OSM DTOs representing the nodes.</returns>
     private static IEnumerable<OsmDto?>? Nodes(int srCode, OverPassResponseDto features)
     {
         var result = features.Elements!.Where(e => e?.Type?.ToUpper() == "NODE")
@@ -174,17 +224,35 @@ public class OverPassService : IOverPass
         return FilterElements(result);
     }
 
+    /// <summary>
+    /// Gets the ways from the OverPass response.
+    /// </summary>
+    /// <param name="features">The OverPass response data.</param>
+    /// <returns>A collection of elements representing the ways.</returns>
     private static IEnumerable<Element?>? Ways(OverPassResponseDto features) =>
         features.Elements?
             .AsParallel()
             .Where(e => e?.Type is not null && e.Type.ToUpper().Equals("WAY"))
             .AsEnumerable();
 
+    /// <summary>
+    /// Filters the provided elements to remove null or empty geometries.
+    /// </summary>
+    /// <param name="elements">The elements to filter.</param>
+    /// <returns>A collection of filtered elements.</returns>
     private static IEnumerable<OsmDto?>? FilterElements(IEnumerable<OsmDto?>? elements) 
         => elements?.AsParallel()
                     .Where(l => l is not null)
                     .Where(l => l is { Geom.IsEmpty: false })
                     .AsEnumerable();
+
+    /// <summary>
+    /// Creates OSM polygons from the OverPass response.
+    /// </summary>
+    /// <param name="srCode">The spatial reference code.</param>
+    /// <param name="features">The OverPass response data.</param>
+    /// <param name="toWebMercator">Indicates whether to convert to Web Mercator.</param>
+    /// <returns>A collection of OSM DTOs representing the polygons.</returns>
     private static IEnumerable<OsmDto?>? CreateOsmPolygons(int srCode, OverPassResponseDto features, bool toWebMercator = false)
     {
         var elements = Ways(features);
@@ -206,7 +274,13 @@ public class OverPassService : IOverPass
             .AsEnumerable();
         return FilterElements(result);
     }
-        
+
+    /// <summary>
+    /// Creates OSM lines from the OverPass response.
+    /// </summary>
+    /// <param name="srCode">The spatial reference code.</param>
+    /// <param name="features">The OverPass response data.</param>
+    /// <returns>A collection of OSM DTOs representing the lines.</returns>
     private static IEnumerable<OsmDto?>? Lines(int srCode, OverPassResponseDto features)
     {
         var elements = Ways(features);
@@ -221,6 +295,12 @@ public class OverPassService : IOverPass
         return FilterElements(result);
     }
 
+    /// <summary>
+    /// Creates OSM line rings from the OverPass response.
+    /// </summary>
+    /// <param name="srCode">The spatial reference code.</param>
+    /// <param name="features">The OverPass response data.</param>
+    /// <returns>A collection of OSM DTOs representing the line rings.</returns>
     private static IEnumerable<OsmDto?>? LinesRing(int srCode, OverPassResponseDto features)
     {
         var elements = Ways(features);
@@ -236,7 +316,13 @@ public class OverPassService : IOverPass
             });
         return FilterElements(result);
     }
-    
+
+    /// <summary>
+    /// Calculates the difference between the provided features and the options geometry.
+    /// </summary>
+    /// <param name="features">The features to calculate the difference for.</param>
+    /// <param name="options">The options for the OverPass query.</param>
+    /// <returns>A list of features with the calculated difference.</returns>
     private static List<Feature>? CalculateFeatureDifference(List<Feature>? features, OverPassOptions options)
     {
         // add difference feature
@@ -252,7 +338,13 @@ public class OverPassService : IOverPass
         features?.Add(featureDiff);
         return features;
     }
-    
+
+    /// <summary>
+    /// Gets the properties from the provided element based on the options.
+    /// </summary>
+    /// <param name="e">The element to get the properties from.</param>
+    /// <param name="options">The options for the OverPass query.</param>
+    /// <returns>A dictionary of properties.</returns>
     private static Dictionary<string, object?>? GetPropertiesFromElement(Element? e, OverPassOptions options)
     {
         Dictionary<string, object?> attributes = new();
@@ -271,7 +363,12 @@ public class OverPassService : IOverPass
             
         return attributes;
     }
-    
+
+    /// <summary>
+    /// Gets the properties from the provided element.
+    /// </summary>
+    /// <param name="e">The element to get the properties from.</param>
+    /// <returns>An attributes table containing the properties.</returns>
     private static AttributesTable GetPropertiesFromElement(Element e)
     {
         AttributesTable attributes = new ();

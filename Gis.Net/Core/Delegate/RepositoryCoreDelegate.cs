@@ -24,9 +24,6 @@ public delegate IQueryable<T> QueryableParamsDelegate<T, in TQuery>(IQueryable<T
 /// <summary>
 /// Represents a delegate that takes an <see cref="IQueryable{T}"/> and <typeparamref name="TQuery"/> as input and returns an <see cref="IQueryable{T}"/> as output.
 /// </summary>
-/// <typeparam name="T">The type of the elements in the query.</typeparam>
-/// <typeparam name="TQuery">The type of the query parameters.</typeparam>
-/// <param name="query">The input query to be processed.</param>
 /// <param name="queryByParams">The query parameters.</param>
 /// <returns>The processed query.</returns>
 public delegate Task<ICollection<T>> QueryableParamsDelegateAsync<T, in TQuery>(ICollection<T> models, TQuery? queryByParams) where T : ModelBase where TQuery : QueryBase;
@@ -34,7 +31,6 @@ public delegate Task<ICollection<T>> QueryableParamsDelegateAsync<T, in TQuery>(
 /// <summary>
 /// Delegate for performing tasks on a single model.
 /// </summary>
-/// <typeparam name="TModel">The type of the model.</typeparam>
 /// <param name="model">The model to perform the task on.</param>
 /// <returns>A task representing the asynchronous operation.</returns>
 public delegate Task TaskModelDelegate<in TModel>(TModel model) where TModel : IModelBase;
@@ -42,8 +38,6 @@ public delegate Task TaskModelDelegate<in TModel>(TModel model) where TModel : I
 /// <summary>
 /// Delegate for performing an asynchronous task with a model and query parameters.
 /// </summary>
-/// <typeparam name="TModel">The type of the model.</typeparam>
-/// <typeparam name="TQuery">The type of the query parameters.</typeparam>
 /// <param name="model">The model to operate on.</param>
 /// <param name="queryByParams">The query parameters.</param>
 public delegate Task TaskModelWithParamsDelegate<in TModel, in TQuery>(TModel model, TQuery queryByParams) where TModel : IModelBase where TQuery : QueryBase;
@@ -51,8 +45,6 @@ public delegate Task TaskModelWithParamsDelegate<in TModel, in TQuery>(TModel mo
 /// <summary>
 /// Represents a delegate that maps properties from a model to a DTO.
 /// </summary>
-/// <typeparam name="TModel">The type of the model.</typeparam>
-/// <typeparam name="TDto">The type of the DTO.</typeparam>
 /// <param name="model">The model to be mapped to the DTO.</param>
 /// <param name="dto">The DTO where the properties are mapped to.</param>
 /// <remarks>
@@ -64,8 +56,6 @@ public delegate void ModelToDtoExtraMapperDelegate<in TModel, in TDto>(TModel mo
 /// <summary>
 /// Delegate for mapping a Dto to a Model with additional mapping logic.
 /// </summary>
-/// <typeparam name="TDto">The type of the Dto.</typeparam>
-/// <typeparam name="TModel">The type of the Model.</typeparam>
 /// <param name="dto">The Dto to map.</param>
 /// <param name="model">The Model to map to.</param>
 /// <remarks>
@@ -76,8 +66,6 @@ public delegate void DtoToModelExtraMapperDelegate<in TDto, in TModel>(TDto dto,
 /// <summary>
 /// Represents a delegate for mapping properties from a model to a DTO asynchronously.
 /// </summary>
-/// <typeparam name="TModel">The type of the model.</typeparam>
-/// <typeparam name="TDto">The type of the DTO.</typeparam>
 /// <param name="model">The model.</param>
 /// <param name="dto">The DTO.</param>
 /// <returns>A task representing the asynchronous operation.</returns>

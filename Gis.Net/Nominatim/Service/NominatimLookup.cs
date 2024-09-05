@@ -5,7 +5,6 @@ namespace Gis.Net.Nominatim.Service;
 /// <summary>
 /// Represents a class for performing Nominatim lookup operations.
 /// </summary>
-/// <typeparam name="T">The type of result to be returned.</typeparam>
 public class NominatimLookup : Nominatim<LookupResultsXml>
 {
     /// <summary>

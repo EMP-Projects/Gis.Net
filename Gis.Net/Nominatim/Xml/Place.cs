@@ -15,6 +15,9 @@ public class Place
     [XmlElement(ElementName = "geokml")]
     public GeoKml? GeoKml { get; set; }
     
+    /// <summary>
+    /// Represents the house number in a geographic location.
+    /// </summary>
     [XmlElement(ElementName = "house_number")]
     public string? HouseNumber { get; set; }
 
@@ -105,6 +108,9 @@ public class Place
     [XmlAttribute(AttributeName = "lon")]
     public string? Lon { get; set; }
     
+    /// <summary>
+    /// Represents the display name of a place.
+    /// </summary>
     [XmlAttribute(AttributeName = "display_name")]
     public string? DisplayName { get; set; }
 

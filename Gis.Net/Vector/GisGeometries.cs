@@ -107,7 +107,7 @@ public static class GisGeometries
     public static bool CompareGeometries(Geometry geom1, Geometry geom2, double? distance = null)
     {
         if (IsPoint(geom2))
-            return geom1.IsWithinDistance(geom2, distance ?? 0.0001);
+            return geom1.IsWithinDistance(geom2, distance ?? 100);
         if (IsLineString(geom2))
             return geom1.Touches(geom2);
         if (IsPolygon(geom2))

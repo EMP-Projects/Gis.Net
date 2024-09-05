@@ -17,5 +17,8 @@ public class AwsS3BucketDto : AwsS3BucketRootDto
     /// </summary>
     [JsonPropertyName("key")] public string? Key { get; set; }
     
+    /// <summary>
+    /// Gets or sets the continuation token for paginated results.
+    /// </summary>
     [JsonPropertyName("continuationToken")] public string? ContinuationToken { get; set; }
 }
