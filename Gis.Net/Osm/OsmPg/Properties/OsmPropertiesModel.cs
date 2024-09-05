@@ -7,6 +7,7 @@ namespace Gis.Net.Osm.OsmPg.Properties;
 /// <summary>
 /// Represents a model that holds the properties of an OpenStreetMap object.
 /// </summary>
+[Table("osm_properties")]
 public class OsmPropertiesModel : ModelBase, IOsmProperties
 {
     /// <inheritdoc />
