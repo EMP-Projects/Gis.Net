@@ -7,7 +7,7 @@ namespace Gis.Net.Osm.OsmPg.Vector;
 
 /// <inheritdoc />
 public class OsmVectorRepository<T> : GisVectorCoreRepository<OsmVectorModel, OsmVectorDto, OsmVectorQuery, T, OsmPropertiesDto, OsmPropertiesModel>
-where T : DbContext
+where T : DbContext, IOsmDbContext
 {
 
     /// <inheritdoc />

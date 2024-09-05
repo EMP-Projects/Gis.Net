@@ -1,5 +1,6 @@
 using Gis.Net.Core.DTO;
 using Gis.Net.Core.Entities;
+using Gis.Net.Osm.OsmPg;
 using Gis.Net.Vector.DTO;
 using Gis.Net.Vector.Models;
 using Gis.Net.Vector.Repositories;

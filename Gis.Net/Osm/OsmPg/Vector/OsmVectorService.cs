@@ -10,7 +10,7 @@ namespace Gis.Net.Osm.OsmPg.Vector;
 /// <inheritdoc />
 public class OsmVectorService<T> : 
     GisVectorCoreService<OsmVectorModel, OsmVectorDto, OsmVectorQuery, OsmVectorRequest, T, OsmPropertiesModel, OsmPropertiesDto>
-where T : DbContext
+where T : DbContext, IOsmDbContext
 {
     private readonly IOsmPgService _osmPgService;
     private readonly IMapper _mapper;

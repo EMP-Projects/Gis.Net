@@ -5,7 +5,7 @@ namespace Gis.Net.Osm.OsmPg.Properties;
 
 /// <inheritdoc />
 public class OsmPropertiesService<T> : ServiceCore<OsmPropertiesModel, OsmPropertiesDto, OsmPropertiesQuery, OsmPropertiesRequest, T>
-where T : DbContext, IOsmDbContext
+where T : DbContext
 {
 
     /// <inheritdoc />
