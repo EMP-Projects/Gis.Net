@@ -14,7 +14,7 @@ public class ElevationService : OpenMeteoService, IElevationService
     }
 
     /// <inheritdoc />
-    public async Task<List<GeoCodingResponse>?> GetElevation(ICoordinatesOptions options)
+    public async Task<GeoCodingResponse?> GetElevation(ICoordinatesOptions options)
     {
         if (options.Lat is null || options.Lng is null)
             throw new ArgumentException("Missing Required Geographic Coordinates");

@@ -13,5 +13,5 @@ public interface IRainService : IOpenMeteoService
     /// A task that represents the asynchronous operation of retrieving weather forecast data.
     /// The task result contains a list of <see cref="OpenMeteoData"/> objects or null if no data could be retrieved.
     /// </returns>
-    Task<List<OpenMeteoData>?> Forecast(OpenMeteoOptions options);
+    Task<OpenMeteoData?> Forecast(OpenMeteoOptions options);
 }

@@ -9,7 +9,7 @@ using NetTopologySuite.Geometries;
 
 namespace Gis.Net.Vector.Repositories;
 
-/// <inheritdoc />
+/// <inheritdoc cref="Gis.Net.Vector.Repositories.IGisCoreRepository<TModel,TDto,TQuery,out TContext>" />
 public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> : 
     RepositoryCore<TModel, TDto, TQuery, TContext>,
     IGisCoreRepository<TModel, TDto, TQuery, TContext>

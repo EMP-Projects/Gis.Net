@@ -86,7 +86,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         
         // check of mandatory parameters
         if (!ValidateParameters(options.QueryParams!))
-            throw new Exception("Parametri obbligatori mancanti");
+            throw new Exception("Missing mandatory parameters");
 
         // parameterized query
         q = ParseQueryParams(q, options.QueryParams);
@@ -179,14 +179,19 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// <inheritdoc />
     public virtual async Task<TDto> Find(long id, FindOptions<TModel, TDto>? options)
     {
+        // find the model
         var model = options?.OnExplicitLoading is not null 
             ? await FindWithExplicitLoading(id, options) 
             : await FindWithIncludes(id);
+        
+        // map the model to the dto
         var result = Mapper.Map<TDto>(model);
+        
         // invoke delegate function to run other actions
         options?.OnExtraMapping?.Invoke(model, result);
         if (options?.OnExtraMappingAsync is not null)
             await options.OnExtraMappingAsync.Invoke(model, result);
+        
         return result;
     }
 

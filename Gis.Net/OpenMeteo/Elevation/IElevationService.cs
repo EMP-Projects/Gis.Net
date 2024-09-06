@@ -12,5 +12,5 @@ public interface IElevationService : IOpenMeteoService
     /// </summary>
     /// <param name="options">The options containing the latitude and longitude coordinates.</param>
     /// <returns>A list of <see cref="GeoCodingResponse"/> objects representing the elevation data for the specified coordinates.</returns>
-    Task<List<GeoCodingResponse>?> GetElevation(ICoordinatesOptions options);
+    Task<GeoCodingResponse?> GetElevation(ICoordinatesOptions options);
 }

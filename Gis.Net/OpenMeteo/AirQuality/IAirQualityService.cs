@@ -10,7 +10,7 @@ public interface IAirQualityService
     /// </summary>
     /// <param name="options">The options for retrieving air quality data.</param>
     /// <returns>The list of air quality data responses.</returns>
-    Task<List<AirQualityApiResponse>?> AirQuality(AirQualityOptions options);
+    Task<AirQualityApiResponse?> AirQuality(AirQualityOptions options);
 
     /// <summary>
     /// Gets or sets the current air quality parameters.

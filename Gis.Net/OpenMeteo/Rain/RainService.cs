@@ -47,7 +47,7 @@ public class RainService : OpenMeteoService, IRainService
     }
     
     /// <inheritdoc />
-    public virtual async Task<List<OpenMeteoData>?> Forecast(OpenMeteoOptions options)
+    public virtual async Task<OpenMeteoData?> Forecast(OpenMeteoOptions options)
     {
         if (options.Lat is null || options.Lng is null)
             throw new ArgumentException("Missing Required Geographic Coordinates");

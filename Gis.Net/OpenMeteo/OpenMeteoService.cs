@@ -33,12 +33,12 @@ public abstract class OpenMeteoService : IOpenMeteoService
     /// <typeparam name="T">The type to deserialize the response as.</typeparam>
     /// <param name="uri">The URI of the API request.</param>
     /// <returns>The deserialized response as a list of the specified type.</returns>
-    protected async Task<List<T>?> ApiRequest<T>(string uri) where T : class
+    protected async Task<T?> ApiRequest<T>(string uri) where T : class
     {
         var response = await HttpClient.GetAsync(uri);
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<T>?>(responseBody);
+        return JsonSerializer.Deserialize<T>(responseBody);
     }
     
 }

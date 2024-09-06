@@ -8,7 +8,7 @@ public interface IAirQualityOptions
     /// <summary>
     /// Represents the options for retrieving air quality data.
     /// </summary>
-    AirQualityLatLng[] Points { get; set; }
+    AirQualityLatLng Point { get; set; }
     
     /// <summary>
     /// Represents the time zone for retrieving air quality data.

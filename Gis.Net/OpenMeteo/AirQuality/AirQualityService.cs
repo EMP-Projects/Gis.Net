@@ -13,13 +13,6 @@ public class AirQualityService : OpenMeteoService, IAirQualityService
     {
     }
 
-    private static string CreateCoordinatesParameters(AirQualityLatLng[] points)
-    {
-        var latitude = string.Join(",", points.Select(p => p.Lat.ToString(CultureInfo.InvariantCulture)).ToArray());
-        var longitude = string.Join(",", points.Select(p => p.Lng.ToString(CultureInfo.InvariantCulture)).ToArray());
-        return $"latitude={latitude}&longitude={longitude}";
-    }
-
     /// <inheritdoc />
     public virtual string[] Current { get; set; } = CurrentParameters;
     
@@ -27,9 +20,9 @@ public class AirQualityService : OpenMeteoService, IAirQualityService
     public virtual string[] Hourly { get; set; } = HourlyParameters;
 
     /// <inheritdoc />
-    public async Task<List<AirQualityApiResponse>?> AirQuality(AirQualityOptions options)
+    public async Task<AirQualityApiResponse?> AirQuality(AirQualityOptions options)
     {
-        if (options.Points is null)
+        if (options.Point is null)
             throw new ArgumentException("Missing Required Points");
         
         if (options.TimeZone is null)
@@ -39,8 +32,8 @@ public class AirQualityService : OpenMeteoService, IAirQualityService
             + $"&hourly={string.Join(",", HourlyParameters)}"
             + $"&forecast_days={options.ForecastDays}"
             + $"&forecast_hours={options.ForecastHours}"
-            + $"&{UriParameters()}"
-            + $"&{CreateCoordinatesParameters(options.Points)}";
+            + $"{UriParameters()}"
+            + $"&latitude={options.Point.Lat.ToString(CultureInfo.InvariantCulture)}&longitude={options.Point.Lng.ToString(CultureInfo.InvariantCulture)}";
         
         return await ApiRequest<AirQualityApiResponse>(uri);
     }
