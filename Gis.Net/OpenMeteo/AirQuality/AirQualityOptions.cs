@@ -19,7 +19,7 @@ public class AirQualityOptions : IAirQualityOptions
     public string? TimeZone { get; set; } = "Europe/Berlin";
 
     /// <inheritdoc />
-    public int? ForecastDays { get; set; } = 7;
+    public int? ForecastDays { get; set; } = 5;
 
     /// <inheritdoc />
     public int? ForecastHours { get; set; } = 24;
