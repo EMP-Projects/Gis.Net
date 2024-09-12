@@ -102,12 +102,12 @@ public interface IAwsBucketService
     /// <param name="cancel"></param>
     /// <returns></returns>
     Task<string> GetSharingUrl(AwsS3BucketUploadDto options, CancellationToken cancel);
-    
+
     /// <summary>
     /// Check if bucket exists
     /// </summary>
     /// <param name="bucketName"></param>
     /// <returns></returns>
-    Task<bool> IsExistBucket(string? bucketName);
+    Task CheckExistBucket(string? bucketName);
 
 }

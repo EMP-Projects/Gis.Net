@@ -1,4 +1,3 @@
-using Gis.Net.Osm.OsmPg;
 using Gis.Net.Osm.OsmPg.Models;
 using Microsoft.EntityFrameworkCore;
 

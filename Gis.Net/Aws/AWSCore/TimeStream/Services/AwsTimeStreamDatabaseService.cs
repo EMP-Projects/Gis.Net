@@ -37,26 +37,12 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
     {
         Console.WriteLine("Creating Database");
 
-        try
+        var createDatabaseRequest = new CreateDatabaseRequest
         {
-            var createDatabaseRequest = new CreateDatabaseRequest
-            {
-                DatabaseName = options.DatabaseName
-            };
-            _logger.LogInformation("Database {DatabaseName} created", options.DatabaseName);
-            return await _timeStreamClient.CreateDatabaseAsync(createDatabaseRequest, cancel);
-        }
-        catch (ConflictException ex)
-        {
-            _logger.LogError("Database already exists");
-            throw new AwsExceptions(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Create database failed: {Message}", ex.ToString());
-            throw new AwsExceptions(ex.Message);
-        }
-
+            DatabaseName = options.DatabaseName
+        };
+        _logger.LogInformation("Database {DatabaseName} created", options.DatabaseName);
+        return await _timeStreamClient.CreateDatabaseAsync(createDatabaseRequest, cancel);
     }
     
     /// <summary>
@@ -68,27 +54,13 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
     /// <exception cref="AwsExceptions"></exception>
     public async Task<DescribeDatabaseResponse> DescribeDatabase(AwsTimeStreamDatabaseDto options, CancellationToken cancel)
     {
-        try
+        var describeDatabaseRequest = new DescribeDatabaseRequest
         {
-            var describeDatabaseRequest = new DescribeDatabaseRequest
-            {
-                DatabaseName = options.DatabaseName
-            };
-            var response = await _timeStreamClient.DescribeDatabaseAsync(describeDatabaseRequest, cancel);
-            _logger.LogInformation("Database {DatabaseName} has id: {DatabaseArn}", options.DatabaseName, response.Database.Arn);
-            return response;
-        }
-        catch (ResourceNotFoundException ex)
-        {
-            _logger.LogError("Database does not exist");
-            throw new AwsExceptions(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Describe database failed: {Message}", ex.ToString());
-            throw new AwsExceptions(ex.Message);
-        }
-
+            DatabaseName = options.DatabaseName
+        };
+        var response = await _timeStreamClient.DescribeDatabaseAsync(describeDatabaseRequest, cancel);
+        _logger.LogInformation("Database {DatabaseName} has id: {DatabaseArn}", options.DatabaseName, response.Database.Arn);
+        return response;
     }
 
     /// <summary>
@@ -99,30 +71,14 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
     /// <returns></returns>
     public async Task<UpdateDatabaseResponse> UpdateDatabase(AwsTimeStreamDatabaseDto options, CancellationToken cancel)
     {
-        Console.WriteLine("Updating Database");
-
-        try
+        var updateDatabaseRequest = new UpdateDatabaseRequest
         {
-            var updateDatabaseRequest = new UpdateDatabaseRequest
-            {
-                DatabaseName = options.DatabaseName,
-                KmsKeyId = options.KmsKeyId
-            };
-            var response = await _timeStreamClient.UpdateDatabaseAsync(updateDatabaseRequest, cancel);
-            _logger.LogInformation("Database {OptionsDatabaseName} updated with KmsKeyId {OptionsKmsKeyId}", options.DatabaseName, options.KmsKeyId);
-            return response;
-        }
-        catch (ResourceNotFoundException ex)
-        {
-            _logger.LogError("Database does not exist");
-            throw new AwsExceptions(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Update database failed: {Message}", ex.ToString());
-            throw new AwsExceptions(ex.Message);
-        }
-
+            DatabaseName = options.DatabaseName,
+            KmsKeyId = options.KmsKeyId
+        };
+        var response = await _timeStreamClient.UpdateDatabaseAsync(updateDatabaseRequest, cancel);
+        _logger.LogInformation("Database {OptionsDatabaseName} updated with KmsKeyId {OptionsKmsKeyId}", options.DatabaseName, options.KmsKeyId);
+        return response;
     }
     
     /// <summary>
@@ -134,26 +90,13 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
     /// <exception cref="AwsExceptions"></exception>
     public async Task<DeleteDatabaseResponse> DeleteDatabase(AwsTimeStreamDatabaseDto options, CancellationToken cancel)
     {
-        try
+        var deleteDatabaseRequest = new DeleteDatabaseRequest
         {
-            var deleteDatabaseRequest = new DeleteDatabaseRequest
-            {
-                DatabaseName = options.DatabaseName
-            };
-            var response = await _timeStreamClient.DeleteDatabaseAsync(deleteDatabaseRequest, cancel);
-            _logger.LogInformation("Database {OptionsDatabaseName} delete request status:{ResponseHttpStatusCode}", options.DatabaseName, response.HttpStatusCode);
-            return response;
-        }
-        catch (ResourceNotFoundException ex)
-        {
-            _logger.LogError("Database does not exist");
-            throw new AwsExceptions(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Exception while deleting database: {Message}", ex.ToString());
-            throw new AwsExceptions(ex.Message);
-        }
+            DatabaseName = options.DatabaseName
+        };
+        var response = await _timeStreamClient.DeleteDatabaseAsync(deleteDatabaseRequest, cancel);
+        _logger.LogInformation("Database {OptionsDatabaseName} delete request status:{ResponseHttpStatusCode}", options.DatabaseName, response.HttpStatusCode);
+        return response;
     }
     
     /// <summary>
@@ -163,31 +106,23 @@ public class AwsTimeStreamDatabaseService : IAwsTimeStreamDatabaseService
     /// <param name="cancel"></param>
     public async Task<List<Database>> ListDatabases(AwsTimeStreamDatabaseRootDto options, CancellationToken cancel)
     {
-        try
+        var listDatabasesRequest = new ListDatabasesRequest
         {
-            var listDatabasesRequest = new ListDatabasesRequest
-            {
-                MaxResults = options.MaxResult
-            };
-            
-            var response = await _timeStreamClient.ListDatabasesAsync(listDatabasesRequest, cancel);
-            List<Database> listResponse = response.Databases;
-            
-            var nextToken = response.NextToken;
-            while (nextToken != null)
-            {
-                listDatabasesRequest.NextToken = nextToken;
-                response = await _timeStreamClient.ListDatabasesAsync(listDatabasesRequest, cancel);
-                listResponse.AddRange(response.Databases);
-                nextToken = response.NextToken;
-            }
+            MaxResults = options.MaxResult
+        };
+        
+        var response = await _timeStreamClient.ListDatabasesAsync(listDatabasesRequest, cancel);
+        List<Database> listResponse = response.Databases;
+        
+        var nextToken = response.NextToken;
+        while (nextToken != null)
+        {
+            listDatabasesRequest.NextToken = nextToken;
+            response = await _timeStreamClient.ListDatabasesAsync(listDatabasesRequest, cancel);
+            listResponse.AddRange(response.Databases);
+            nextToken = response.NextToken;
+        }
 
-            return listResponse;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("List database failed: {Message}", ex.ToString());
-            throw new AwsExceptions(ex.Message);
-        }
+        return listResponse;
     }
 }

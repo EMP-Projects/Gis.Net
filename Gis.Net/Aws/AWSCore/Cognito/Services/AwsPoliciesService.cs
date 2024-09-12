@@ -3,57 +3,29 @@ using Microsoft.Extensions.Configuration;
 
 namespace Gis.Net.Aws.AWSCore.Cognito.Services;
 
-/// <summary>
-/// 
-/// </summary>
-public interface IAwsPolicies
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    List<string> Policies { get; }
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="cognitoGroups"></param>
-    void SetAwsPolicies(IEnumerable<string> cognitoGroups);
-    
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="cognitoGroup"></param>
-    /// <returns></returns>
-    IEnumerable<string> GetAwsPolicies(string cognitoGroup);
-}
-
-/// <summary>
-/// 
-/// </summary>
+/// <inheritdoc />
 public class AwsPoliciesService : IAwsPolicies
 {
     private readonly IConfiguration _configuration;
-    
-    /// <summary>
-    /// 
-    /// </summary>
+
+    /// <inheritdoc />
     public List<string> Policies { get; } = [];
     
     private string UserPoolId => _configuration["AWS_USERPOOLID"]!;
     
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="AwsPoliciesService"/> class with the specified configuration.
     /// </summary>
-    /// <param name="configuration"></param>
+    /// <param name="configuration">The configuration to be used by the service.</param>
     public AwsPoliciesService(IConfiguration configuration) => _configuration = configuration;
 
     /// <summary>
-    /// 
+    /// Gets the role for the admin users in the AWS User Pool.
     /// </summary>
     public string RoleAdmin => $"{UserPoolId}_Admin";
-    
+
     /// <summary>
-    /// 
+    /// Gets the role for the regular users in the AWS User Pool.
     /// </summary>
     public string RoleUsers => $"{UserPoolId}_Users";
     

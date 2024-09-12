@@ -122,7 +122,7 @@ public static class AwsCognitoServiceManager
         builder.Services.AddAuthorization(auth =>
         {
             auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .RequireAuthenticatedUser()
                 .Build());
         });

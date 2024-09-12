@@ -35,22 +35,14 @@ public class AwsSnsService : IAwsSnsService
     /// <inheritdoc />
     public async Task<string> ConfirmSubscriptionAsync(AwsConfirmDto options, CancellationToken cancel)
     {
-        try
+        var request = new ConfirmSubscriptionRequest
         {
-            var request = new ConfirmSubscriptionRequest
-            {
-                TopicArn = options.TopicArn,
-                Token = options.Token
-            };
+            TopicArn = options.TopicArn,
+            Token = options.Token
+        };
 
-            var confirmResponse = await _snsClient.ConfirmSubscriptionAsync(request, cancel);
-            return confirmResponse.SubscriptionArn;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var confirmResponse = await _snsClient.ConfirmSubscriptionAsync(request, cancel);
+        return confirmResponse.SubscriptionArn;
     }
 
     /// <summary>
@@ -62,35 +54,27 @@ public class AwsSnsService : IAwsSnsService
     /// <exception cref="Exception"></exception>
     public async Task<string> SubscribeTopic(AwsSubscribeDto options, CancellationToken cancel)
     {
-        try
+        options.TopicArn ??= TopicArnDefault;
+
+        if (string.IsNullOrEmpty(options.EndPoint))
+            throw new Exception("Endpoint must be specified");
+
+        var subscribeRequest = new SubscribeRequest
         {
-            options.TopicArn ??= TopicArnDefault;
+            TopicArn = options.TopicArn,
+            Protocol = options.Protocol,
+            Endpoint = options.EndPoint,
+            ReturnSubscriptionArn = true
+        };
 
-            if (string.IsNullOrEmpty(options.EndPoint))
-                throw new Exception("Endpoint must be specified");
-
-            var subscribeRequest = new SubscribeRequest
+        if (!string.IsNullOrEmpty(options.FilterPolicy))
+            subscribeRequest.Attributes = new Dictionary<string, string>
             {
-                TopicArn = options.TopicArn,
-                Protocol = options.Protocol,
-                Endpoint = options.EndPoint,
-                ReturnSubscriptionArn = true
+                { "FilterPolicy", options.FilterPolicy }
             };
 
-            if (!string.IsNullOrEmpty(options.FilterPolicy))
-                subscribeRequest.Attributes = new Dictionary<string, string>
-                {
-                    { "FilterPolicy", options.FilterPolicy }
-                };
-
-            var subscribeResponse = await _snsClient.SubscribeAsync(subscribeRequest, cancel);
-            return subscribeResponse.SubscriptionArn;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var subscribeResponse = await _snsClient.SubscribeAsync(subscribeRequest, cancel);
+        return subscribeResponse.SubscriptionArn;
     }
 
     /// <summary>
@@ -99,16 +83,8 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<List<string>> ListTopics(CancellationToken cancel)
     {
-        try
-        {
-            var response = await _snsClient.ListTopicsAsync(new ListTopicsRequest(), cancel);
-            return response.Topics.Select(topic => topic.TopicArn).ToList();
-        } 
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var response = await _snsClient.ListTopicsAsync(new ListTopicsRequest(), cancel);
+        return response.Topics.Select(topic => topic.TopicArn).ToList();
     }
 
     /// <summary>
@@ -125,16 +101,8 @@ public class AwsSnsService : IAwsSnsService
             PhoneNumber = options.PhoneNumber
         };
 
-        try
-        {
-            var response = await _snsClient.CheckIfPhoneNumberIsOptedOutAsync(request, cancel);
-            return response.HttpStatusCode == HttpStatusCode.OK && response.IsOptedOut;
-        }
-        catch (AuthorizationErrorException ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var response = await _snsClient.CheckIfPhoneNumberIsOptedOutAsync(request, cancel);
+        return response.HttpStatusCode == HttpStatusCode.OK && response.IsOptedOut;
     }
     
     private static CreateTopicRequest TopicRequest(AwsTopicRequestDto request)
@@ -166,17 +134,9 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<string> CreateTopic(AwsTopicRequestDto request, CancellationToken cancel)
     {
-        try
-        {
-            var snsRequest = TopicRequest(request);
-            var response = await _snsClient.CreateTopicAsync(snsRequest, cancel);
-            return response.TopicArn;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var snsRequest = TopicRequest(request);
+        var response = await _snsClient.CreateTopicAsync(snsRequest, cancel);
+        return response.TopicArn;
     }
 
     /// <summary>
@@ -187,21 +147,13 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<bool> Unsubscribe(AwsUnSubscribeDto options, CancellationToken cancel)
     {
-        try
-        {
-            var unsubscribeResponse = await _snsClient.UnsubscribeAsync(
-                new UnsubscribeRequest
-                {
-                    SubscriptionArn = options.SubscriptionArn
-                }, cancel);
+        var unsubscribeResponse = await _snsClient.UnsubscribeAsync(
+            new UnsubscribeRequest
+            {
+                SubscriptionArn = options.SubscriptionArn
+            }, cancel);
 
-            return unsubscribeResponse.HttpStatusCode == HttpStatusCode.OK;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        return unsubscribeResponse.HttpStatusCode == HttpStatusCode.OK;
     }
 
     /// <summary>
@@ -212,25 +164,17 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<bool> DeleteTopic(AwsSnsDto? options, CancellationToken cancel)
     {
-        try
+        options ??= new AwsSnsDto
         {
-            options ??= new AwsSnsDto
+            TopicArn = TopicArnDefault
+        };
+        
+        var deleteResponse = await _snsClient.DeleteTopicAsync(
+            new DeleteTopicRequest
             {
-                TopicArn = TopicArnDefault
-            };
-            
-            var deleteResponse = await _snsClient.DeleteTopicAsync(
-                new DeleteTopicRequest
-                {
-                    TopicArn = options.TopicArn
-                }, cancel);
-            return deleteResponse.HttpStatusCode == HttpStatusCode.OK;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+                TopicArn = options.TopicArn
+            }, cancel);
+        return deleteResponse.HttpStatusCode == HttpStatusCode.OK;
     }
 
     /// <summary>
@@ -242,21 +186,13 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<Dictionary<string, string>> GetTopicAttributes(AwsSnsDto? options, CancellationToken cancel)
     {
-        try
+        options ??= new AwsSnsDto
         {
-            options ??= new AwsSnsDto
-            {
-                TopicArn = TopicArnDefault
-            };
-            
-            var response = await _snsClient.GetTopicAttributesAsync(options.TopicArn, cancel);
-            return response.Attributes;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+            TopicArn = TopicArnDefault
+        };
+        
+        var response = await _snsClient.GetTopicAttributesAsync(options.TopicArn, cancel);
+        return response.Attributes;
     }
 
     /// <summary>
@@ -266,45 +202,37 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<List<Subscription>> GetSubscriptions(AwsSnsDto? options)
     {
-        try
+        options ??= new AwsSnsDto
         {
-            options ??= new AwsSnsDto
-            {
-                TopicArn = TopicArnDefault
-            };
-            
-            var results = new List<Subscription>();
+            TopicArn = TopicArnDefault
+        };
+        
+        var results = new List<Subscription>();
 
-            if (!string.IsNullOrEmpty(options.TopicArn))
-            {
-                var paginateByTopic = _snsClient.Paginators.ListSubscriptionsByTopic(
-                    new ListSubscriptionsByTopicRequest
-                    {
-                        TopicArn = options.TopicArn,
-                    });
-
-                // Get the entire list using the paginator.
-                await foreach (var subscription in paginateByTopic.Subscriptions)
+        if (!string.IsNullOrEmpty(options.TopicArn))
+        {
+            var paginateByTopic = _snsClient.Paginators.ListSubscriptionsByTopic(
+                new ListSubscriptionsByTopicRequest
                 {
-                    results.Add(subscription);
-                }
-            }
-            else
+                    TopicArn = options.TopicArn,
+                });
+
+            // Get the entire list using the paginator.
+            await foreach (var subscription in paginateByTopic.Subscriptions)
             {
-                var paginateAllSubscriptions = _snsClient.Paginators.ListSubscriptions(new ListSubscriptionsRequest());
-
-                // Get the entire list using the paginator.
-                await foreach (var subscription in paginateAllSubscriptions.Subscriptions)
-                    results.Add(subscription);
+                results.Add(subscription);
             }
-
-            return results;
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
+            var paginateAllSubscriptions = _snsClient.Paginators.ListSubscriptions(new ListSubscriptionsRequest());
+
+            // Get the entire list using the paginator.
+            await foreach (var subscription in paginateAllSubscriptions.Subscriptions)
+                results.Add(subscription);
         }
+
+        return results;
     }
 
     /// <summary>
@@ -315,36 +243,28 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<string> Publish(AwsPublishDto options, CancellationToken cancel)
     {
-        try
+        var publishRequest = new PublishRequest
         {
-            var publishRequest = new PublishRequest
-            {
-                TopicArn = options.TopicArn,
-                Message = options.Message,
-                MessageDeduplicationId = options.DeDuplicationId,
-                MessageGroupId = options.GroupId
-            };
+            TopicArn = options.TopicArn,
+            Message = options.Message,
+            MessageDeduplicationId = options.DeDuplicationId,
+            MessageGroupId = options.GroupId
+        };
 
-            if (options.AttributeValue != null)
-            {
-                // Add the string attribute if it exists.
-                publishRequest.MessageAttributes =
-                    new Dictionary<string, MessageAttributeValue>
+        if (options.AttributeValue != null)
+        {
+            // Add the string attribute if it exists.
+            publishRequest.MessageAttributes =
+                new Dictionary<string, MessageAttributeValue>
+                {
                     {
-                        {
-                            options.AttributeName!,
-                            new MessageAttributeValue { StringValue = options.AttributeValue, DataType = "String" }
-                        }
-                    };
-            }
+                        options.AttributeName!,
+                        new MessageAttributeValue { StringValue = options.AttributeValue, DataType = "String" }
+                    }
+                };
+        }
 
-            var publishResponse = await _snsClient.PublishAsync(publishRequest, cancel);
-            return publishResponse.MessageId;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error -> {Message}", ex.Message);
-            throw new AwsExceptions(ex.Message);
-        }
+        var publishResponse = await _snsClient.PublishAsync(publishRequest, cancel);
+        return publishResponse.MessageId;
     }
 }
