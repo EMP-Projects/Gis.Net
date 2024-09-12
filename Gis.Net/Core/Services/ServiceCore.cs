@@ -132,6 +132,13 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
         return result;
     }
 
+    /// <summary>
+    /// Deletes a record based on the provided DTO.
+    /// </summary>
+    /// <param name="dto">The data transfer object representing the record to be deleted.</param>
+    /// <returns>A task representing the asynchronous operation, with the deleted model as the result.</returns>
+    public virtual async Task<TModel> Delete(TDto dto) => await Delete(dto.Id);
+
     /// <inheritdoc />
     public virtual async Task<string?> FindToken(long id, string secret) => await _repositoryCore.CreateToken(id, secret);
 
