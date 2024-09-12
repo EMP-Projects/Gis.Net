@@ -121,21 +121,21 @@ public static class GisGeometries
     /// </summary>
     /// <param name="geom">The geometry to check.</param>
     /// <returns>True if the geometry is a point or a multi-point geometry; otherwise, false.</returns>
-    public static bool IsPoint(Geometry geom) => geom.GeometryType.Equals(Point) || geom.GeometryType.Equals(MultiPoint) || geom.GeometryType.Equals(MultiPointZ);
+    public static bool IsPoint(Geometry geom) => geom.GeometryType.ToUpper().Equals(Point) || geom.GeometryType.ToUpper().Equals(MultiPoint) || geom.GeometryType.ToUpper().Equals(MultiPointZ);
 
     /// <summary>
     /// Determines whether the given geometry is a line string or a multi-line string geometry.
     /// </summary>
     /// <param name="geom">The geometry to check.</param>
     /// <returns>True if the geometry is a line string or a multi-line string geometry; otherwise, false.</returns>
-    public static bool IsLineString(Geometry geom) => geom.GeometryType.Equals(LineString) || geom.GeometryType.Equals(MultiLineString) || geom.GeometryType.Equals(MultiLineStringZ) || geom.GeometryType.Equals(Curve) || geom.GeometryType.Equals(MultiCurve) || geom.GeometryType.Equals(MultiCurveZ);
+    public static bool IsLineString(Geometry geom) => geom.GeometryType.ToUpper().Equals(LineString) || geom.GeometryType.ToUpper().Equals(MultiLineString) || geom.GeometryType.ToUpper().Equals(MultiLineStringZ) || geom.GeometryType.ToUpper().Equals(Curve) || geom.GeometryType.Equals(MultiCurve) || geom.GeometryType.Equals(MultiCurveZ);
 
     /// <summary>
     /// Determines whether the given geometry is a polygon or a multi-polygon geometry.
     /// </summary>
     /// <param name="geom">The geometry to check.</param>
     /// <returns>True if the geometry is a polygon or a multi-polygon geometry; otherwise, false.</returns>
-    public static bool IsPolygon(Geometry geom) => geom.GeometryType.Equals(Polygon) || geom.GeometryType.Equals(MultiPolygon) || geom.GeometryType.Equals(MultiPolygonZ) || geom.GeometryType.Equals(Surface) || geom.GeometryType.Equals(MultiSurface) || geom.GeometryType.Equals(MultiSurfaceZ);
+    public static bool IsPolygon(Geometry geom) => geom.GeometryType.ToUpper().Equals(Polygon) || geom.GeometryType.ToUpper().Equals(MultiPolygon) || geom.GeometryType.ToUpper().Equals(MultiPolygonZ) || geom.GeometryType.Equals(Surface) || geom.GeometryType.Equals(MultiSurface) || geom.GeometryType.Equals(MultiSurfaceZ);
 
     /// <summary>
     /// Determines whether the given geometry is a multiple geometry type.
@@ -144,19 +144,19 @@ public static class GisGeometries
     /// <returns>True if the geometry is a multiple geometry type; otherwise, false.</returns>
     public static bool IsMultipleGeometry(Geometry geom)
     {
-        return geom.GeometryType.Equals(MultiLineString) ||
-               geom.GeometryType.Equals(MultiCurve) ||
-               geom.GeometryType.Equals(MultiPoint) ||
-               geom.GeometryType.Equals(MultiPolygon) ||
-               geom.GeometryType.Equals(GeometryCollection) ||
-               geom.GeometryType.Equals(MultiSurface) ||
-               geom.GeometryType.Equals(Surface) ||
-               geom.GeometryType.Equals(Curve) ||
-               geom.GeometryType.Equals(MultiPointZ) ||
-               geom.GeometryType.Equals(MultiLineStringZ) ||
-               geom.GeometryType.Equals(MultiPointZ) ||
-               geom.GeometryType.Equals(MultiCurveZ) ||
-               geom.GeometryType.Equals(MultiSurfaceZ);
+        return geom.GeometryType.ToUpper().Equals(MultiLineString) ||
+               geom.GeometryType.ToUpper().Equals(MultiCurve) ||
+               geom.GeometryType.ToUpper().Equals(MultiPoint) ||
+               geom.GeometryType.ToUpper().Equals(MultiPolygon) ||
+               geom.GeometryType.ToUpper().Equals(GeometryCollection) ||
+               geom.GeometryType.ToUpper().Equals(MultiSurface) ||
+               geom.GeometryType.ToUpper().Equals(Surface) ||
+               geom.GeometryType.ToUpper().Equals(Curve) ||
+               geom.GeometryType.ToUpper().Equals(MultiPointZ) ||
+               geom.GeometryType.ToUpper().Equals(MultiLineStringZ) ||
+               geom.GeometryType.ToUpper().Equals(MultiPointZ) ||
+               geom.GeometryType.ToUpper().Equals(MultiCurveZ) ||
+               geom.GeometryType.ToUpper().Equals(MultiSurfaceZ);
     }
 
     /// <summary>
