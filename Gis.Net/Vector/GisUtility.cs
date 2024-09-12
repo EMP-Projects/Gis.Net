@@ -8,9 +8,12 @@ using Gis.Net.Vector.DTO;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.Geometries.Utilities;
-using NetTopologySuite.IO.Esri;
+using NetTopologySuite.IO;
 using NetTopologySuite.Operation.Buffer;
 using NetTopologySuite.Precision;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Shapefile = NetTopologySuite.IO.Esri.Shapefile;
 
 namespace Gis.Net.Vector;
 
@@ -638,17 +641,9 @@ public static class GisUtility
     /// <returns>A JSON string representing the serialized FeatureCollection.</returns>
     public static string SerializeFeatureCollection(FeatureCollection featureCollection)
     {
-        var options = new JsonSerializerOptions {
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            WriteIndented = true,
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-            Converters =
-            {
-                new NetTopologySuite.IO.Converters.GeoJsonConverterFactory()
-            }
-        };
-     
-       return JsonSerializer.Serialize(featureCollection, options);
+        
+        var geoJsonWriter = new GeoJsonWriter();
+        return geoJsonWriter.Write(featureCollection);
     }
 
     /// <summary>
