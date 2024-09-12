@@ -629,6 +629,16 @@ public static class GisUtility
         var geoJson = AdjustSingleQuote(GetRawGeoJson(geoJsonFileName, pathDir));
         return NetCore.DeserializeString<FeatureCollection>(geoJson)!;
     }
+    
+    /// <summary>
+    /// Serializes a FeatureCollection object to a JSON string.
+    /// </summary>
+    /// <param name="featureCollection">The FeatureCollection object to serialize.</param>
+    /// <returns>A JSON string representing the serialized FeatureCollection.</returns>
+    public static string SerializeFeatureCollection(FeatureCollection featureCollection)
+    {
+        return JsonSerializer.Serialize(featureCollection);
+    }
 
     /// <summary>
     /// Reads features from an ESRI file at the specified path using the Shapefile class.
