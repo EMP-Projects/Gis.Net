@@ -641,7 +641,11 @@ public static class GisUtility
         var options = new JsonSerializerOptions {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             WriteIndented = true,
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+            Converters =
+            {
+                new NetTopologySuite.IO.Converters.GeoJsonConverterFactory()
+            }
         };
      
        return JsonSerializer.Serialize(featureCollection, options);
