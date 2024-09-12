@@ -16,7 +16,7 @@ public class GisRequest : RequestBase, IGisRequest
     /// <summary>
     /// Represents a GIS request object that extends the RequestBase class and implements the IGisRequest interface.
     /// </summary>
-    [JsonPropertyName("measure")] public bool Measure { get; set; }
+    [JsonPropertyName("measure")] public bool? Measure { get; set; }
 
     /// <summary>
     /// Represents a GIS request object.

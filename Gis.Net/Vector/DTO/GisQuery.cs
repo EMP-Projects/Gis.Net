@@ -42,7 +42,7 @@ public class GisQuery : QueryBase, IGisQuery, IGisRequest
     /// Represents a GIS query for measuring data.
     /// </summary>
     [FromQuery(Name = "measure")]
-    public bool Measure { get; set; }
+    public bool? Measure { get; set; }
 
     /// <summary>
     /// Represents a GIS query with specific parameters.

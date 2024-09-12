@@ -8,7 +8,7 @@ public interface IGisRequest
     /// <summary>
     /// Represents a GIS measure property.
     /// </summary>
-    bool Measure { get; set; }
+    bool? Measure { get; set; }
 
     /// <summary>
     /// Represents the spatial reference system used for GIS data.

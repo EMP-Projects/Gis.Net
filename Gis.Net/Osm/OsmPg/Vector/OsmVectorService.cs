@@ -36,6 +36,9 @@ where T : DbContext, IOsmDbContext
     {
         // Awaiting for the GetFeatures method from the _osmPgService with the given Geometry object (bbox) as an argument.
         var featuresOsm = await _osmPgService.GetFeatures(bbox);
+        
+        if (featuresOsm is null || featuresOsm.Count == 0)
+            throw new ApplicationException("I can't read features from the OSM database.");
 
         // Awaiting for the FeatureCollection method with a new OsmVectorQuery created as an argument.
         // The SrCode property of OsmVectorQuery is set to 3857.
