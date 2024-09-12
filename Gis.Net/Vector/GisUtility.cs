@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using Gis.Net.Core;
 using Gis.Net.Vector.DTO;
@@ -638,7 +639,9 @@ public static class GisUtility
     public static string SerializeFeatureCollection(FeatureCollection featureCollection)
     {
         var options = new JsonSerializerOptions {
-            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            WriteIndented = true,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
         };
      
        return JsonSerializer.Serialize(featureCollection, options);
