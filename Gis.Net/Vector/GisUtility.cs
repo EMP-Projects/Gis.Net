@@ -637,7 +637,11 @@ public static class GisUtility
     /// <returns>A JSON string representing the serialized FeatureCollection.</returns>
     public static string SerializeFeatureCollection(FeatureCollection featureCollection)
     {
-        return JsonSerializer.Serialize(featureCollection);
+        var options = new JsonSerializerOptions {
+            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
+        };
+     
+       return JsonSerializer.Serialize(featureCollection, options);
     }
 
     /// <summary>
