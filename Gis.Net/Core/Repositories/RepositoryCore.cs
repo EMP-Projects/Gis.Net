@@ -43,6 +43,9 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
         Mapper = mapper;
     }
 
+    /// <inheritdoc />
+    public async Task RunMigrations() => await _context.Database.MigrateAsync();
+
     /// <summary>
     /// Returns the database context
     /// </summary>

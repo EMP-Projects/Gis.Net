@@ -137,4 +137,10 @@ public interface IRepositoryCore<TModel, TDto, TQuery, out TContext>
     /// <param name="model">The model for which to retrieve the entity entry.</param>
     /// <returns>The entity entry for the specified model.</returns>
     EntityEntry<TModel> Entry(TModel model);
+    
+    /// <summary>
+    /// Runs the database migrations asynchronously.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task RunMigrations();
 }
