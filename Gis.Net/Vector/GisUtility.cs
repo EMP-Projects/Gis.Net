@@ -34,7 +34,7 @@ public static class GisUtility
         if (geom.GeometryType == GisGeometries.Point)
             return;
         
-        // se la geometria di confronto non è un punto allora esegui i calcoli
+        // ReSharper disable once StringLiteralTypo
         const string propName = "Measure";
 
         var area = ConvertAreaGeometry(feature.Geometry.Area);
