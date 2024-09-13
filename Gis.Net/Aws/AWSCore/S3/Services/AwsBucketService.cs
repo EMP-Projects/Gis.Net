@@ -343,15 +343,24 @@ public class AwsBucketService : IAwsBucketService
     {
         await CheckExistBucket(options.BucketName);
         
-        if (options.File is null || options.File.Length == 0 && options.Stream is null)
+        // check if file or stream is not null
+        if (options.File is null && options.Stream is null)
             throw new AwsExceptions($"File/Stream not specified.");
         
-        options.Key ??= options.Filename;
+        // check if file and stream are not specified at the same time
+        if (options.File is not null && options.Stream is not null)
+            throw new AwsExceptions("File and Stream cannot be specified at the same time.");
         
-        if (string.IsNullOrEmpty(options.Key))
-            throw new AwsExceptions($"Key not specified.");
+        // check if file is empty
+        if (options.File is not null && options.File.Length == 0)
+            throw new AwsExceptions($"File {options.File.FileName} is empty.");
         
-        var pathKey = Path.Combine(options.Prefix!, options.Key);
+        // check if prefix is not null
+        if (options.Prefix is null)
+            throw new AwsExceptions("Prefix not specified.");
+        
+        // check if key is not null
+        var pathKey = Path.Combine(options.Prefix, options.Filename ?? string.Empty);
         
         if (options.Replace is not null && options.Replace.Value)
             // delete file if exists and replace = true
@@ -369,6 +378,7 @@ public class AwsBucketService : IAwsBucketService
             ? options.File?.ContentType
             : MimeTypeMap.GetMimeType(new FileInfo(pathKey).Extension);
         
+        // create request
         var request = new PutObjectRequest
         {
             BucketName = options.BucketName,
@@ -378,16 +388,21 @@ public class AwsBucketService : IAwsBucketService
         };
 
         request.Metadata.Add("Content-Type", contentType);
-        _logger.LogInformation("File sent successfully");
-        await _s3.PutObjectAsync(request, cancel);
         
+        // add try catch in case you have exceptions shield/handling here
+        await _s3.PutObjectAsync(request, cancel);
+        _logger.LogInformation("File sent successfully");
+        
+        // create url request
         var urlRequest = GetUrlRequest(options);
 
+        // get presigned url
         var presignedUrl = options.Share is not null && options.Share.Value
             ? await _s3.GetPreSignedURLAsync(urlRequest)
             : string.Empty;
 
-        var s3Obj = new AwsS3ObjectDto
+        // create object result
+        return new AwsS3ObjectDto
         {
             Prefix = options.Prefix,
             PresignedUrl = presignedUrl,
@@ -395,8 +410,6 @@ public class AwsBucketService : IAwsBucketService
             LastModified = DateTime.UtcNow,
             FileName = options.File?.FileName
         };
-
-        return s3Obj;
     }
 
     /// <summary>
