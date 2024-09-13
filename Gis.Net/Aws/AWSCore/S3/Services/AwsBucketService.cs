@@ -75,9 +75,25 @@ public class AwsBucketService : IAwsBucketService
             BucketName = options.BucketName,
             UseClientRegion = true,
             BucketRegionName = options.Region,
-            CannedACL = S3CannedACL.PublicRead,
+            CannedACL = S3CannedACL.Private, // Set the ACL to Private to avoid problems with BlockPublicAccess
             ObjectOwnership = ObjectOwnership.ObjectWriter
         };
+        
+        // Configure Block Public Access settings
+        var blockPublicAccess = new PublicAccessBlockConfiguration
+        {
+            BlockPublicAcls = true,
+            IgnorePublicAcls = true,
+            BlockPublicPolicy = true,
+            RestrictPublicBuckets = true
+        };
+        
+        // Apply block public access settings to the bucket
+        await _s3.PutPublicAccessBlockAsync(new PutPublicAccessBlockRequest
+        {
+            BucketName = options.BucketName,
+            PublicAccessBlockConfiguration = blockPublicAccess
+        }, cancel);
 
         var response = await _s3.PutBucketAsync(request, cancel);
         return response.HttpStatusCode == HttpStatusCode.OK;
