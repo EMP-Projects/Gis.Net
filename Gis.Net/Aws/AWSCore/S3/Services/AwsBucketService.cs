@@ -68,12 +68,15 @@ public class AwsBucketService : IAwsBucketService
 
         options.Region ??= _configuration["AWS_REGION"];
         
+        // create bucket
+        // Info: https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/S3/TPutBucketRequest.html
         var request = new PutBucketRequest
         {
             BucketName = options.BucketName,
             UseClientRegion = true,
             BucketRegionName = options.Region,
-            CannedACL = S3CannedACL.PublicRead
+            CannedACL = S3CannedACL.PublicRead,
+            ObjectOwnership = ObjectOwnership.BucketOwnerEnforced // or ObjectOwnership.ObjectWriter
         };
 
         var response = await _s3.PutBucketAsync(request, cancel);
