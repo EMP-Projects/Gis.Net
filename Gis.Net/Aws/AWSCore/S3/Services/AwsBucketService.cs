@@ -30,16 +30,25 @@ public class AwsBucketService : IAwsBucketService
         _logger = logger;
         _configuration = configuration;
     }
+    
+    /// <summary>
+    /// Checks if the specified S3 bucket exists.
+    /// </summary>
+    /// <param name="bucketName">The name of the bucket to check.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the bucket exists.</returns>
+    /// <exception cref="AwsExceptions">Thrown when the bucket name is null or empty.</exception>
+    private async Task<bool> IfExistBucket(string? bucketName)
+    {
+        if (string.IsNullOrEmpty(bucketName)) 
+            throw new AwsExceptions("Bucket name is null or empty.");
+    
+        return await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(_s3, bucketName);
+    }
 
     /// <inheritdoc />
     public async Task CheckExistBucket(string? bucketName)
     {
-        if (string.IsNullOrEmpty(bucketName)) 
-            throw new AwsExceptions("Bucket name is null or empty.");
-        
-        var isExist = await Amazon.S3.Util.AmazonS3Util.DoesS3BucketExistV2Async(_s3, bucketName);
-        
-        if (!isExist)
+        if (!await IfExistBucket(bucketName))
             throw new AwsExceptions($"Bucket {bucketName} does not exist.");
     }
 
@@ -51,7 +60,11 @@ public class AwsBucketService : IAwsBucketService
     /// <exception cref="AwsExceptions"></exception>
     public async Task<bool> CreateBucket(AwsS3BucketRootDto options, CancellationToken cancel)
     {
-        await CheckExistBucket(options.BucketName);
+        if (await IfExistBucket(options.BucketName))
+        {
+            _logger.LogInformation($"Bucket {options.BucketName} already exists.");
+            return true;
+        }
 
         options.Region ??= _configuration["AWS_REGION"];
         

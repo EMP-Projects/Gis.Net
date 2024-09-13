@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>8.4.7</Version>
+        <Version>8.4.8</Version>
         <Authors>Giuseppe Zileni &lt;gzileni@hotmail.com&gt;</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Description>Libreria .Net per applicazioni Gis</Description>
