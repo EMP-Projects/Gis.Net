@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gis.Net.Core.Entities;
@@ -79,5 +80,23 @@ public static class DbContextManager
     {
         await dbContext.Database.MigrateAsync(cancellationToken: default);
         return dbContext;
+    }
+    
+    /// <summary>
+    /// Applies database migrations for the specified DbContext service.
+    /// </summary>
+    /// <typeparam name="TService">The type of the service that implements IApplicationDbContext&lt;TContext&gt;.</typeparam>
+    /// <typeparam name="TContext">The type of the DbContext.</typeparam>
+    /// <param name="app">The WebApplication instance.</param>
+    /// <returns>The WebApplication instance after applying migrations.</returns>
+    public static WebApplication ApplyMigrations<TService, TContext>(this WebApplication app) 
+        where TService : IApplicationDbContext<TContext> 
+        where TContext : DbContext
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var service = services.GetRequiredService<TService>();
+        service.RunMigrations();
+        return app;
     }
 }
