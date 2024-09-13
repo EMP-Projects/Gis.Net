@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using Gis.Net.Core;
 using Gis.Net.Vector.DTO;
@@ -11,7 +9,6 @@ using NetTopologySuite.Geometries.Utilities;
 using NetTopologySuite.IO;
 using NetTopologySuite.Operation.Buffer;
 using NetTopologySuite.Precision;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Shapefile = NetTopologySuite.IO.Esri.Shapefile;
 
@@ -22,7 +19,10 @@ namespace Gis.Net.Vector;
 /// </summary>
 public static class GisUtility
 {
-    private const double ConvToMeters = 0.00001;
+    /// <summary>
+    /// Conversion factor from the default unit to meters.
+    /// </summary>
+    public const double ConvToMeters = 0.00001;
 
     /// <summary>
     /// Calculates the measure of a feature based on its geometry and a given comparison geometry.
