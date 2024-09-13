@@ -76,7 +76,7 @@ public class AwsBucketService : IAwsBucketService
             UseClientRegion = true,
             BucketRegionName = options.Region,
             CannedACL = S3CannedACL.PublicRead,
-            ObjectOwnership = ObjectOwnership.BucketOwnerEnforced // or ObjectOwnership.ObjectWriter
+            ObjectOwnership = ObjectOwnership.ObjectWriter
         };
 
         var response = await _s3.PutBucketAsync(request, cancel);
