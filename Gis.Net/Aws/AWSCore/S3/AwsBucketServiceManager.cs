@@ -16,7 +16,7 @@ public static class AwsBucketServiceManager
     /// </summary>
     /// <param name="builder">The WebApplicationBuilder instance.</param>
     /// <returns>The updated WebApplicationBuilder instance.</returns>
-    public static WebApplicationBuilder AddBucketS3(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddAwsBucketS3(this WebApplicationBuilder builder)
     {
         builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
         builder.Services.AddAWSService<IAmazonS3>();

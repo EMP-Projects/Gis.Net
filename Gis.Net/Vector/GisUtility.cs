@@ -615,7 +615,6 @@ public static class GisUtility
     /// <returns>The feature collection parsed from the GeoJSON file.</returns>
     public static FeatureCollection? GetFeatureCollectionByGeoJson(string geoJsonFileName)
     {
-        // var geoJson = AdjustSingleQuote(GetRawGeoJson(geoJsonFileName));
         var pathGeoJson = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GeoJson");
         var fileGeoJson = Path.Combine(pathGeoJson, geoJsonFileName);
         using var streamGeoJson = File.OpenRead(fileGeoJson);
@@ -639,11 +638,63 @@ public static class GisUtility
     /// </summary>
     /// <param name="featureCollection">The FeatureCollection object to serialize.</param>
     /// <returns>A JSON string representing the serialized FeatureCollection.</returns>
-    public static string SerializeFeatureCollection(FeatureCollection featureCollection)
+    public static string SerializeFeatureCollection(FeatureCollection? featureCollection)
     {
-        
+        return SerializeObject(featureCollection);
+    }
+    
+    /// <summary>
+    /// Serializes a Feature object to a JSON string.
+    /// </summary>
+    /// <param name="feature">The Feature object to serialize. Can be null.</param>
+    /// <returns>A JSON string representing the serialized Feature.</returns>
+    public static string SerializeFeature(Feature? feature)
+    {
+        return SerializeObject(feature);
+    }
+    
+    /// <summary>
+    /// Serializes an object of type T to a JSON string.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to serialize.</typeparam>
+    /// <param name="obj">The object to serialize. Can be null.</param>
+    /// <returns>A JSON string representing the serialized object.</returns>
+    public static string SerializeObject<T>(T? obj) where T : class
+    {
         var geoJsonWriter = new GeoJsonWriter();
-        return geoJsonWriter.Write(featureCollection);
+        return geoJsonWriter.Write(obj);
+    }
+    
+    /// <summary>
+    /// Deserializes a JSON string into a FeatureCollection object.
+    /// </summary>
+    /// <param name="geoJson">The JSON string representing the FeatureCollection.</param>
+    /// <returns>The deserialized FeatureCollection object.</returns>
+    public static FeatureCollection DeserializeFeatureCollection(string geoJson)
+    {
+        return DeserializeObject<FeatureCollection>(geoJson);
+    }
+
+    /// <summary>
+    /// Deserializes a JSON string into a Feature object.
+    /// </summary>
+    /// <param name="geoJson">The JSON string representing the Feature.</param>
+    /// <returns>The deserialized Feature object.</returns>
+    public static Feature DeserializeFeature(string geoJson)
+    {
+        return DeserializeObject<Feature>(geoJson);
+    }
+
+    /// <summary>
+    /// Deserializes a JSON string into an object of type T.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to deserialize.</typeparam>
+    /// <param name="geoJson">The JSON string representing the object.</param>
+    /// <returns>The deserialized object of type T.</returns>
+    public static T DeserializeObject<T>(string geoJson) where T : class
+    {
+        var geoJsonReader = new GeoJsonReader();
+        return geoJsonReader.Read<T>(geoJson);
     }
 
     /// <summary>
