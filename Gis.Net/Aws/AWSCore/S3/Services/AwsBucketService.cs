@@ -342,25 +342,39 @@ public class AwsBucketService : IAwsBucketService
     public async Task<AwsS3ObjectDto> Upload(AwsS3BucketUploadDto options, CancellationToken cancel)
     {
         await CheckExistBucket(options.BucketName);
+
+        if (options.File is null)
+        {
+            // check if stream is not null
+            if (options.Stream is null)
+                throw new AwsExceptions("File/Stream is required.");
+            
+            // check if prefix is not null
+            if (options.Prefix is null)
+                throw new AwsExceptions("File/Prefix is required.");
+        }
+        else
+        {
+            // check if file and stream are not specified at the same time
+            if (options.Stream is not null)
+                throw new AwsExceptions("File and Stream cannot be specified at the same time.");
+            
+            // check if file is empty
+            if (options.File.Length == 0)
+                throw new AwsExceptions($"File {options.File.FileName} is empty.");
+        }
         
-        // check if file or stream is not null
-        if (options.File is null && options.Stream is null)
-            throw new AwsExceptions($"File/Stream not specified.");
-        
-        // check if file and stream are not specified at the same time
-        if (options.File is not null && options.Stream is not null)
-            throw new AwsExceptions("File and Stream cannot be specified at the same time.");
-        
-        // check if file is empty
-        if (options.File is not null && options.File.Length == 0)
-            throw new AwsExceptions($"File {options.File.FileName} is empty.");
-        
-        // check if prefix is not null
-        if (options.Prefix is null)
-            throw new AwsExceptions("Prefix not specified.");
+        options.Key ??= options.Filename;
         
         // check if key is not null
-        var pathKey = Path.Combine(options.Prefix, options.Filename ?? string.Empty);
+        if (options.Key is null)
+            throw new AwsExceptions("Key is required.");
+        
+        // check if prefix is not null
+        options.Prefix ??= "/";
+        
+        // create path key
+        var pathKey = Path.Combine(options.Prefix, options.Key);
         
         if (options.Replace is not null && options.Replace.Value)
             // delete file if exists and replace = true
@@ -404,7 +418,7 @@ public class AwsBucketService : IAwsBucketService
         // create object result
         return new AwsS3ObjectDto
         {
-            Prefix = options.Prefix,
+            Prefix = pathKey,
             PresignedUrl = presignedUrl,
             Size = options.File?.Length,
             LastModified = DateTime.UtcNow,
