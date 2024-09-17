@@ -17,4 +17,8 @@ public abstract class AwsDynamoDbTableBase : IAwsDynamoDbTableBase
     /// <inheritdoc />
     [DynamoDBGlobalSecondaryIndexHashKey("key-index")]
     public required string Key { get; set; }
+
+    /// <inheritdoc />
+    [DynamoDBGlobalSecondaryIndexRangeKey("key-index")]
+    public required string NextTimeStamp { get; set; }
 }

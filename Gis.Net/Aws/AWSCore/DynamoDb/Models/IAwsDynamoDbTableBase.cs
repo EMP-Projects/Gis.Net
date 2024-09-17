@@ -13,10 +13,15 @@ public interface IAwsDynamoDbTableBase
     /// <summary>
     /// Gets or sets the timestamp for the table entry.
     /// </summary>
-    // string TimeStamp { get; set; }
+    string TimeStamp { get; set; }
 
     /// <summary>
     /// Gets or sets the key associated with the table entry.
     /// </summary>
-    // string Key { get; set; }
+    string Key { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the next timestamp for the table entry.
+    /// </summary>
+    string NextTimeStamp { get; set; }
 }
