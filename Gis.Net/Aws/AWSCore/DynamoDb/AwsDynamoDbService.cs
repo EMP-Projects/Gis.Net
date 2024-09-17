@@ -77,6 +77,7 @@ public abstract class AwsDynamoDbService<TModel> : IAwsDynamoDbService<TModel>
         await Context.SaveAsync(item, new DynamoDBOperationConfig
         {
             ConsistentRead = true,
+            
         }, cancel);
     }
 
@@ -84,7 +85,7 @@ public abstract class AwsDynamoDbService<TModel> : IAwsDynamoDbService<TModel>
     public async Task<List<TModel>?> QueryAsync(string hashKeyValue, CancellationToken cancel = default)
     {
         // Construct a query that finds all replies by a specific author.
-        var query = Context.QueryAsync<TModel>(hashKeyValue);
+        var query = Context.QueryAsync<TModel>(hashKeyValue, new DynamoDBOperationConfig { ConsistentRead = true});
 
         // Return the list of replies.
         return await query.GetNextSetAsync(cancel);
