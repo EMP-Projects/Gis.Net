@@ -1,4 +1,3 @@
-using System.Globalization;
 using Amazon.DynamoDBv2.DataModel;
 
 namespace Gis.Net.Aws.AWSCore.DynamoDb.Models;
@@ -12,7 +11,7 @@ public abstract class AwsDynamoDbTableBase : IAwsDynamoDbTableBase
     
     /// <inheritdoc />
     [DynamoDBRangeKey("TimeStamp")]
-    public string TimeStamp { get; set; } = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+    public string TimeStamp { get; set; } = DateTime.UtcNow.ToString("O");
 
     /// <inheritdoc />
     [DynamoDBGlobalSecondaryIndexHashKey("Key-NextTimeStamp-Index", AttributeName = "Key")]
@@ -20,5 +19,5 @@ public abstract class AwsDynamoDbTableBase : IAwsDynamoDbTableBase
 
     /// <inheritdoc />
     [DynamoDBGlobalSecondaryIndexRangeKey("Key-NextTimeStamp-Index", AttributeName = "NextTimeStamp")]
-    public required string NextTimeStamp { get; set; }
+    public required string NextTimeStamp { get; set; } = DateTime.UtcNow.ToString("O");
 }
