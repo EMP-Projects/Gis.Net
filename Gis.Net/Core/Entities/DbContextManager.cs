@@ -37,7 +37,7 @@ public static class DbContextManager
         bool isDev = false)
         where TContext : DbContext
     {
-        CheckConnectionString(connection.ConnectionContext!, isDev);
+        CheckConnectionString(connection.ConnectionContext, isDev);
         services.AddDbContext<TContext>(
             options => options.UseNpgsql(connection.ConnectionContext, x => { x.UseNodaTime(); })
         );

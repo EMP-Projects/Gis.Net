@@ -203,7 +203,7 @@ public abstract class AwsSnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> GetAttributes([FromBody] AwsSnsDto? request, CancellationToken cancel)
+    public async Task<IActionResult> GetAttributes([FromBody] AwsSnsDto request, CancellationToken cancel)
     {
         try
         {
@@ -226,7 +226,7 @@ public abstract class AwsSnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> GetSubscription([FromBody] AwsSnsDto? request)
+    public async Task<IActionResult> GetSubscription([FromBody] AwsSnsDto request)
     {
         try
         {

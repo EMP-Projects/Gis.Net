@@ -10,7 +10,7 @@ public class AwsSnsDto
     /// <summary>
     /// 
     /// </summary>
-    [JsonPropertyName("topic_arn")] public string? TopicArn { get; set; } = string.Empty;
+    [JsonPropertyName("topic_arn")] public required string TopicArn { get; set; } = string.Empty;
     
     /// <summary>
     /// 
