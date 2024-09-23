@@ -3,37 +3,28 @@ using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Gis.Net.Aws.AWSCore.Exceptions;
 using Gis.Net.Aws.AWSCore.SNS.Dto;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Gis.Net.Aws.AWSCore.SNS.Services;
 
 /// <inheritdoc />
 public class AwsSnsService : IAwsSnsService
 {
-    private readonly IConfiguration _configuration;
     private readonly IAmazonSimpleNotificationService _snsClient;
     
     /// <summary>
     /// Initializes a new instance of the <see cref="AwsSnsService"/> class.
     /// </summary>
-    /// <param name="configuration">The configuration settings.</param>
-    /// <param name="logger">The logger instance for logging.</param>
     /// <param name="snsClient">The Amazon SNS client instance.</param>
-    public AwsSnsService(IConfiguration configuration, 
-        IAmazonSimpleNotificationService snsClient)
+    public AwsSnsService(IAmazonSimpleNotificationService snsClient)
     {
-        _configuration = configuration;
         _snsClient = snsClient;
     }
 
     /// <inheritdoc />
-    public string? TopicArnDefault => _configuration["AWS_TOPIC_ARN"];
-
-    /// <inheritdoc />
     public async Task<string> ConfirmSubscriptionAsync(AwsConfirmDto options, CancellationToken cancel)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
         
         if (string.IsNullOrEmpty(options.Token))
             throw new AwsExceptions("Token must be specified.");
@@ -57,7 +48,8 @@ public class AwsSnsService : IAwsSnsService
     /// <exception cref="Exception"></exception>
     public async Task<string> SubscribeTopic(AwsSubscribeDto options, CancellationToken cancel)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
 
         if (string.IsNullOrEmpty(options.EndPoint))
             throw new Exception("Endpoint must be specified");
@@ -172,12 +164,6 @@ public class AwsSnsService : IAwsSnsService
         return unsubscribeResponse.HttpStatusCode == HttpStatusCode.OK;
     }
     
-    private void CheckTopicArn(AwsSnsDto options)
-    {
-        if (string.IsNullOrEmpty(options.TopicArn) && string.IsNullOrEmpty(TopicArnDefault))
-            throw new AwsExceptions("Topic ARN or env variable AWS_TOPIC_ARN must be specified.");
-    }
-
     /// <summary>
     /// Delete a topic by its topic ARN.
     /// </summary>
@@ -186,7 +172,8 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<bool> DeleteTopic(AwsSnsDto options, CancellationToken cancel)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
         
         var deleteResponse = await _snsClient.DeleteTopicAsync(
             new DeleteTopicRequest
@@ -205,7 +192,8 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<Dictionary<string, string>> GetTopicAttributes(AwsSnsDto options, CancellationToken cancel)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
         var response = await _snsClient.GetTopicAttributesAsync(options.TopicArn, cancel);
         return response.Attributes;
     }
@@ -217,7 +205,9 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<List<Subscription>> GetSubscriptions(AwsSnsDto options)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
+        
         var results = new List<Subscription>();
 
         var paginateByTopic = _snsClient.Paginators.ListSubscriptionsByTopic(
@@ -233,18 +223,6 @@ public class AwsSnsService : IAwsSnsService
         return results;
     }
 
-    /// <inheritdoc />
-    public async Task<List<Subscription>> GetSubscriptions()
-    {
-        var results = new List<Subscription>();
-        var paginateAllSubscriptions = _snsClient.Paginators.ListSubscriptions(new ListSubscriptionsRequest());
-
-        // Get the entire list using the paginator.
-        await foreach (var subscription in paginateAllSubscriptions.Subscriptions)
-            results.Add(subscription);
-        return results;
-    }
-
     /// <summary>
     /// Publish a message to a topic with an attribute and optional deduplication and group IDs.
     /// </summary>
@@ -253,7 +231,8 @@ public class AwsSnsService : IAwsSnsService
     /// <returns></returns>
     public async Task<string> Publish(AwsPublishDto options, CancellationToken cancel)
     {
-        CheckTopicArn(options);
+        if (string.IsNullOrEmpty(options.TopicArn))
+            throw new AwsExceptions("Topic ARN must be specified.");
         
         if (string.IsNullOrEmpty(options.Message))
             throw new AwsExceptions("Message must be specified.");

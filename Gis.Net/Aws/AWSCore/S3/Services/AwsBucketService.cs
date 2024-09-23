@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Gis.Net.Aws.AWSCore.Exceptions;
@@ -232,6 +231,20 @@ public class AwsBucketService : IAwsBucketService
         var responseToDel = await _s3.DeleteObjectAsync(requestToDel, cancel);
         if (responseToDel.HttpStatusCode == HttpStatusCode.OK)
             _logger.LogInformation($"File {options.Key} deleted successfully");
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> IsExistFile(string bucketName, string key, CancellationToken cancel)
+    {
+        try
+        {
+            await _s3.GetObjectMetadataAsync(bucketName, key, cancel);
+            return true;
+        }
+        catch (AmazonS3Exception e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
     }
 
     /// <summary>

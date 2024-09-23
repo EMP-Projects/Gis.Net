@@ -77,12 +77,6 @@ public interface IAwsSnsService
     /// <param name="options">The topic for which to get subscriptions.</param>
     /// <returns>A list of subscriptions.</returns>
     Task<List<Subscription>> GetSubscriptions(AwsSnsDto options);
-
-    /// <summary>
-    /// Gets subscriptions for a topic asynchronously.
-    /// </summary>
-    /// <returns>A list of subscriptions.</returns>
-    Task<List<Subscription>> GetSubscriptions();
     
     /// <summary>
     /// Publishes a message to a topic asynchronously.
@@ -91,9 +85,4 @@ public interface IAwsSnsService
     /// <param name="cancel">Cancellation token.</param>
     /// <returns>The message ID of the published message.</returns>
     Task<string> Publish(AwsPublishDto options, CancellationToken cancel);
-    
-    /// <summary>
-    /// Gets the default Amazon Resource Name (ARN) for the topic.
-    /// </summary>
-    string? TopicArnDefault { get; }
 }

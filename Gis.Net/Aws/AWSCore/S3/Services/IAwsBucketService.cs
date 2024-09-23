@@ -48,6 +48,15 @@ public interface IAwsBucketService
     Task<bool> IsExistFile(AwsS3BucketFileDto options, CancellationToken cancel);
     
     /// <summary>
+    /// Checks if a file exists in the specified bucket.
+    /// </summary>
+    /// <param name="bucketName">The name of the S3 bucket.</param>
+    /// <param name="key">The key of the file to check.</param>
+    /// <param name="cancel">A cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the file exists.</returns>
+    Task<bool> IsExistFile(string bucketName, string key, CancellationToken cancel);
+    
+    /// <summary>
     /// Delete Bucket
     /// </summary>
     /// <param name="options"></param>
