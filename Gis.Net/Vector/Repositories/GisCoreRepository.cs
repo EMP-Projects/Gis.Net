@@ -32,7 +32,12 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
     /// <param name="options">The options for creating the geometry feature.</param>
     /// <returns>The created geometry feature.</returns>
     protected virtual async Task<Feature> CreateGeometry(TDto dto, GisOptionsGetRows<TModel, TDto, TQuery> options)
-        =>  await CreateFeatureFromGeometry(dto, dto.Geom!, options);
+    {
+        if (dto.Geom is null)
+            throw new Exception("The geometry is not defined");
+        
+        return await CreateFeatureFromGeometry(dto.Geom, options);
+    }
 
     /// <summary>
     /// Creates a feature from a geometry.
@@ -41,18 +46,18 @@ public abstract class GisCoreRepository<TModel, TDto, TQuery, TContext> :
     /// <param name="geom">The geometry object.</param>
     /// <param name="options">The options for creating the feature.</param>
     /// <returns>The created feature.</returns>
-    protected virtual async Task<Feature> CreateFeatureFromGeometry(TDto dto, Geometry geom, GisOptionsGetRows<TModel, TDto, TQuery> options)
+    protected virtual async Task<Feature> CreateFeatureFromGeometry(Geometry geom, GisOptionsGetRows<TModel, TDto, TQuery> options)
     {
         // If the SrCode parameter is not specified, throw an exception.
         if (options.QueryParams?.SrCode is null)
             throw new Exception("To create a feature the SrCode parameter is mandatory");
-              
+        
         // Create an empty feature with the specified spatial reference code and geometry.
         var feature = GisUtility.CreateEmptyFeature((int)options.QueryParams.SrCode, geom);
 
         // If the buffer parameter is not null, apply the buffer to the geometry.
         feature.Geometry = options.QueryParams.Buffer is not null 
-            ? GisUtility.BufferGeometry(dto.Geom!, (double)options.QueryParams.Buffer) 
+            ? GisUtility.BufferGeometry(geom, (double)options.QueryParams.Buffer) 
             : geom;
 
         // Add the properties to the feature.

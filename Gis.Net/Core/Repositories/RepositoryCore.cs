@@ -84,8 +84,13 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     /// <inheritdoc />
     public async Task<ICollection<TDto>> GetRows(ListOptions<TModel, TDto, TQuery> options)
     {
+        // get the DbSet
+        var dbSet = _context.Set<TModel>();
+        
         // get the query
-        var q = ApplyIncludes(_context.Set<TModel>()).AsNoTracking();
+        var q = options.WithApplyInclude 
+            ? ApplyIncludes(dbSet).AsNoTracking() 
+            : dbSet.AsNoTracking();
         
         // check of mandatory parameters
         if (!ValidateParameters(options.QueryParams!))
@@ -121,8 +126,7 @@ public abstract class RepositoryCore<TModel, TDto, TQuery, TContext> :
     }
 
     /// <inheritdoc />
-    public async Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, ListOptions<TModel, TDto, TQuery>? options = null
-    )
+    public async Task<ICollection<TDto>> GetRows(IEnumerable<TModel> rows, ListOptions<TModel, TDto, TQuery>? options = null)
     {
         List<TDto> result = [];
         foreach (var model in rows)

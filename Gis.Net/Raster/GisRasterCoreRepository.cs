@@ -201,7 +201,13 @@ public abstract class GisRasterCoreRepository<TModel, TDto, TQuery, TContext, TP
     /// <returns>A <see cref="Feature"/> object with the created geometry.</returns>
     protected override async Task<Feature> CreateGeometry(TDto dto, GisOptionsGetRows<TModel, TDto, TQuery> options) 
     {
+        // If the geometry is null, throw an exception.
         var geom = (await ConvertRasterToPolygon(dto.Id))?.Geom;
-        return await CreateFeatureFromGeometry(dto, geom!, options);
+        
+        // If the geometry is null, throw an exception.
+        if (geom is null)
+            throw new Exception("I was unable to convert the raster to polygon");
+        
+        return await CreateFeatureFromGeometry(geom, options);
     }
 }

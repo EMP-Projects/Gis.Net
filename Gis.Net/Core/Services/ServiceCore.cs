@@ -39,12 +39,20 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     protected virtual ListOptions<TModel, TDto, TQuery> GetRowsOptions(TQuery q) => new(q);
 
     /// <inheritdoc />
+    public virtual async Task<ICollection<TDto>> List(ListOptions<TModel, TDto, TQuery>? listOptions, TQuery? queryParams = null)
+    {
+        queryParams ??= new TQuery();
+        var options = listOptions ?? GetRowsOptions(queryParams);
+        await ValidateQueryParams(queryParams);
+        var result = await _repositoryCore.GetRows(options);
+        return result;
+    }
+
+    /// <inheritdoc />
     public virtual async Task<ICollection<TDto>> List(TQuery? queryParams = null)
     {
         queryParams ??= new TQuery();
-        await ValidateQueryParams(queryParams);
-        var result = await _repositoryCore.GetRows(GetRowsOptions(queryParams));
-        return result;
+        return await List(GetRowsOptions(queryParams), queryParams);
     }
 
     /// <summary>
@@ -53,7 +61,11 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     protected virtual FindOptions<TModel, TDto> FindOptions() => new();
 
     /// <inheritdoc />
-    public virtual async Task<TDto> Find(long id) => await _repositoryCore.Find(id, FindOptions());
+    public virtual async Task<TDto> Find(long id) => await Find(id, FindOptions());
+
+    /// <inheritdoc />
+    public virtual async Task<TDto> Find(long id, FindOptions<TModel, TDto>? findOptions) 
+        => await _repositoryCore.Find(id, findOptions ?? FindOptions());
 
     /// <summary>
     /// Represents the options for inserting a new record into the database.
@@ -77,11 +89,14 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     protected virtual Task OnAfterValidate(TDto dto, ECrudActions crudEnum) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public virtual async Task<TModel?> Insert(TDto dto)
+    public virtual async Task<TModel?> Insert(TDto dto) => await Insert(dto, InsertOptions());
+
+    /// <inheritdoc />
+    public virtual async Task<TModel?> Insert(TDto dto, InsertOptions<TModel, TDto, TQuery>? insertOptions)
     {
         await Validate(dto, ECrudActions.Insert);
         await OnAfterValidate(dto, ECrudActions.Insert);
-        var options = InsertOptions();
+        var options = insertOptions ?? InsertOptions();
         var model = await _repositoryCore.InsertAsync(dto, options);
         await OnAfterInsert(dto, model);
         return model;
@@ -102,11 +117,14 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     protected virtual Task OnAfterUpdate(TDto dto, TModel model) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public virtual async Task<TModel?> Update(TDto dto)
+    public virtual async Task<TModel?> Update(TDto dto) => await Update(dto, UpdateOptions());
+
+    /// <inheritdoc />
+    public virtual async Task<TModel?> Update(TDto dto, UpdateOptions<TModel, TDto, TQuery>? updateOptions)
     {
         await Validate(dto, ECrudActions.Update);
         await OnAfterValidate(dto, ECrudActions.Update);
-        var options = UpdateOptions();
+        var options = updateOptions ?? UpdateOptions();
         var model = await _repositoryCore.Update(dto, options);
         await OnAfterUpdate(dto, model);
         return model;
@@ -125,9 +143,12 @@ public abstract class ServiceCore<TModel, TDto, TQuery, TRequest, TContext> :
     protected virtual Task OnAfterDelete(TModel? model) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public virtual async Task<TModel> Delete(long id)
+    public virtual async Task<TModel> Delete(long id) => await Delete(id, DeleteOptions());
+
+    /// <inheritdoc />
+    public virtual async Task<TModel> Delete(long id, DeleteOptions<TModel, TDto, TQuery>? deleteOptions)
     {
-        var result = await _repositoryCore.Delete(id, DeleteOptions());
+        var result = await _repositoryCore.Delete(id, deleteOptions ?? DeleteOptions());
         await OnAfterDelete(result);
         return result;
     }

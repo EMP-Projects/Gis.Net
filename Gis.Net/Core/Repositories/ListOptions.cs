@@ -67,4 +67,9 @@ public class ListOptions<TModel, TDto, TQuery>
     /// Class representing options for listing data.
     /// </summary>
     public ListOptions(TQuery queryParams) : this() => QueryParams = queryParams;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to apply include operations.
+    /// </summary>
+    public bool WithApplyInclude { get; set; } = true;
 }

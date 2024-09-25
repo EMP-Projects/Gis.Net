@@ -28,6 +28,14 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     Task<ICollection<TDto>> List(TQuery? queryParams);
     
     /// <summary>
+    /// Retrieves a collection of DTOs based on the specified list options and query parameters.
+    /// </summary>
+    /// <param name="listOptions">The options for listing the DTOs.</param>
+    /// <param name="queryParams">The query parameters used to filter the results. This parameter is optional.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a collection of DTOs.</returns>
+    Task<ICollection<TDto>> List(ListOptions<TModel, TDto, TQuery>? listOptions, TQuery? queryParams = null);
+    
+    /// <summary>
     /// Finds a DTO by its identifier.
     /// </summary>
     /// <param name="id">The identifier of the DTO to find.</param>
@@ -35,11 +43,27 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     Task<TDto> Find(long id);
 
     /// <summary>
+    /// Finds a DTO by its identifier with additional find options.
+    /// </summary>
+    /// <param name="id">The identifier of the DTO to find.</param>
+    /// <param name="findOptions">The options to customize the find operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the found DTO, if any.</returns>
+    Task<TDto> Find(long id, FindOptions<TModel, TDto>? findOptions);
+
+    /// <summary>
     /// Inserts a new model based on the provided DTO.
     /// </summary>
     /// <param name="dto">The DTO used to create a new model.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the inserted model, if the operation was successful.</returns>
     Task<TModel?> Insert(TDto dto);
+
+    /// <summary>
+    /// Inserts a new model based on the provided DTO with additional insert options.
+    /// </summary>
+    /// <param name="dto">The DTO used to create a new model.</param>
+    /// <param name="insertOptions">The options to customize the insert operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the inserted model, if the operation was successful.</returns>
+    Task<TModel?> Insert(TDto dto, InsertOptions<TModel, TDto, TQuery>? insertOptions);
     
     /// <summary>
     /// Updates an existing model based on the provided DTO.
@@ -47,6 +71,14 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     /// <param name="dto">The DTO used to update an existing model.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the updated model, if the operation was successful.</returns>
     Task<TModel?> Update(TDto dto);
+
+    /// <summary>
+    /// Updates an existing model based on the provided DTO with additional update options.
+    /// </summary>
+    /// <param name="dto">The DTO used to update an existing model.</param>
+    /// <param name="updateOptions">The options to customize the update operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the updated model, if the operation was successful.</returns>
+    Task<TModel?> Update(TDto dto, UpdateOptions<TModel, TDto, TQuery>? updateOptions);
     
     /// <summary>
     /// Finds a security token based on the model's identifier and a secret key.
@@ -62,6 +94,21 @@ public interface IServiceCore<TModel, TDto, TQuery, in TRequest, out TContext>
     /// <param name="id">The identifier of the model to delete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the result of the delete operation.</returns>
     Task<TModel> Delete(long id);
+    
+    /// <summary>
+    /// Deletes a model by its identifier, with additional delete options.
+    /// </summary>
+    /// <param name="id">The identifier of the model to delete.</param>
+    /// <param name="deleteOptions">The options to customize the delete operation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the result of the delete operation.</returns>
+    Task<TModel> Delete(long id, DeleteOptions<TModel, TDto, TQuery>? deleteOptions);
+
+    /// <summary>
+    /// Deletes a model based on the provided DTO.
+    /// </summary>
+    /// <param name="dto">The DTO representing the model to delete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the result of the delete operation.</returns>
+    Task<TModel> Delete(TDto dto);
 
     /// <summary>
     /// Persists all changes made in the data context.
