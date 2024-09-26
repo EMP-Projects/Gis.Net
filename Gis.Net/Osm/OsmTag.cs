@@ -66,7 +66,7 @@ public static class OsmTag
                 "military", ["airfield"]
             },
             {
-                "landuse", ["cemetery", "residential", "industrial", "allotments", "meadown", "commercial", "quarry", "orchad", "vineyard", "scrub", "grass", "farmland", "farmyard", "reservoir"]
+                "landuse", ["cemetery", "military", "residential", "industrial", "allotments", "meadown", "commercial", "quarry", "orchad", "vineyard", "scrub", "grass", "farmland", "farmyard", "reservoir"]
             },
             {
                 "historic", ["monument", "memorial", "castle", "ruins", "archaeological_site", "wayside_criss", "wayside_shrine", "battlefield", "fort"]
