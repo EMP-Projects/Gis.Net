@@ -22,6 +22,6 @@ public abstract class DtoBase : IDtoBase
     /// <summary>
     /// Represents the timestamp of a data object.
     /// </summary>
-    [JsonPropertyName("timestamp"), JsonIgnore]
+    [JsonPropertyName("timestamp")]
     public DateTime TimeStamp { get; set; }
 }
